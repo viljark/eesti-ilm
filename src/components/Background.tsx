@@ -1,35 +1,58 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet } from 'react-native';
 import { getTimes } from 'suncalc';
 import * as Location from 'expo-location';
 
 const Background = (props: { children: React.ReactNode, location: Location.LocationData }) => {
+  let gradient;
 
+  useEffect(() => {
+    gradient = gradientsDay[Math.floor(Math.random() * gradientsDay.length)];
+  }, []);
 
   let sunLight;
+
   if (props.location) {
     sunLight = getTimes(new Date(), props.location.coords.latitude, props.location.coords.longitude);
-    console.log(sunLight);
+
+    const now = new Date().getHours() + (new Date().getMinutes() / 60);
+
+    const sunrise = new Date(sunLight.sunrise).getHours() + (new Date(sunLight.sunrise).getMinutes() / 60);
+    const sunset = new Date(sunLight.sunset).getHours() + (new Date(sunLight.sunset).getMinutes() / 60);
+
+    if (now >= sunrise && now < sunset) {
+      const dayStep = (sunset - sunrise) / gradientsDay.length;
+      const dayIndex = Math.floor((now - sunrise) / dayStep);
+      gradient = gradientsDay[dayIndex];
+    } else {
+      let nightIndex;
+      const nightStep = (24 - (sunset - sunrise)) / gradientsNight.length;
+      if (now < sunset) { // new day, so lets add 24 to calculate hours passed
+        nightIndex = Math.floor((now + 24 - sunset) / nightStep);
+      } else {
+        nightIndex = Math.floor((now - sunset) / nightStep);
+      }
+      gradient = gradientsNight[nightIndex];
+    }
   }
 
-  const randomGradient = Math.floor(Math.random() * gradientsDay.length)
 
-  return (<LinearGradient
+  return gradient ? (<LinearGradient
     style={styles.container}
-    colors={gradientsDay[randomGradient].color}
+    colors={gradient.color}
     start={[0.5, 0]}
-    locations={gradientsDay[randomGradient].location}
+    locations={gradient.location}
   >
     {props.children}
-  </LinearGradient>)
+  </LinearGradient>) : null;
 
 };
 
 export default Background;
 const styles = StyleSheet.create({
   container: {
-    marginTop: 24,
+    marginTop: 0,
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'flex-start',

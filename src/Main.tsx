@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getObservations, Observations, Station } from './services';
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
 import { closestObservationField, getDistance } from './distance';
 import { ErrorMessage } from './components/ErrorMessage';
-import CloudSunIcon from './icons/CloudSunIcon';
 import { getPhenomenonText } from './phenomenonUtil';
 import Background from './components/Background';
 import { PhenomenonIcon } from './components/PhenomenonIcon';
+import { Dimensions } from "react-native";
+import { Radar } from './components/Radar';
+
 
 
 export default function Main() {
 
+  const [allObservations, setAllObservations] = useState<Observations>(undefined);
   const [observations, setObservations] = useState<Observations>(undefined);
   const [location, setLocation] = useState<Location.LocationData>(undefined);
   const [errorMessage, setErrormessage] = useState(undefined);
   const [closestStation, setClosestStation] = useState<Station>(undefined);
 
   useEffect(() => {
+    getLocationAsync();
     fetchObservations();
   }, []);
 
   useEffect(() => {
-    if (observations && location) {
+    if (allObservations && location) {
 
-      const stationsWithDistance = observations.station.map((s) => {
+      const stationsWithDistance = allObservations.station.map((s) => {
         const stationLatLon = [Number(s.latitude), Number(s.longitude)];
         const distance = getDistance([location.coords.latitude, location.coords.longitude], stationLatLon);
         return {
@@ -45,12 +49,13 @@ export default function Main() {
 
       setClosestStation(closest);
       console.log(closest);
+
       setObservations({
         ...observations,
         station: stationsWithDistance.sort((a, b) => a.name.localeCompare(b.name)),
       });
     }
-  }, [location]);
+  }, [location, allObservations]);
 
   async function getLocationAsync() {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -64,37 +69,54 @@ export default function Main() {
 
   async function fetchObservations() {
     const response = await getObservations();
-    setObservations(response.observations);
-    getLocationAsync();
+    setAllObservations(response.observations);
   }
+
   const phenomenon = observations ? getPhenomenonText(closestObservationField(observations.station, 'phenomenon') as string) : '';
   return (
       <Background location={location}>
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-        {closestStation && (
-          <View style={styles.container}>
-            <Text style={{color: '#fff', opacity: 0.7}}>{phenomenon}</Text>
-            <PhenomenonIcon phenomenon={closestObservationField(observations.station, 'phenomenon') as string} latitude={location.coords.latitude} longitude={location.coords.longitude}/>
-            <View style={styles.temperatureWrap}>
-              <Text style={styles.temperature}>{closestStation.airtemperature}  </Text>
-              <Text style={styles.degree}>°C</Text>
-            </View>
+        <ScrollView style={styles.scrollContainer}>
 
-            <Text style={styles.location}>{closestStation.name}</Text>
-            <Text>vesi {closestObservationField(observations.station, 'watertemperature')}°C</Text>
-            <Text>{closestObservationField(observations.station, 'windspeed')}m/s</Text>
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          {closestStation && (
+            <View style={styles.container}>
+              <Text style={{color: '#fff', opacity: 0.7}}>{phenomenon}</Text>
+              <PhenomenonIcon phenomenon={closestObservationField(observations.station, 'phenomenon') as string} latitude={location.coords.latitude} longitude={location.coords.longitude}/>
+              <View style={styles.temperatureWrap}>
+                <Text style={styles.temperature}>{closestStation.airtemperature}</Text>
+                <Text style={styles.degree}>°C</Text>
+              </View>
+
+              <Text style={styles.smallText}>{closestStation.name}</Text>
+              <Text style={styles.smallText}>vesi {closestObservationField(observations.station, 'watertemperature')}°C</Text>
+              <Text style={styles.smallText}>tuul {closestObservationField(observations.station, 'windspeed')}m/s</Text>
+            </View>
+          )}
+          <View style={{
+            ...styles.container,
+            marginTop: -40,
+          }}>
+            <Radar/>
           </View>
-        )}
+        </ScrollView>
       </Background>
   );
 }
 
+const width = Dimensions.get('window').width; //full width
+const height = Dimensions.get('window').height; //full height
+
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flex: 1,
+    alignSelf: 'stretch',
+  },
   container: {
     marginTop: 40,
     flex: 1,
     alignItems: 'center',
     alignSelf: 'stretch',
+    height: height,
   },
   temperatureWrap: {
     display: 'flex',
@@ -112,12 +134,13 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     color: '#fff',
     fontSize: 30,
-    marginLeft: -30,
+    marginLeft: 0,
+
   },
-  location: {
+  smallText: {
     color: '#fff',
-    opacity: 0.5,
-    fontSize: 10,
+    opacity: 0.7,
+    fontSize: 12,
   }
 
 });
