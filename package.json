@@ -1,5 +1,6 @@
 {
   "main": "node_modules/expo/AppEntry.js",
+  "author": "Viljar Kärgenberg",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -13,6 +14,7 @@
     "expo": "^33.0.0",
     "expo-location": "^5.0.1",
     "expo-permissions": "^5.0.1",
+    "fast-html-parser": "^1.0.1",
     "geodesy": "^2.1.0",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
@@ -20,7 +22,8 @@
     "react-native-svg": "^9.4.0",
     "react-native-web": "^0.11.4",
     "react-native-xml2js": "^1.0.3",
-    "suncalc": "^1.8.0"
+    "suncalc": "^1.8.0",
+    "util": "^0.12.0"
   },
   "devDependencies": {
     "@types/react": "^16.8.19",
