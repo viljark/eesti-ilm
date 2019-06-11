@@ -5,7 +5,7 @@ import { useInterval } from '../useInterval';
 
 
 const width = Dimensions.get('window').width; //full width
-export function Radar() {
+export function Radar(props: {latestUpdate: Date}) {
   const [images, setImages] = useState([]);
   const [index, setIndex] = useState(0);
   const [delay, setDelay] = useState(null);
@@ -21,7 +21,7 @@ export function Radar() {
       setImages(images);
       setIndex(images.length - 1);
     })
-  }, []);
+  }, [props.latestUpdate]);
 
 
   useInterval(() => {
@@ -38,7 +38,7 @@ export function Radar() {
     } else {
       setDelay(null);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>

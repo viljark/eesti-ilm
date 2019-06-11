@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { AppStateStatus, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getObservations, Observations, Station } from './services';
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
@@ -8,23 +8,45 @@ import { ErrorMessage } from './components/ErrorMessage';
 import { getPhenomenonText } from './phenomenonUtil';
 import Background from './components/Background';
 import { PhenomenonIcon } from './components/PhenomenonIcon';
-import { Dimensions } from "react-native";
+import { AppState, Dimensions, RefreshControl } from 'react-native';
 import { Radar } from './components/Radar';
+import { Forecast } from './components/Forecast';
+import { Linking } from 'expo';
 
-
+function addZeroBefore(n) {
+  return (n < 10 ? '0' : '') + n;
+}
 
 export default function Main() {
-
   const [allObservations, setAllObservations] = useState<Observations>(undefined);
   const [observations, setObservations] = useState<Observations>(undefined);
   const [location, setLocation] = useState<Location.LocationData>(undefined);
   const [errorMessage, setErrormessage] = useState(undefined);
   const [closestStation, setClosestStation] = useState<Station>(undefined);
+  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
+  const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
+
+  useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
+    return () => {
+      AppState.removeEventListener('change', handleAppStateChange);
+    }
+  }, []);
+
+  function handleAppStateChange(nextAppState: AppStateStatus) {
+    setAppState((oldAppState) => {
+      if (oldAppState.match(/inactive|background/) && nextAppState === 'active') {
+        setLatestUpdate(new Date());
+      }
+      return nextAppState
+    });
+  }
 
   useEffect(() => {
     getLocationAsync();
     fetchObservations();
-  }, []);
+  }, [latestUpdate]);
 
   useEffect(() => {
     if (allObservations && location) {
@@ -48,7 +70,6 @@ export default function Main() {
       });
 
       setClosestStation(closest);
-      console.log(closest);
 
       setObservations({
         ...observations,
@@ -68,38 +89,53 @@ export default function Main() {
   }
 
   async function fetchObservations() {
+    setIsRefreshing(true);
     const response = await getObservations();
+    setIsRefreshing(false);
     setAllObservations(response.observations);
   }
 
   const phenomenon = observations ? getPhenomenonText(closestObservationField(observations.station, 'phenomenon') as string) : '';
   return (
-      <Background location={location}>
-        <ScrollView style={styles.scrollContainer}>
+    <Background location={location}>
+      <Text style={styles.ilmateenistus} onPress={() => {
+        Linking.openURL('https://www.ilmateenistus.ee')
+      }}>Riigi Ilmateenistus - www.ilmateenistus.ee</Text>
+      <ScrollView style={styles.scrollContainer} refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={() => {
+            setLatestUpdate(new Date());
+          }}/>
+      }>
 
-          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          {closestStation && (
-            <View style={styles.container}>
-              <Text style={{color: '#fff', opacity: 0.7}}>{phenomenon}</Text>
-              <PhenomenonIcon phenomenon={closestObservationField(observations.station, 'phenomenon') as string} latitude={location.coords.latitude} longitude={location.coords.longitude}/>
-              <View style={styles.temperatureWrap}>
-                <Text style={styles.temperature}>{closestStation.airtemperature}</Text>
-                <Text style={styles.degree}>°C</Text>
-              </View>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+        {closestStation && (
+          <View style={styles.container}>
 
-              <Text style={styles.smallText}>{closestStation.name}</Text>
+            <PhenomenonIcon phenomenon={closestObservationField(observations.station, 'phenomenon') as string} latitude={location.coords.latitude} longitude={location.coords.longitude}/>
+            <View style={styles.temperatureWrap}>
+              <Text style={styles.temperature}>{closestStation.airtemperature}</Text>
+              <Text style={styles.degree}>°C</Text>
+            </View>
+            <Text style={styles.phenomenon}>{phenomenon}</Text>
+            <View style={styles.smallContainer}>
+              <Text style={styles.smallText}>{closestStation.name}, {addZeroBefore(latestUpdate.getHours())}:{addZeroBefore(latestUpdate.getMinutes())}</Text>
               <Text style={styles.smallText}>vesi {closestObservationField(observations.station, 'watertemperature')}°C</Text>
               <Text style={styles.smallText}>tuul {closestObservationField(observations.station, 'windspeed')}m/s</Text>
             </View>
-          )}
-          <View style={{
-            ...styles.container,
-            marginTop: -40,
-          }}>
-            <Radar/>
+            <Forecast latestUpdate={latestUpdate}/>
           </View>
-        </ScrollView>
-      </Background>
+        )}
+        <View style={{
+          ...styles.container,
+          marginTop: -40,
+          height: width,
+        }}>
+          <Radar latestUpdate={latestUpdate}/>
+        </View>
+      </ScrollView>
+    </Background>
   );
 }
 
@@ -126,9 +162,10 @@ const styles = StyleSheet.create({
   temperature: {
     color: '#fff',
     fontSize: 80,
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: {width: 0, height: 1},
-    textShadowRadius: 10,
+    marginTop: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
   },
   degree: {
     paddingTop: 20,
@@ -137,10 +174,38 @@ const styles = StyleSheet.create({
     marginLeft: 0,
 
   },
+  smallContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end'
+  },
   smallText: {
     color: '#fff',
-    opacity: 0.7,
     fontSize: 12,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+  },
+  phenomenon: {
+    color: '#fff',
+    opacity: 0.9,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+    marginTop: -10,
+    marginBottom: 30,
+  },
+  ilmateenistus: {
+    position: 'absolute',
+    bottom: 2,
+    right: 5,
+    color: '#fff',
+    fontSize: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+    opacity: 0.6,
+    zIndex: 1,
   }
 
 });
