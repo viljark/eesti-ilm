@@ -14,6 +14,7 @@ import Fog from '../icons/Fog';
 import Thunder from '../icons/Thunder';
 import ThunderStorm from '../icons/ThunderStorm';
 import Hail from '../icons/Hail';
+import { StyleProp, StyleSheetProperties, ViewStyle } from 'react-native';
 
 // mapping https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/
 const clear = ['Clear'];
@@ -30,18 +31,20 @@ const thunder = ['Thunder'];
 const thunderStorm = ['Thunderstorm'];
 const hail = ['Hail'];
 
-export function PhenomenonIcon(props: {phenomenon: string, latitude: number, longitude: number}) {
+export function PhenomenonIcon(props: {phenomenon: string, latitude?: number, longitude?: number, isDay?: boolean, width?: number, height?: number, style?: StyleProp<ViewStyle>}) {
   const iconProps = {
-    width: 200,
-    height: 200,
+    width: props.width || 180,
+    height: props.height ||180,
     fill: '#fff',
-    style: {
-      opacity: 0.8,
+    style: props.style || {
+      opacity: 1,
+      marginTop: 20,
+      marginBottom: 20,
     }
   };
 
   const sunTimes = getTimes(new Date(), props.latitude, props.longitude);
-  const isDay = new Date().getTime() < sunTimes.sunset.getTime();
+  const isDay = props.isDay !== undefined ? props.isDay : new Date().getTime() < sunTimes.sunset.getTime();
 
   return (
     <>

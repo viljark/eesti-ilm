@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { getTimes } from 'suncalc';
 import * as Location from 'expo-location';
 
-const Background = (props: { children: React.ReactNode, location: Location.LocationData }) => {
+const Background = (props: { children: React.ReactNode, location: Location.LocationData}) => {
   let gradient;
 
   useEffect(() => {
@@ -36,7 +36,6 @@ const Background = (props: { children: React.ReactNode, location: Location.Locat
       gradient = gradientsNight[nightIndex];
     }
   }
-
 
   return gradient ? (<LinearGradient
     style={styles.container}
