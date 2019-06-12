@@ -44,8 +44,10 @@ export function PhenomenonIcon(props: {phenomenon: string, latitude?: number, lo
   };
 
   const sunTimes = getTimes(new Date(), props.latitude, props.longitude);
-  const isDay = props.isDay !== undefined ? props.isDay : new Date().getTime() < sunTimes.sunset.getTime();
+  const isDay = props.isDay !== undefined ? props.isDay : new Date().getTime() < sunTimes.sunset.getTime() && new Date().getTime() > sunTimes.sunrise.getTime();
 
+
+  console.log(isDay);
   return (
     <>
       {clear.includes(props.phenomenon) && (
