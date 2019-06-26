@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     width,
     height: 60,
     position: 'absolute',
-    bottom: 55,
+    bottom: 95,
     left: 0,
     display: 'flex',
     alignSelf: 'stretch',
