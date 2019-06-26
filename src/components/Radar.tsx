@@ -14,10 +14,13 @@ export function Radar(props: {latestUpdate: Date}) {
     fetch('https://www.ilmateenistus.ee/ilm/ilmavaatlused/radaripildid/komposiitpilt/').then((r) => r.text()).then((r) => {
       const root = HTMLParser.parse(r);
       const imageElements = root.querySelectorAll('.radar-image');
-      const images = imageElements.map((i) => ({
-        src: i.attributes.src,
-        date: new Date(Number(i.attributes['data-datetime']) * 1000).toLocaleString(),
-      }));
+      const images = imageElements.map((i) => {
+        return ({
+          src: i.attributes.src,
+          date: new Date(Number(i.attributes['data-datetime']) * 1000).toLocaleString(),
+        })
+      });
+
       setImages(images);
       setIndex(images.length - 1);
     })
@@ -45,9 +48,13 @@ export function Radar(props: {latestUpdate: Date}) {
       {images.length > 0 && (
         <>
           <View>
-            <TouchableHighlight onPress={handleClick}>
-              <Image source={{ uri: images[index].src }} style={{ width: width, height: width }}/>
-            </TouchableHighlight>
+
+              {images.map((image, i) => (
+                  <TouchableHighlight onPress={handleClick} key={i} style={{opacity: i === index ? 1 : 0, position: 'absolute', left: 0, top: 0}}>
+                    <Image source={{ uri: images[i].src }} style={{ width: width, height: width}} fadeDuration={0} />
+                  </TouchableHighlight>
+              ))}
+
             <Text style={styles.smallText}>{images[index].date}</Text>
           </View>
         </>
