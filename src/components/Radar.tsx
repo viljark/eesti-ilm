@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight } from 'react-native';
 import HTMLParser from 'fast-html-parser';
-import { useInterval } from '../useInterval';
 
 
 const width = Dimensions.get('window').width; //full width
 export function Radar(props: {latestUpdate: Date}) {
   const [images, setImages] = useState([]);
   const [index, setIndex] = useState(0);
-  const [delay, setDelay] = useState(null);
 
   useEffect(() => {
     fetch('https://www.ilmateenistus.ee/ilm/ilmavaatlused/radaripildid/komposiitpilt/').then((r) => r.text()).then((r) => {
@@ -26,20 +24,26 @@ export function Radar(props: {latestUpdate: Date}) {
     })
   }, [props.latestUpdate]);
 
-
-  useInterval(() => {
-    if (index + 1 < images.length) {
-      setIndex(index => index + 1)
-    } else {
+  const changeFrame = (amount: number) => {
+    if (index + amount >= images.length) {
       setIndex(0);
+      return
     }
-  }, delay);
 
-  const handleClick = () => {
-    if (delay === null) {
-      setDelay(1000);
+    if (index + amount < 0) {
+      setIndex(images.length - 1);
+      return;
+    }
+    setIndex(index => index + amount)
+  };
+
+
+  const handleClick = (e) => {
+    const midScreen = width / 2;
+    if (e.nativeEvent.locationX > midScreen) {
+      changeFrame(1);
     } else {
-      setDelay(null);
+      changeFrame(-1);
     }
   };
 
