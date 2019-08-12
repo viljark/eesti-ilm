@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AppStateStatus, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { AppStateStatus, ScrollView, StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import { getObservations, Observations, Station } from './services';
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
@@ -43,6 +43,28 @@ export default function Main() {
     });
   }
 
+  async function storeLocation (location: Location.LocationData){
+    try {
+      await AsyncStorage.setItem('location', JSON.stringify(location));
+      console.log('saved location', JSON.stringify(location));
+    } catch (error) {
+      // Error saving data
+    }
+  }
+
+  async function retrieveStoredLocation (): Promise<Location.LocationData> {
+    try {
+      const location = await AsyncStorage.getItem('location');
+      if (location !== null) {
+        console.log('retrieved location', location);
+        return JSON.parse(location);
+      }
+    } catch (error) {
+      // Error saving data
+    }
+    return null;
+  }
+
   useEffect(() => {
     getLocationAsync();
     fetchObservations();
@@ -79,13 +101,21 @@ export default function Main() {
   }, [location, allObservations]);
 
   async function getLocationAsync() {
+    const storedLocation = await retrieveStoredLocation();
+    if (storedLocation) {
+      setLocation(storedLocation);
+    }
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       setErrormessage('Permission to access location was denied');
     }
-
     const location = await Location.getCurrentPositionAsync({});
-    setLocation(location);
+    const newLocation = location && storedLocation && location.coords.longitude !== storedLocation.coords.longitude && location.coords.latitude !== storedLocation.coords.latitude;
+
+    if ((location && !storedLocation) || newLocation) {
+      setLocation(location);
+      storeLocation(location)
+    }
   }
 
   async function fetchObservations() {
