@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { AppStateStatus, ScrollView, StyleSheet, Text, View, AsyncStorage } from 'react-native';
+import { AppStateStatus, ScrollView, StyleSheet, Text, View, AsyncStorage, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { getObservations, Observations, Station } from './services';
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
-import { closestObservationField, getDistance } from './distance';
+import { closestObservationField, closestStationWithObservationField, getDistance } from './distance';
 import { ErrorMessage } from './components/ErrorMessage';
 import { getPhenomenonText } from './phenomenonUtil';
 import Background from './components/Background';
@@ -26,6 +26,7 @@ export default function Main() {
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
+  const [showDataOrigin, setShowDataOrigin] = useState<boolean>(false);
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
@@ -82,14 +83,7 @@ export default function Main() {
         }
       });
 
-      let closest: Station = undefined;
-      stationsWithDistance.forEach((s) => {
-        if (!closest) {
-          closest = s
-        } else if (closest.distance > s.distance) {
-          closest = s;
-        }
-      });
+      let closest: Station = closestStationWithObservationField(stationsWithDistance, 'airtemperature');
 
       setClosestStation(closest);
 
@@ -125,7 +119,11 @@ export default function Main() {
     setAllObservations(response.observations);
   }
 
-  const phenomenon = observations ? getPhenomenonText(closestObservationField(observations.station, 'phenomenon') as string) : '';
+  const getWaterTempStation = () => closestStationWithObservationField(observations.station, 'watertemperature');
+  const getPhenomenonStation = () => closestStationWithObservationField(observations.station, 'phenomenon');
+  const getWindSpeedStation = () => closestStationWithObservationField(observations.station, 'windspeed');
+
+  const phenomenon = observations ? getPhenomenonText(getPhenomenonStation().phenomenon) : '';
   return (
     <Background location={location}>
       <Text style={styles.ilmateenistus} onPress={() => {
@@ -141,21 +139,31 @@ export default function Main() {
 
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         {closestStation && (
-          <View style={styles.container}>
 
-            <PhenomenonIcon phenomenon={closestObservationField(observations.station, 'phenomenon') as string} latitude={location.coords.latitude} longitude={location.coords.longitude}/>
-            <View style={styles.temperatureWrap}>
-              <Text style={styles.temperature}>{closestStation.airtemperature}</Text>
-              <Text style={styles.degree}>°C</Text>
+            <View>
+              <TouchableWithoutFeedback  onPress={() => {
+                setShowDataOrigin(!showDataOrigin);
+              }}>
+              <View style={styles.container}>
+                <PhenomenonIcon phenomenon={closestObservationField(observations.station, 'phenomenon') as string} latitude={location.coords.latitude} longitude={location.coords.longitude}/>
+                <View style={styles.temperatureWrap}>
+                  <Text style={styles.temperature}>{closestStation.airtemperature}</Text>
+                  <Text style={styles.degree}>°C</Text>
+                </View>
+                <Text style={styles.phenomenon}>{phenomenon} {showDataOrigin && <Text style={styles.smallText}>({getPhenomenonStation().name})</Text>}</Text>
+                <View style={styles.smallContainer}>
+                  <Text style={styles.smallText}>{closestStation.name}, {addZeroBefore(latestUpdate.getHours())}:{addZeroBefore(latestUpdate.getMinutes())}</Text>
+                  <Text style={styles.smallText}>
+                    vesi {getWaterTempStation().watertemperature}°C {showDataOrigin && <Text style={styles.smallText}>({getWaterTempStation().name})</Text>}
+
+                  </Text>
+                  <Text style={styles.smallText}>tuul {getWindSpeedStation().windspeed}m/s {showDataOrigin && <Text style={styles.smallText}>({getWindSpeedStation().name})</Text>}</Text>
+                </View>
+              </View>
+              </TouchableWithoutFeedback>
+              <Forecast latestUpdate={latestUpdate}/>
             </View>
-            <Text style={styles.phenomenon}>{phenomenon}</Text>
-            <View style={styles.smallContainer}>
-              <Text style={styles.smallText}>{closestStation.name}, {addZeroBefore(latestUpdate.getHours())}:{addZeroBefore(latestUpdate.getMinutes())}</Text>
-              <Text style={styles.smallText}>vesi {closestObservationField(observations.station, 'watertemperature')}°C</Text>
-              <Text style={styles.smallText}>tuul {closestObservationField(observations.station, 'windspeed')}m/s</Text>
-            </View>
-            <Forecast latestUpdate={latestUpdate}/>
-          </View>
+
         )}
         <View style={{
           ...styles.container,
@@ -207,7 +215,7 @@ const styles = StyleSheet.create({
   smallContainer: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-end'
+    alignItems: 'center'
   },
   smallText: {
     color: '#fff',

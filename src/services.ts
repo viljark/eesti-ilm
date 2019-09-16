@@ -1,15 +1,30 @@
+import axios from "axios";
+import iconv from 'iconv-lite';
+import { Buffer } from 'buffer';
+
 const parseString = require('react-native-xml2js').parseString;
 
+const RESPONSE_CHARSET = "ISO-8859-15";
+
 export async function getObservations(): Promise<ObservationsResponse> {
-  const textResponse = await fetch('https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php').then((result) => result.text());
-  return xmlResponseToJson(textResponse);
+  const response = await axios({
+    method: 'get',
+    url: 'https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php',
+    responseType: 'arraybuffer'
+  });
+
+  return xmlResponseToJson(iconv.decode(new Buffer(response.data), RESPONSE_CHARSET));
 }
 
 export async function getForecast(): Promise<ForecastResponse> {
-  const textResponse = await fetch('https://www.ilmateenistus.ee/ilma_andmed/xml/forecast.php').then((result) => result.text());
-  return xmlResponseToJson(textResponse);
-}
+  const response = await axios({
+    method: 'get',
+    url: 'https://www.ilmateenistus.ee/ilma_andmed/xml/forecast.php',
+    responseType: 'arraybuffer'
+  });
 
+  return xmlResponseToJson(iconv.decode(new Buffer(response.data), RESPONSE_CHARSET));
+}
 
 function xmlResponseToJson(response: string): Promise<any> {
   return new Promise((resolve, reject) => {
