@@ -51,14 +51,14 @@ export function Radar(props: {latestUpdate: Date}) {
     <View style={styles.container}>
       {images.length > 0 && (
         <>
-          <View>
-
+          <View style={{ width: width, height: width}}>
               {images.map((image, i) => (
                   <TouchableHighlight onPress={handleClick} key={i} style={{opacity: i === index ? 1 : 0, position: 'absolute', left: 0, top: 0}}>
                     <Image source={{ uri: images[i].src }} style={{ width: width, height: width}} fadeDuration={0} />
                   </TouchableHighlight>
               ))}
 
+            <View style={{...styles.progress, width: ((index + 1) / images.length) * width}}/>
             <Text style={styles.smallText}>{images[index].date}</Text>
           </View>
         </>
@@ -84,5 +84,14 @@ const styles = StyleSheet.create({
     left: 0,
     fontFamily: 'monospace',
     top: 0,
+  },
+  progress: {
+    position: 'absolute',
+    backgroundColor: "#fff",
+    opacity: 0.7,
+    left: 0,
+    bottom: 0,
+    height: 2,
+    width: width,
   }
 });
