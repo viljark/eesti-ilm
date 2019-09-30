@@ -1,11 +1,69 @@
-import React from 'react';
-import Main from './src/Main';
+import React, { useEffect, useState } from 'react';
+import AppContainer from './AppContainer';
+import * as Location from 'expo-location'
+import { AsyncStorage } from 'react-native';
+import * as Permissions from 'expo-permissions';
+import { LocationContext } from './LocationContext';
+import Background from './src/components/Background';
 
 export default function App() {
 
-  return (
-    <Main/>
-  );
-}
+  const [location, setLocation] = useState<Location.LocationData>(undefined);
+  const [locationName, setLocationName] = useState<string>();
+  async function storeLocation (location: Location.LocationData){
+    try {
+      await AsyncStorage.setItem('location', JSON.stringify(location));
+      console.log('saved location', JSON.stringify(location));
+    } catch (error) {
+      // Error saving data
+    }
+  }
 
+  async function retrieveStoredLocation (): Promise<Location.LocationData> {
+    try {
+      const location = await AsyncStorage.getItem('location');
+      if (location !== null) {
+        console.log('retrieved location', location);
+        return JSON.parse(location);
+      }
+    } catch (error) {
+      // Error saving data
+    }
+    return null;
+  }
+  useEffect(() => {
+    getLocationAsync();
+  }, []);
+
+  async function getLocationAsync() {
+    const storedLocation = await retrieveStoredLocation();
+    if (storedLocation) {
+      setLocation(storedLocation);
+    }
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      // setErrormessage('Permission to access location was denied');
+    }
+    const location = await Location.getCurrentPositionAsync({});
+    const geoLocation = await Location.reverseGeocodeAsync({
+      longitude: location.coords.longitude,
+      latitude: location.coords.latitude,
+    });
+    const locationName = geoLocation && geoLocation.length && (geoLocation[0].city || geoLocation[0].region);
+    setLocationName(locationName);
+    console.log('geoLocation', locationName);
+    const newLocation = location && storedLocation && location.coords.longitude !== storedLocation.coords.longitude && location.coords.latitude !== storedLocation.coords.latitude;
+
+    if ((location && !storedLocation) || newLocation) {
+      setLocation(location);
+      storeLocation(location)
+    }
+  }
+  return <LocationContext.Provider value={{location, locationName}}>
+    <Background location={location}>
+      <AppContainer/>
+    </Background>
+
+  </LocationContext.Provider>;
+}
 
