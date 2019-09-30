@@ -40,6 +40,29 @@ function xmlResponseToJson(response: string): Promise<any> {
   });
 }
 
+
+export async function getLocationByName(name: string): Promise<any> {
+  const response = await axios.get('https://m.ilmateenistus.ee/wp-content/themes/emhi2013/async/locationAutocomplete.php?&mobile=true', {
+    params: {
+      autocomplete: name,
+    }
+  });
+
+  return response;
+}
+
+export async function getDetailedForecast(locationId: number): Promise<DetailedForecastResponse> {
+  const response = await axios.get('https://www.ilmateenistus.ee/wp-content/themes/emhi2013/meteogram.php', {
+    params: {
+      locationId,
+    },
+    responseType: "text",
+  });
+
+  const result = response.data.replace('callback(', '').replace(');', '');
+  return JSON.parse(result);
+}
+
 export interface ObservationsResponse {
   observations: Observations;
 }
@@ -127,4 +150,86 @@ interface Place {
 
 interface DateField {
   date: string;
+}
+
+export interface Attributes {
+  from: Date;
+  to: Date;
+}
+
+export interface Attributes2 {
+  className: string;
+  et: string;
+  en: string;
+  ru: string;
+}
+
+export interface Phenomen {
+  '@attributes': Attributes2;
+}
+
+export interface Attributes3 {
+  value: string;
+}
+
+export interface Precipitation {
+  '@attributes': Attributes3;
+}
+
+export interface Attributes4 {
+  deg: string;
+  name: string;
+  icon: string;
+}
+
+export interface WindDirection {
+  '@attributes': Attributes4;
+}
+
+export interface Attributes5 {
+  mps: string;
+}
+
+export interface WindSpeed {
+  '@attributes': Attributes5;
+}
+
+export interface Attributes6 {
+  unit: string;
+  value: string;
+}
+
+export interface Temperature {
+  '@attributes': Attributes6;
+}
+
+export interface Attributes7 {
+  value: string;
+}
+
+export interface Pressure {
+  '@attributes': Attributes7;
+}
+
+export interface Time {
+  '@attributes': Attributes;
+  phenomen: Phenomen;
+  precipitation: Precipitation;
+  windDirection: WindDirection;
+  windSpeed: WindSpeed;
+  temperature: Temperature;
+  pressure: Pressure;
+}
+
+export interface Tabular {
+  time: Time[];
+}
+
+export interface DetailedForecast {
+  tabular: Tabular;
+}
+
+export interface DetailedForecastResponse {
+  location: string;
+  forecast: DetailedForecast;
 }

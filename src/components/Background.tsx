@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     marginTop: 0,
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'flex-start',
   },
 });
 

@@ -1,32 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { AppStateStatus, ScrollView, StyleSheet, Text, View, AsyncStorage, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { getObservations, Observations, Station } from './services';
-import * as Location from 'expo-location'
-import * as Permissions from 'expo-permissions'
 import { closestObservationField, closestStationWithObservationField, getDistance } from './distance';
 import { ErrorMessage } from './components/ErrorMessage';
 import { getPhenomenonText } from './phenomenonUtil';
 import Background from './components/Background';
 import { PhenomenonIcon } from './components/PhenomenonIcon';
-import { AppState, Dimensions, RefreshControl } from 'react-native';
 import { Radar } from './components/Radar';
 import { Forecast } from './components/Forecast';
 import { Linking } from 'expo';
+import { LocationContext } from '../LocationContext';
 
 function addZeroBefore(n) {
   return (n < 10 ? '0' : '') + n;
 }
 
-export default function Main() {
+export default function Main(props) {
   const [allObservations, setAllObservations] = useState<Observations>(undefined);
   const [observations, setObservations] = useState<Observations>(undefined);
-  const [location, setLocation] = useState<Location.LocationData>(undefined);
   const [errorMessage, setErrormessage] = useState(undefined);
   const [closestStation, setClosestStation] = useState<Station>(undefined);
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
   const [showDataOrigin, setShowDataOrigin] = useState<boolean>(false);
+  const {location, locationName} = useContext(LocationContext);
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
@@ -44,30 +42,7 @@ export default function Main() {
     });
   }
 
-  async function storeLocation (location: Location.LocationData){
-    try {
-      await AsyncStorage.setItem('location', JSON.stringify(location));
-      console.log('saved location', JSON.stringify(location));
-    } catch (error) {
-      // Error saving data
-    }
-  }
-
-  async function retrieveStoredLocation (): Promise<Location.LocationData> {
-    try {
-      const location = await AsyncStorage.getItem('location');
-      if (location !== null) {
-        console.log('retrieved location', location);
-        return JSON.parse(location);
-      }
-    } catch (error) {
-      // Error saving data
-    }
-    return null;
-  }
-
   useEffect(() => {
-    getLocationAsync();
     fetchObservations();
   }, [latestUpdate]);
 
@@ -94,23 +69,6 @@ export default function Main() {
     }
   }, [location, allObservations]);
 
-  async function getLocationAsync() {
-    const storedLocation = await retrieveStoredLocation();
-    if (storedLocation) {
-      setLocation(storedLocation);
-    }
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      setErrormessage('Permission to access location was denied');
-    }
-    const location = await Location.getCurrentPositionAsync({});
-    const newLocation = location && storedLocation && location.coords.longitude !== storedLocation.coords.longitude && location.coords.latitude !== storedLocation.coords.latitude;
-
-    if ((location && !storedLocation) || newLocation) {
-      setLocation(location);
-      storeLocation(location)
-    }
-  }
 
   async function fetchObservations() {
     setIsRefreshing(true);
@@ -125,7 +83,7 @@ export default function Main() {
 
   const phenomenon = observations ? getPhenomenonText(getPhenomenonStation().phenomenon) : '';
   return (
-    <Background location={location}>
+    <View style={{flex: 1}}>
       <Text style={styles.ilmateenistus} onPress={() => {
         Linking.openURL('https://www.ilmateenistus.ee')
       }}>Riigi Ilmateenistus - www.ilmateenistus.ee</Text>
@@ -145,6 +103,7 @@ export default function Main() {
                 setShowDataOrigin(!showDataOrigin);
               }}>
               <View style={styles.container}>
+
                 <PhenomenonIcon phenomenon={closestObservationField(observations.station, 'phenomenon') as string} latitude={location.coords.latitude} longitude={location.coords.longitude}/>
                 <View style={styles.temperatureWrap}>
                   <Text style={styles.temperature}>{closestStation.airtemperature}</Text>
@@ -173,7 +132,7 @@ export default function Main() {
           <Radar latestUpdate={latestUpdate}/>
         </View>
       </ScrollView>
-    </Background>
+    </View>
   );
 }
 
