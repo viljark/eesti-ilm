@@ -1,5 +1,5 @@
 import LatLon from 'geodesy/latlon-spherical.js';
-import { Station } from './services';
+import { Station } from '../services';
 
 export function getDistance(p1: number[], p2: number[]) {
   // @ts-ignore

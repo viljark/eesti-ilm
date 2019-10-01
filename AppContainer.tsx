@@ -1,8 +1,8 @@
 import React from 'react';
-import Main from './src/Main';
+import Main from './src/screens/Main';
 import { createAppContainer } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
-import ForecastScreen from './src/ForecastScreen';
+import ForecastScreen from './src/screens/ForecastScreen';
 
 const AppNavigator = createMaterialTopTabNavigator({
   Main: {
@@ -13,12 +13,12 @@ const AppNavigator = createMaterialTopTabNavigator({
     navigationOptions: ({navigation}) => {
       const params = navigation.state.params;
       return {
-        swipeEnabled: params ? params.swipeEnabled : true,
+        swipeEnabled: false, //params ? params.swipeEnabled : true,
       }
     }
   }
 }, {
-  initialRouteName: 'Forecast', tabBarOptions: {
+  initialRouteName: 'Main', tabBarOptions: {
     style: {
       display: 'none',
     },
