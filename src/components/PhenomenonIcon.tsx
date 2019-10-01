@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { getPosition, getTimes } from 'suncalc';
 import ClearDay from '../icons/ClearDay';
 import ClearNight from '../icons/ClearNight';
@@ -31,10 +31,21 @@ const thunder = ['Thunder'];
 const thunderStorm = ['Thunderstorm'];
 const hail = ['Hail'];
 
-export function PhenomenonIcon(props: {phenomenon: string, latitude?: number, longitude?: number, isDay?: boolean, width?: number, height?: number, style?: StyleProp<ViewStyle>}) {
+interface PhenomenonIconProps {
+  date?: Date;
+  phenomenon: string;
+  latitude?: number;
+  longitude?: number;
+  width?: number;
+  height?: number;
+  style?: StyleProp<ViewStyle>;
+  children?: React.ReactNode;
+}
+
+export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
   const iconProps = {
     width: props.width || 180,
-    height: props.height ||180,
+    height: props.height || 180,
     fill: '#fff',
     style: props.style || {
       opacity: 1,
@@ -43,8 +54,8 @@ export function PhenomenonIcon(props: {phenomenon: string, latitude?: number, lo
     }
   };
 
-  const sunTimes = getTimes(new Date(), props.latitude, props.longitude);
-  const isDay = props.isDay !== undefined ? props.isDay : new Date().getTime() < sunTimes.sunset.getTime();
+  const sunTimes = getTimes(props.date, props.latitude, props.longitude);
+  const isDay = props.date.getTime() < sunTimes.sunset.getTime() && props.date.getTime() > sunTimes.sunrise.getTime();
 
   return (
     <>
@@ -88,3 +99,7 @@ export function PhenomenonIcon(props: {phenomenon: string, latitude?: number, lo
     </>
   );
 }
+
+PhenomenonIcon.defaultProps = {
+  date: new Date(),
+};

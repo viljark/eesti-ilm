@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
-import { getObservations, Observations, Station } from './services';
-import { closestObservationField, closestStationWithObservationField, getDistance } from './distance';
-import { ErrorMessage } from './components/ErrorMessage';
-import { getPhenomenonText } from './phenomenonUtil';
-import Background from './components/Background';
-import { PhenomenonIcon } from './components/PhenomenonIcon';
-import { Radar } from './components/Radar';
-import { Forecast } from './components/Forecast';
+import { getObservations, Observations, Station } from '../services';
+import { closestObservationField, closestStationWithObservationField, getDistance } from '../utils/distance';
+import { ErrorMessage } from '../components/ErrorMessage';
+import { getPhenomenonText } from '../utils/phenomenonUtil';
+import { PhenomenonIcon } from '../components/PhenomenonIcon';
+import { Radar } from '../components/Radar';
+import { Forecast } from '../components/Forecast';
 import { Linking } from 'expo';
-import { LocationContext } from '../LocationContext';
+import { LocationContext } from '../../LocationContext';
+
 
 function addZeroBefore(n) {
   return (n < 10 ? '0' : '') + n;
@@ -114,7 +114,6 @@ export default function Main(props) {
                   <Text style={styles.smallText}>{closestStation.name}, {addZeroBefore(latestUpdate.getHours())}:{addZeroBefore(latestUpdate.getMinutes())}</Text>
                   <Text style={styles.smallText}>
                     vesi {getWaterTempStation().watertemperature}°C {showDataOrigin && <Text style={styles.smallText}>({getWaterTempStation().name})</Text>}
-
                   </Text>
                   <Text style={styles.smallText}>tuul {getWindSpeedStation().windspeed}m/s {showDataOrigin && <Text style={styles.smallText}>({getWindSpeedStation().name})</Text>}</Text>
                 </View>
