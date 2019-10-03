@@ -5,7 +5,7 @@ import { PhenomenonIcon } from './PhenomenonIcon';
 
 const width = Dimensions.get('window').width; //full width
 const monthNames = ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'];
-const dayNames = ['esmaspäev', 'teisipäev', 'kolmapäev', 'neljapäev', 'reede', 'laupäev', 'pühapäev'];
+const dayNames = ['pühapäev', 'esmaspäev', 'teisipäev', 'kolmapäev', 'neljapäev', 'reede', 'laupäev'];
 export function Forecast(props: { latestUpdate: Date }) {
 
   const [forecast, setForecast] = useState<ForecastResponse>();
@@ -22,7 +22,7 @@ export function Forecast(props: { latestUpdate: Date }) {
 
   function formatDate(input: string) {
     const date = new Date(input);
-    return dayNames[date.getDay() - 1];
+    return dayNames[date.getDay()];
   }
 
   const handleClick = () => {
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     width,
     height: 60,
     position: 'absolute',
-    bottom: 95,
+    bottom: 65,
     left: 0,
     display: 'flex',
     alignSelf: 'stretch',

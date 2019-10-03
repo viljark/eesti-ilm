@@ -125,7 +125,7 @@ export default function Main(props) {
         )}
         <View style={{
           ...styles.container,
-          marginTop: -40,
+          marginTop: -10,
           height: width,
         }}>
           <Radar latestUpdate={latestUpdate}/>
@@ -136,7 +136,7 @@ export default function Main(props) {
 }
 
 const width = Dimensions.get('window').width; //full width
-const height = Dimensions.get('window').height; //full height
+const height = Dimensions.get('window').height - 71; //full height
 
 const styles = StyleSheet.create({
   scrollContainer: {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   container: {
-    marginTop: 40,
+    marginTop: 10,
     flex: 1,
     alignItems: 'center',
     alignSelf: 'stretch',

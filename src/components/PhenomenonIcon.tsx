@@ -15,6 +15,8 @@ import Thunder from '../icons/Thunder';
 import ThunderStorm from '../icons/ThunderStorm';
 import Hail from '../icons/Hail';
 import { StyleProp, StyleSheetProperties, ViewStyle } from 'react-native';
+import _ from 'lodash';
+
 
 // mapping https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/
 const clear = ['Clear'];
@@ -40,6 +42,7 @@ interface PhenomenonIconProps {
   height?: number;
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
+  isDay?: boolean;
 }
 
 export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
@@ -55,7 +58,7 @@ export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: Ph
   };
 
   const sunTimes = getTimes(props.date, props.latitude, props.longitude);
-  const isDay = props.date.getTime() < sunTimes.sunset.getTime() && props.date.getTime() > sunTimes.sunrise.getTime();
+  const isDay = _.isBoolean(props.isDay) ? props.isDay : props.date.getTime() < sunTimes.sunset.getTime() && props.date.getTime() > sunTimes.sunrise.getTime();
 
   return (
     <>
