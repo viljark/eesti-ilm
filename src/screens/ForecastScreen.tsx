@@ -8,15 +8,15 @@ import { StackedAreaChart, Grid, AreaChart, LineChart, BarChart } from 'react-na
 import * as shape from 'd3-shape'
 import { Circle, Defs, G, LinearGradient, Path, Stop, Text as SvgText, TSpan } from 'react-native-svg';
 import { PhenomenonIcon } from '../components/PhenomenonIcon';
+import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location'
 
 const width = Dimensions.get('window').width; //full width
-const height = Dimensions.get('window').height; //full height
+const height = Dimensions.get('window').height - 71; //full height
 
 export default function ForecastScreen() {
 
   const [query, setQuery] = useState(undefined);
-  const [selectedItem, setSelectedItem] = useState(undefined);
   const [data, setData] = useState([]);
   const [iconLocation, setIconLocation] = useState<Array<{
     index: number;
@@ -30,22 +30,17 @@ export default function ForecastScreen() {
   const [detailedForecast, setDetailedForecast] = useState<Time[]>(undefined);
 
   async function getData(query) {
-    console.log('q', query);
     if (!query) {
       setData([]);
     }
     const response = await getLocationByName(query);
-    const result = response.data;
-    console.log('zz', result);
     setData(response.data || []);
   }
 
   async function getInitialData(query) {
-    console.log('q', query);
     const response = await getLocationByName(query);
     const result = response.data;
     const locationId = result && result.length && result[0].id;
-    console.log(locationId);
     setLocationId(locationId);
   }
 
@@ -119,12 +114,22 @@ export default function ForecastScreen() {
   const Gradient = (props?: any) => (
     <Defs key={props.index}>
       <LinearGradient id={'gradient'} x1={'0%'} y1={'0%'} x2={'0%'} y2={'100%'}>
-        <Stop offset={'100%'} stopColor={'#1fa2ff'} stopOpacity={0.01}/>
-        <Stop offset={'50%'} stopColor={'#12d8fa'} stopOpacity={0.5}/>
+        <Stop offset={'100%'} stopColor={'#325571'} stopOpacity={0}/>
+        <Stop offset={'50%'} stopColor={'#12d8fa'} stopOpacity={.5}/>
         <Stop offset={'0%'} stopColor={'#a6ffcb'} stopOpacity={1}/>
       </LinearGradient>
     </Defs>
+  );
+  const Line = (props?: any) => (
+    <Path
+      key={'line'}
+      d={props.line}
+      stroke={'#a6ffcb'}
+      fill={'none'}
+    />
   )
+
+  const minTemp = detailedForecast && _.min(detailedForecast.map((f) => Number(f.temperature['@attributes'].value)));
 
   return (
     <ScrollView style={styles.scrollContainer} nestedScrollEnabled={true} refreshControl={
@@ -188,12 +193,15 @@ export default function ForecastScreen() {
             <AreaChart
               style={{ height: 220, width: width * 3, paddingBottom: 20 }}
               data={detailedForecast.map(f => Number(f.temperature['@attributes'].value))}
-              contentInset={{ top: 30 }}
+              contentInset={{ top: 30, bottom: 5}}
               curve={shape.curveNatural}
               svg={{ fill: 'url(#gradient)' }}
+              start={minTemp - 0.5}
+              yMin={minTemp - 2}
             >
               <Decorator/>
               <Gradient/>
+              <Line/>
             </AreaChart>
             <BarChart
               style={{ height: 100, width: width * 3, zIndex: 1, position: 'absolute', left: 0, bottom: 20, }}
@@ -280,6 +288,19 @@ export default function ForecastScreen() {
           </ScrollView>
         )}
       </View>
+      <ExpoLinearGradient
+        style={{
+          display: 'flex',
+          height: height / 2,
+          position: 'absolute',
+          bottom: 0,
+          width,
+        }}
+        colors={['rgba(32,32,47,0)',  '#adacb2', '#325571',]}
+        start={[0, 0]}
+        locations={[1 / 100,  50 / 100, 1]}
+      >
+      </ExpoLinearGradient>
     </ScrollView>
   )
 }
@@ -291,7 +312,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 80,
+    paddingTop: 30,
     height,
   },
   autocompleteContainer: {
@@ -300,7 +321,7 @@ const styles = StyleSheet.create({
     left: 10,
     position: 'absolute',
     right: 10,
-    top: 33,
+    top: 13,
     zIndex: 2,
   }
 });
