@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Text, TouchableOpacity, View, StyleSheet, ScrollView, RefreshControl, Dimensions } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet, RefreshControl, Dimensions } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { getDetailedForecast, getLocationByName, Time } from '../services';
 import _ from 'lodash';
 import { LocationContext } from '../../LocationContext';
-import { StackedAreaChart, Grid, AreaChart, LineChart, BarChart } from 'react-native-svg-charts';
+import { AreaChart, BarChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape'
-import { Circle, Defs, G, LinearGradient, Path, Stop, Text as SvgText, TSpan } from 'react-native-svg';
+import { Defs, G, LinearGradient, Path, Stop, Text as SvgText, TSpan } from 'react-native-svg';
 import { PhenomenonIcon } from '../components/PhenomenonIcon';
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location'
+import { ScrollView } from 'react-native-gesture-handler';
+import { getDayName } from '../utils/formatters';
 
 const width = Dimensions.get('window').width; //full width
 const height = Dimensions.get('window').height - 71; //full height
@@ -188,12 +190,14 @@ export default function ForecastScreen() {
         {detailedForecast && (
           <ScrollView
             horizontal={true}
-            style={{ display: 'flex', flexGrow: 1, zIndex: 1, position: 'absolute', bottom: 0, }}
+            showsHorizontalScrollIndicator={true}
+            shouldActivateOnStart={true}
+            style={{ display: 'flex', flexGrow: 1, zIndex: 10, position: 'absolute', bottom: 0, }}
           >
             <AreaChart
               style={{ height: 220, width: width * 3, paddingBottom: 20 }}
               data={detailedForecast.map(f => Number(f.temperature['@attributes'].value))}
-              contentInset={{ top: 30, bottom: 5}}
+              contentInset={{ top: 30, bottom: 5 }}
               curve={shape.curveNatural}
               svg={{ fill: 'url(#gradient)' }}
               start={minTemp - 0.5}
@@ -234,6 +238,32 @@ export default function ForecastScreen() {
                     date={new Date(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`)}
                     phenomenon={detailedForecast[i].phenomen['@attributes'].en}
                 />}
+                {detailedForecast[i]
+                && !!detailedForecast[i]['@attributes'].from
+                && new Date(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`).getHours() === 0
+                && <>
+                    <Text key={i + 100} style={{
+                      position: 'absolute',
+                      bottom: 210,
+                      height: 20,
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginLeft: -2,
+                      fontSize: 10,
+                      textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                      textShadowOffset: { width: 0, height: 1 },
+                      textShadowRadius: 5,
+                    }}>
+                      {getDayName(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`)}
+                    </Text>
+                    <View style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      width: 0.5,
+                      height: 210,
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    }}/>
+                </>
+                }
                 {detailedForecast[i] && !!detailedForecast[i]['@attributes'].from && i % 2 === 0 &&
                 <Text key={i + 100} style={{
                   position: 'absolute',
@@ -296,9 +326,9 @@ export default function ForecastScreen() {
           bottom: 0,
           width,
         }}
-        colors={['rgba(32,32,47,0)',  '#adacb2', '#325571',]}
+        colors={['rgba(32,32,47,0)', '#adacb2', '#325571',]}
         start={[0, 0]}
-        locations={[1 / 100,  50 / 100, 1]}
+        locations={[1 / 100, 50 / 100, 1]}
       >
       </ExpoLinearGradient>
     </ScrollView>
