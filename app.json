@@ -3,7 +3,7 @@
     "name": "Eesti ilm",
     "slug": "eesti-ilm",
     "privacy": "public",
-    "sdkVersion": "33.0.0",
+    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android",
