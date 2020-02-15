@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ForecastResponse, getForecast } from '../services';
 import { PhenomenonIcon } from './PhenomenonIcon';
+import { getDayName } from '../utils/formatters';
 
 const width = Dimensions.get('window').width; //full width
 const monthNames = ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'];
-const dayNames = ['pühapäev', 'esmaspäev', 'teisipäev', 'kolmapäev', 'neljapäev', 'reede', 'laupäev'];
 export function Forecast(props: { latestUpdate: Date }) {
 
   const [forecast, setForecast] = useState<ForecastResponse>();
@@ -20,11 +20,6 @@ export function Forecast(props: { latestUpdate: Date }) {
     setForecast(response);
   }
 
-  function formatDate(input: string) {
-    const date = new Date(input);
-    return dayNames[date.getDay()];
-  }
-
   const handleClick = () => {
     setActiveForecast(activeForecast === 'day' ? 'night' : 'day');
   };
@@ -36,7 +31,7 @@ export function Forecast(props: { latestUpdate: Date }) {
     }}>
         {forecast && forecast.forecasts.forecast.map((f) => (
           <View key={f.$.date} style={styles.forecast}>
-            <Text style={styles.smallText}>{formatDate(f.$.date)}</Text>
+            <Text style={styles.smallText}>{getDayName(f.$.date)}</Text>
             <PhenomenonIcon phenomenon={f[activeForecast].phenomenon} isDay={activeForecast === 'day'} width={30} height={30} style={{
               marginTop: 0,
               marginBottom: 0,

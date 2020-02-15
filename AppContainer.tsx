@@ -5,7 +5,6 @@ import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import ForecastScreen from './src/screens/ForecastScreen';
 import { Dimensions } from 'react-native';
 
-
 const height = Dimensions.get('window').height; //full height
 const width = Dimensions.get('window').width; //full width
 
@@ -24,7 +23,7 @@ const AppNavigator = createMaterialTopTabNavigator({
     navigationOptions: ({navigation}) => {
       const params = navigation.state.params;
       return {
-        swipeEnabled: false, //params ? params.swipeEnabled : true,
+        swipeEnabled: params ? params.swipeEnabled : true,
         title: '48 tunni ennustus',
       }
     }
@@ -41,7 +40,6 @@ const AppNavigator = createMaterialTopTabNavigator({
       paddingTop: 23,
       width,
       backgroundColor: 'transparent',
-
     },
   },
 
