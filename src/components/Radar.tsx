@@ -77,21 +77,21 @@ const styles = StyleSheet.create({
   },
   smallText: {
     color: '#fff',
-    opacity: 0.7,
+    opacity: 1,
     fontSize: 10,
     textTransform: 'uppercase',
     position: 'absolute',
     left: 0,
     fontFamily: 'monospace',
-    top: 0,
+    top: 4,
   },
   progress: {
     position: 'absolute',
     backgroundColor: "#fff",
-    opacity: 0.7,
+    opacity: 0.6,
     left: 0,
-    bottom: 0,
-    height: 2,
+    top: 0,
+    height: 4,
     width: width,
   }
 });

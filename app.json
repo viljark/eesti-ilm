@@ -14,7 +14,7 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -26,7 +26,7 @@
     "ios": {
       "supportsTablet": true
     },
-    "description": "An Expo/React Native app for Estonian weather\n\nCreated using www.ilmateenistus.ee\n\nAPI details: https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/\n\nIcons made by Freepik from www.flaticon.com is licensed by CC 3.0 BY",
+    "description": "An Expo/React Native app for Estonian weather Created using www.ilmateenistus.ee API details: https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/ Icons made by Freepik from www.flaticon.com is licensed by CC 3.0 BY",
     "githubUrl": "https://github.com/viljark/eesti-ilm"
   }
 }
