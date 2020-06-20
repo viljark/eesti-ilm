@@ -80,6 +80,10 @@ export default function Main(props) {
   const getWaterTempStation = () => closestStationWithObservationField(observations.station, 'watertemperature');
   const getPhenomenonStation = () => closestStationWithObservationField(observations.station, 'phenomenon');
   const getWindSpeedStation = () => closestStationWithObservationField(observations.station, 'windspeed');
+  const getWindSpeedMax = () => closestStationWithObservationField(observations.station, 'windspeedmax');
+  const getHumidity = () => closestStationWithObservationField(observations.station, 'relativehumidity');
+  const getPrecipitations = () => closestStationWithObservationField(observations.station, 'precipitations');
+  const getUVIndex  = () => closestStationWithObservationField(observations.station, 'uvindex');
 
   const phenomenon = observations ? getPhenomenonText(getPhenomenonStation().phenomenon) : '';
   return (
@@ -115,7 +119,10 @@ export default function Main(props) {
                   <Text style={styles.smallText}>
                     vesi {getWaterTempStation().watertemperature}°C {showDataOrigin && <Text style={styles.smallText}>({getWaterTempStation().name})</Text>}
                   </Text>
-                  <Text style={styles.smallText}>tuul {getWindSpeedStation().windspeed}m/s {showDataOrigin && <Text style={styles.smallText}>({getWindSpeedStation().name})</Text>}</Text>
+                  <Text style={styles.smallText}>tuul {getWindSpeedStation().windspeed} - {getWindSpeedMax().windspeedmax}m/s {showDataOrigin && <Text style={styles.smallText}>({getWindSpeedStation().name})</Text>}</Text>
+                  <Text style={styles.smallerText}>õhuniiskus {getHumidity().relativehumidity}% {showDataOrigin && <Text style={styles.smallerText}>({getHumidity().name})</Text>}</Text>
+                  <Text style={styles.smallerText}>sademeid tunnis {getPrecipitations().precipitations}mm {showDataOrigin && <Text style={styles.smallerText}>({getPrecipitations().name})</Text>}</Text>
+                  <Text style={styles.smallerText}>UV {getUVIndex().precipitations} {showDataOrigin && <Text style={styles.smallerText}>({getUVIndex().name})</Text>}</Text>
                 </View>
               </View>
               </TouchableWithoutFeedback>
@@ -178,6 +185,13 @@ const styles = StyleSheet.create({
   smallText: {
     color: '#fff',
     fontSize: 12,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+  },
+  smallerText: {
+    color: '#fff',
+    fontSize: 8,
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
