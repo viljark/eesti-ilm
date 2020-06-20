@@ -285,7 +285,7 @@ export default function ForecastScreen() {
                 <View key={i} style={{
                   position: 'absolute',
                   top: icon.locationY - 25,
-                  width: 30,
+                  width: 60,
                   height: 20,
                   left: icon.locationX,
                   display: 'flex',

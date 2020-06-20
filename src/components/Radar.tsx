@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight, Slider } from 'react-native';
 import HTMLParser from 'fast-html-parser';
 
 
@@ -37,30 +37,30 @@ export function Radar(props: {latestUpdate: Date}) {
     setIndex(index => index + amount)
   };
 
-
-  const handleClick = (e) => {
-    const midScreen = width / 2;
-    if (e.nativeEvent.locationX > midScreen) {
-      changeFrame(1);
-    } else {
-      changeFrame(-1);
-    }
+  const handleSliderMove = (e)  => {
+    setIndex(e);
   };
 
+  const date = images && images.length && images[index].date.split(' ')[3].split(':').slice(0, 2).join(':')
   return (
+
     <View style={styles.container}>
       {images.length > 0 && (
         <>
-          <View style={{ width: width, height: width}}>
+          <View style={{ width: width, height: width}} >
               {images.map((image, i) => (
-                  <TouchableHighlight onPress={handleClick} key={i} style={{opacity: i === index ? 1 : 0, position: 'absolute', left: 0, top: 0}}>
+                  <TouchableHighlight  key={i} style={{opacity: i === index ? 1 : 0, position: 'absolute', left: 0, top: 0}}>
                     <Image source={{ uri: images[i].src }} style={{ width: width, height: width}} fadeDuration={0} />
                   </TouchableHighlight>
               ))}
 
-            <View style={{...styles.progress, width: ((index + 1) / images.length) * width}}/>
-            <Text style={styles.smallText}>{images[index].date}</Text>
+            <Slider value={index} maximumValue={images.length - 1} step={1} minimumTrackTintColor={'#fff'} maximumTrackTintColor={'#fff'} thumbTintColor={'#fff'} style={styles.progress} onValueChange={handleSliderMove}/>
+
+            <Text style={styles.smallText}>{date}</Text>
+
           </View>
+          <Slider value={index} maximumValue={images.length - 1} step={1} minimumTrackTintColor={'#fff'} maximumTrackTintColor={'#fff'} thumbTintColor={'#fff'} style={styles.slider} onValueChange={handleSliderMove}/>
+          {/*<Image style={styles.guide} source={{ uri:'http://www.ilmateenistus.ee/wp-content/themes/emhi2013/images/radar_legend.png' }} />*/}
         </>
       )}
 
@@ -78,20 +78,34 @@ const styles = StyleSheet.create({
   smallText: {
     color: '#fff',
     opacity: 1,
-    fontSize: 10,
+    fontSize: 22,
     textTransform: 'uppercase',
     position: 'absolute',
-    left: 0,
+    left: 14,
     fontFamily: 'monospace',
-    top: 4,
+    top: 20,
   },
   progress: {
     position: 'absolute',
-    backgroundColor: "#fff",
-    opacity: 0.6,
+    opacity: 1,
     left: 0,
-    top: 0,
-    height: 4,
+    top: 10,
+    height: 15,
     width: width,
+  },
+  guide: {
+    position: 'absolute',
+    width: width,
+    height: 40,
+    zIndex: 2,
+    bottom: 0
+  },
+  slider: {
+    position: 'absolute',
+    width: width,
+    height: width,
+    zIndex: 2,
+    top: 0,
+    opacity: 0,
   }
 });
