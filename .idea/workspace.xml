@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="">
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Radar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Radar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Main.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -24,7 +24,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="prettierjs.PrettierConfiguration.Package" value="C:\Users\Viljar\AppData\Roaming\npm\node_modules\prettier" />
-    <property name="ts.external.directory.path" value="C:\workspace\eesti-ilm\node_modules\typescript\lib" />
+    <property name="ts.external.directory.path" value="C:\Users\Viljar\workspace\eesti-ilm\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -46,6 +46,13 @@
       <workItem from="1560082570115" duration="53750000" />
       <workItem from="1561576136683" duration="3845000" />
     </task>
+    <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
+      <created>1592687622308</created>
+      <option name="number" value="LOCAL−00001" />
+      <option name="presentableId" value="LOCAL−00001" />
+      <updated>1592687622308</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -73,7 +80,15 @@
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="improve radar UX, add more info about current weather, fix high resolution forecast temperatures" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve radar UX, add more info about current weather, fix high resolution forecast temperatures" />
+  </component>
   <component name="WindowStateProjectService">
+    <state x="583" y="33" key="CommitChangelistDialog2" timestamp="1592687645891">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="583" y="33" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592687645891" />
     <state x="785" y="146" key="RollbackChangesDialog" timestamp="1592681589417">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -82,14 +97,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592682580528" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1592687624070">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592687624070" />
     <state x="747" y="209" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1592681812216">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="747" y="209" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592681812216" />
-    <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1592687562054">
+    <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1592687641025">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592687562054" />
+    <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592687641025" />
     <state x="646" y="256" width="627" height="528" key="find.popup" timestamp="1592682528679">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

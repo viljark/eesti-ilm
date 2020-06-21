@@ -122,7 +122,7 @@ export default function Main(props) {
                   <Text style={styles.smallText}>tuul {getWindSpeedStation().windspeed} - {getWindSpeedMax().windspeedmax}m/s {showDataOrigin && <Text style={styles.smallText}>({getWindSpeedStation().name})</Text>}</Text>
                   <Text style={styles.smallerText}>õhuniiskus {getHumidity().relativehumidity}% {showDataOrigin && <Text style={styles.smallerText}>({getHumidity().name})</Text>}</Text>
                   <Text style={styles.smallerText}>sademeid tunnis {getPrecipitations().precipitations}mm {showDataOrigin && <Text style={styles.smallerText}>({getPrecipitations().name})</Text>}</Text>
-                  <Text style={styles.smallerText}>UV {getUVIndex().precipitations} {showDataOrigin && <Text style={styles.smallerText}>({getUVIndex().name})</Text>}</Text>
+                  <Text style={styles.smallerText}>UV {getUVIndex().uvindex} {showDataOrigin && <Text style={styles.smallerText}>({getUVIndex().name})</Text>}</Text>
                 </View>
               </View>
               </TouchableWithoutFeedback>
