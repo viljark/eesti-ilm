@@ -318,19 +318,6 @@ export default function ForecastScreen() {
           </ScrollView>
         )}
       </View>
-      <ExpoLinearGradient
-        style={{
-          display: 'flex',
-          height: height / 2,
-          position: 'absolute',
-          bottom: 0,
-          width,
-        }}
-        colors={['rgba(32,32,47,0)', '#adacb2', '#325571',]}
-        start={[0, 0]}
-        locations={[1 / 100, 50 / 100, 1]}
-      >
-      </ExpoLinearGradient>
     </ScrollView>
   )
 }
