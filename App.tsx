@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import AppContainer from './AppContainer';
 import * as Location from 'expo-location'
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Dimensions } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { LocationContext } from './LocationContext';
 import Background from './src/components/Background';
+import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
+import { ScrollView } from "react-native-gesture-handler";
+
+const width = Dimensions.get('window').width; //full width
+const height = Dimensions.get('window').height - 71; //full height
 
 export default function App() {
 
@@ -61,6 +66,19 @@ export default function App() {
   }
   return <LocationContext.Provider value={{location, locationName}}>
     <Background location={location}>
+      <ExpoLinearGradient
+        style={{
+          display: 'flex',
+          height: height,
+          position: 'absolute',
+          bottom: 0,
+          width,
+        }}
+        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.25)', 'rgba(0,0,0,0.5)',]}
+        start={[0, 0]}
+        locations={[1 / 100, 50 / 100, 1]}
+      >
+      </ExpoLinearGradient>
       <AppContainer/>
     </Background>
 

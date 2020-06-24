@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet } from 'react-native';
 import { getTimes } from 'suncalc';
 import * as Location from 'expo-location';
+import { StatusBar } from 'expo-status-bar';
 
 const Background = (props: { children: React.ReactNode, location: Location.LocationData}) => {
   let gradient;
-
+  const [index, setIndex] = useState(0);
   useEffect(() => {
     gradient = gradientsDay[Math.floor(Math.random() * gradientsDay.length)];
   }, []);
@@ -36,6 +37,7 @@ const Background = (props: { children: React.ReactNode, location: Location.Locat
       gradient = gradientsNight[nightIndex];
     }
   }
+  gradient = gradient = [...gradientsDay][index];
 
   return gradient ? (<LinearGradient
     style={styles.container}
@@ -44,6 +46,7 @@ const Background = (props: { children: React.ReactNode, location: Location.Locat
     locations={gradient.location}
   >
     {props.children}
+    <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'} />
   </LinearGradient>) : null;
 
 };
