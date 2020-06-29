@@ -1,43 +1,50 @@
 import React, { useEffect, useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet } from 'react-native';
+import { LinearGradient as ExpoLinearGradient, LinearGradient } from 'expo-linear-gradient';
+import { Dimensions, StyleSheet } from 'react-native';
 import { getTimes } from 'suncalc';
 import * as Location from 'expo-location';
 import { StatusBar } from 'expo-status-bar';
 
-const Background = (props: { children: React.ReactNode, location: Location.LocationData}) => {
-  const [gradient, setGradient] = useState<{color: string[], location: number[]}>();
+
+const width = Dimensions.get('window').width; //full width
+const height = Dimensions.get('window').height - 71; //full height
+
+const Background = (props: { children: React.ReactNode, location: Location.LocationData }) => {
+  const [gradient, setGradient] = useState<{ color: string[], location: number[] }>();
+  const [isNight, setIsNight] = useState(false);
   useEffect(() => {
     setGradient(gradientsDay[Math.floor(Math.random() * gradientsDay.length)]);
   }, []);
 
   let sunLight;
 
-useEffect(() => {
-  if (props.location) {
-    sunLight = getTimes(new Date(), props.location.coords.latitude, props.location.coords.longitude);
+  useEffect(() => {
+    if (props.location) {
+      sunLight = getTimes(new Date(), props.location.coords.latitude, props.location.coords.longitude);
 
-    const now = new Date().getHours() + (new Date().getMinutes() / 60);
+      const now = new Date().getHours() + (new Date().getMinutes() / 60);
 
-    const sunrise = new Date(sunLight.sunrise).getHours() + (new Date(sunLight.sunrise).getMinutes() / 60);
-    const sunset = new Date(sunLight.sunset).getHours() + (new Date(sunLight.sunset).getMinutes() / 60);
+      const sunrise = new Date(sunLight.sunrise).getHours() + (new Date(sunLight.sunrise).getMinutes() / 60);
+      const sunset = new Date(sunLight.sunset).getHours() + (new Date(sunLight.sunset).getMinutes() / 60);
 
-    if (now >= sunrise && now < sunset) {
-      const dayStep = (sunset - sunrise) / gradientsDay.length;
-      const dayIndex = Math.floor((now - sunrise) / dayStep);
-      setGradient(gradientsDay[dayIndex]);
-    } else {
-      let nightIndex;
-      const nightStep = (24 - (sunset - sunrise)) / gradientsNight.length;
-      if (now < sunset) { // new day, so lets add 24 to calculate hours passed
-        nightIndex = Math.floor((now + 24 - sunset) / nightStep);
+      if (now >= sunrise && now < sunset) {
+        const dayStep = (sunset - sunrise) / gradientsDay.length;
+        const dayIndex = Math.floor((now - sunrise) / dayStep)
+        setIsNight(false);
+        setGradient(gradientsDay[dayIndex]);
       } else {
-        nightIndex = Math.floor((now - sunset) / nightStep);
+        let nightIndex;
+        const nightStep = (24 - (sunset - sunrise)) / gradientsNight.length;
+        if (now < sunset) { // new day, so lets add 24 to calculate hours passed
+          nightIndex = Math.floor((now + 24 - sunset) / nightStep);
+        } else {
+          nightIndex = Math.floor((now - sunset) / nightStep);
+        }
+        setIsNight(true);
+        setGradient(gradientsNight[nightIndex]);
       }
-      setGradient(gradientsNight[nightIndex]);
     }
-  }
-}, [props.location]);
+  }, [props.location]);
 
   return gradient ? (<LinearGradient
     style={styles.container}
@@ -45,8 +52,22 @@ useEffect(() => {
     start={[0.5, 0]}
     locations={gradient.location}
   >
+    {!isNight && <ExpoLinearGradient
+        style={{
+          display: 'flex',
+          height: height,
+          position: 'absolute',
+          bottom: 0,
+          width,
+        }}
+        colors={['rgba(0,0,0,0)', 'rgba(3,42,78,0.2)', 'rgba(0,0,0,0.35)',]}
+        start={[0, 0]}
+        locations={[1 / 100, 50 / 100, 1]}
+    >
+    </ExpoLinearGradient>}
     {props.children}
-    <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'} />
+    <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'}/>
+
   </LinearGradient>) : null;
 
 };
