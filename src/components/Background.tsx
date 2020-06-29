@@ -6,14 +6,14 @@ import * as Location from 'expo-location';
 import { StatusBar } from 'expo-status-bar';
 
 const Background = (props: { children: React.ReactNode, location: Location.LocationData}) => {
-  let gradient;
-  const [index, setIndex] = useState(0);
+  const [gradient, setGradient] = useState<{color: string[], location: number[]}>();
   useEffect(() => {
-    gradient = gradientsDay[Math.floor(Math.random() * gradientsDay.length)];
+    setGradient(gradientsDay[Math.floor(Math.random() * gradientsDay.length)]);
   }, []);
 
   let sunLight;
 
+useEffect(() => {
   if (props.location) {
     sunLight = getTimes(new Date(), props.location.coords.latitude, props.location.coords.longitude);
 
@@ -25,7 +25,7 @@ const Background = (props: { children: React.ReactNode, location: Location.Locat
     if (now >= sunrise && now < sunset) {
       const dayStep = (sunset - sunrise) / gradientsDay.length;
       const dayIndex = Math.floor((now - sunrise) / dayStep);
-      gradient = gradientsDay[dayIndex];
+      setGradient(gradientsDay[dayIndex]);
     } else {
       let nightIndex;
       const nightStep = (24 - (sunset - sunrise)) / gradientsNight.length;
@@ -34,10 +34,10 @@ const Background = (props: { children: React.ReactNode, location: Location.Locat
       } else {
         nightIndex = Math.floor((now - sunset) / nightStep);
       }
-      gradient = gradientsNight[nightIndex];
+      setGradient(gradientsNight[nightIndex]);
     }
   }
-  gradient = gradient = [...gradientsDay][index];
+}, [props.location]);
 
   return gradient ? (<LinearGradient
     style={styles.container}

@@ -74,7 +74,7 @@ export default function App() {
           bottom: 0,
           width,
         }}
-        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.25)', 'rgba(0,0,0,0.5)',]}
+        colors={['rgba(0,0,0,0)', 'rgba(3,42,78,0.25)', 'rgba(3,42,78,0.5)',]}
         start={[0, 0]}
         locations={[1 / 100, 50 / 100, 1]}
       >
