@@ -14,7 +14,7 @@ import Fog from '../icons/Fog';
 import Thunder from '../icons/Thunder';
 import ThunderStorm from '../icons/ThunderStorm';
 import Hail from '../icons/Hail';
-import { StyleProp, StyleSheetProperties, ViewStyle } from 'react-native';
+import { Dimensions, StyleProp, StyleSheetProperties, ViewStyle } from 'react-native';
 import _ from 'lodash';
 
 
@@ -45,10 +45,13 @@ interface PhenomenonIconProps {
   isDay?: boolean;
 }
 
+const height = Dimensions.get('window').height - 71; //full height
+
 export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
+  const size = Math.max(110, Math.min(height * 0.3, 180));
   const iconProps = {
-    width: props.width || 180,
-    height: props.height || 180,
+    width: props.width || size,
+    height: props.height || size,
     fill: '#fff',
     style: props.style || {
       opacity: 1,
@@ -56,7 +59,6 @@ export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: Ph
       marginBottom: 20,
     }
   };
-
   const sunTimes = getTimes(props.date, props.latitude, props.longitude);
   const isDay = _.isBoolean(props.isDay) ? props.isDay : props.date.getTime() < sunTimes.sunset.getTime() && props.date.getTime() > sunTimes.sunrise.getTime();
 

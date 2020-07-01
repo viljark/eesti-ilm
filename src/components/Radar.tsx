@@ -4,7 +4,7 @@ import HTMLParser from 'fast-html-parser';
 
 
 const width = Dimensions.get('window').width; //full width
-export function Radar(props: {latestUpdate: Date}) {
+export function Radar(props: { latestUpdate: Date }) {
   const [images, setImages] = useState([]);
   const [index, setIndex] = useState(0);
 
@@ -37,29 +37,31 @@ export function Radar(props: {latestUpdate: Date}) {
     setIndex(index => index + amount)
   };
 
-  const handleSliderMove = (e)  => {
+  const handleSliderMove = (e) => {
     setIndex(e);
   };
 
-  const date = images && images.length && images[index].date.split(' ')[3].split(':').slice(0, 2).join(':')
+  const date = images?.[index]?.date?.split(' ').reverse()[1]?.split(':').slice(0, 2).join(':');
   return (
 
     <View style={styles.container}>
       {images.length > 0 && (
         <>
-          <View style={{ width: width, height: width}} >
-              {images.map((image, i) => (
-                  <TouchableHighlight  key={i} style={{opacity: i === index ? 1 : 0, position: 'absolute', left: 0, top: 0}}>
-                    <Image source={{ uri: images[i].src }} style={{ width: width, height: width}} fadeDuration={0} />
-                  </TouchableHighlight>
-              ))}
+          <View style={{ width: width, height: width }}>
+            {images.map((image, i) => (
+              <TouchableHighlight key={i} style={{ opacity: i === index ? 1 : 0, position: 'absolute', left: 0, top: 0 }}>
+                <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={0}/>
+              </TouchableHighlight>
+            ))}
 
-            <Slider value={index} maximumValue={images.length - 1} step={1} minimumTrackTintColor={'#fff'} maximumTrackTintColor={'#fff'} thumbTintColor={'#fff'} style={styles.progress} onValueChange={handleSliderMove}/>
+            <Slider value={index} maximumValue={images.length - 1} step={1} minimumTrackTintColor={'#fff'} maximumTrackTintColor={'#fff'} thumbTintColor={'#fff'} style={styles.progress}
+                    onValueChange={handleSliderMove}/>
 
             <Text style={styles.smallText}>{date}</Text>
 
           </View>
-          <Slider value={index} maximumValue={images.length - 1} step={1} minimumTrackTintColor={'#fff'} maximumTrackTintColor={'#fff'} thumbTintColor={'#fff'} style={styles.slider} onValueChange={handleSliderMove}/>
+          <Slider value={index} maximumValue={images.length - 1} step={1} minimumTrackTintColor={'#fff'} maximumTrackTintColor={'#fff'} thumbTintColor={'#fff'} style={styles.slider}
+                  onValueChange={handleSliderMove}/>
           {/*<Image style={styles.guide} source={{ uri:'http://www.ilmateenistus.ee/wp-content/themes/emhi2013/images/radar_legend.png' }} />*/}
         </>
       )}
