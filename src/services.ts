@@ -22,7 +22,6 @@ export async function getForecast(): Promise<ForecastResponse> {
     url: 'https://www.ilmateenistus.ee/ilma_andmed/xml/forecast.php',
     responseType: 'arraybuffer'
   });
-
   return xmlResponseToJson(iconv.decode(new Buffer(response.data), RESPONSE_CHARSET));
 }
 
@@ -51,10 +50,10 @@ export async function getLocationByName(name: string): Promise<any> {
   return response;
 }
 
-export async function getDetailedForecast(locationId: number): Promise<DetailedForecastResponse> {
+export async function getDetailedForecast(coordinates: string): Promise<DetailedForecastResponse> {
   const response = await axios.get('https://www.ilmateenistus.ee/wp-content/themes/emhi2013/meteogram.php', {
     params: {
-      locationId,
+      coordinates,
     },
     responseType: "text",
   });

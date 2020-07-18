@@ -25,7 +25,7 @@ export default function ForecastScreen() {
     locationX: number;
     locationY: number;
   }>>([]);
-  const [locationId, setLocationId] = useState(0);
+  const [coordinates, setCoordinates] = useState('');
   const { location, locationName } = useContext<{ location: Location.LocationData, locationName: string }>(LocationContext);
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
@@ -36,19 +36,19 @@ export default function ForecastScreen() {
       setData([]);
     }
     const response = await getLocationByName(query);
-    setData(response.data || []);
+    setData(response.data?.data || []);
   }
 
   async function getInitialData(query) {
     const response = await getLocationByName(query);
-    const result = response.data;
-    const locationId = result && result.length && result[0].id;
-    setLocationId(locationId);
+    const result = response.data?.data;
+    const coords = result && result.length && result[0].koordinaat;
+    setCoordinates(coords);
   }
 
-  async function getForecast(locationId) {
+  async function getForecast(coordinates) {
     setIsRefreshing(true);
-    const response = await getDetailedForecast(locationId);
+    const response = await getDetailedForecast(coordinates);
     setDetailedForecast(response.forecast.tabular.time);
     setIsRefreshing(false);
   }
@@ -60,11 +60,11 @@ export default function ForecastScreen() {
   }, []);
 
   useEffect(() => {
-    if (!locationId) {
+    if (!coordinates) {
       return;
     }
-    getForecast(locationId);
-  }, [locationId]);
+    getForecast(coordinates);
+  }, [coordinates]);
 
 
   useEffect(() => {
@@ -179,10 +179,10 @@ export default function ForecastScreen() {
             }}
             renderItem={({ item, index }) => (
               <TouchableOpacity onPress={() => {
-                setQuery(item.label);
-                setLocationId(item.id);
+                setQuery([item.nimi, item.vald, item.maakond].join(', '));
+                setCoordinates(item.koordinaat);
               }} key={index} style={{ paddingVertical: 10, paddingHorizontal: 5, borderTopColor: '#f1f1f1', borderTopWidth: 1, }}>
-                <Text>{item.label}</Text>
+                <Text>{[item.nimi, item.vald, item.maakond].join(', ')}</Text>
               </TouchableOpacity>
             )}
           />
@@ -195,7 +195,7 @@ export default function ForecastScreen() {
             style={{ display: 'flex', flexGrow: 1, zIndex: 10, position: 'absolute', bottom: 0, }}
           >
             <AreaChart
-              style={{ height: 220, width: width * 3, paddingBottom: 20 }}
+              style={{ height: 220, width: width * 4.5, paddingBottom: 20 }}
               data={detailedForecast.map(f => Number(f.temperature['@attributes'].value))}
               contentInset={{ top: 30, bottom: 5 }}
               curve={shape.curveNatural}
@@ -208,7 +208,7 @@ export default function ForecastScreen() {
               <Line/>
             </AreaChart>
             <BarChart
-              style={{ height: 100, width: width * 3, zIndex: 1, position: 'absolute', left: 0, bottom: 20, }}
+              style={{ height: 100, width: width * 4.5, zIndex: 1, position: 'absolute', left: 0, bottom: 20, }}
               data={detailedForecast.map(f => Number(f.precipitation['@attributes'].value))}
               contentInset={{ top: 5 }}
               yMax={7.6} // heavy rain
@@ -248,7 +248,7 @@ export default function ForecastScreen() {
                       height: 20,
                       color: 'rgba(255, 255, 255, 0.8)',
                       marginLeft: -2,
-                      fontSize: 10,
+                      fontSize: 12,
                       textShadowColor: 'rgba(0, 0, 0, 0.3)',
                       textShadowOffset: { width: 0, height: 1 },
                       textShadowRadius: 5,
@@ -260,7 +260,7 @@ export default function ForecastScreen() {
                       bottom: 0,
                       width: 0.5,
                       height: 210,
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.5)',
                     }}/>
                 </>
                 }
@@ -285,8 +285,6 @@ export default function ForecastScreen() {
                 <View key={i} style={{
                   position: 'absolute',
                   top: icon.locationY - 25,
-                  width: 60,
-                  height: 20,
                   left: icon.locationX,
                   display: 'flex',
                   flexDirection: 'row',
@@ -300,7 +298,7 @@ export default function ForecastScreen() {
                       textShadowRadius: 5,
 
                     }}>
-                      {detailedForecast[i].temperature['@attributes'].value}
+                      {Number(detailedForecast[i].temperature['@attributes'].value).toFixed(0)}
                     </Text>
                     <Text style={{
                       color: '#fff',

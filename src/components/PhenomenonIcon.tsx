@@ -21,7 +21,7 @@ import _ from 'lodash';
 // mapping https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/
 const clear = ['Clear'];
 const fewClouds = ['Few clouds', 'Variable clouds'];
-const overcast = ['Cloudy with clear spells', 'Overcast'];
+const overcast = ['Cloudy with clear spells', 'Overcast', 'Cloudy'];
 
 const snow = ['Light snow shower', 'Moderate snow shower', 'Heavy snow shower', 'Light snowfall', 'Moderate snowfall', 'Heavy snowfall', 'Blowing snow', 'Drifting snow'];
 const lightRain = ['Light shower', 'Light rain'];
@@ -48,7 +48,7 @@ interface PhenomenonIconProps {
 const height = Dimensions.get('window').height - 71; //full height
 
 export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
-  const size = Math.max(110, Math.min(height * 0.3, 180));
+  const size = Math.max(110, Math.min(height * 0.3, 150));
   const iconProps = {
     width: props.width || size,
     height: props.height || size,
