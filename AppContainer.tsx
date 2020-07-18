@@ -24,7 +24,7 @@ const AppNavigator = createMaterialTopTabNavigator({
       const params = navigation.state.params;
       return {
         swipeEnabled: params ? params.swipeEnabled : true,
-        title: '48 tunni ennustus',
+        title: '72 tunni ennustus',
       }
     }
   }

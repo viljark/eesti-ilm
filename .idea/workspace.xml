@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="fix naive">
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/AppContainer.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/PhenomenonIcon.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PhenomenonIcon.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Radar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Radar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +29,10 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="editor.config.ad.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../kuldviljar" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="C:\Users\Viljar\AppData\Roaming\npm\node_modules\prettier" />
     <property name="ts.external.directory.path" value="C:\Users\Viljar\workspace\eesti-ilm\node_modules\typescript\lib" />
   </component>
@@ -39,6 +42,23 @@
       <recent name="C:\Users\Viljar\workspace\eesti-ilm" />
       <recent name="C:\Users\Viljar\workspace\eesti-ilm\src" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -52,7 +72,8 @@
       <updated>1560082567739</updated>
       <workItem from="1560082570115" duration="53750000" />
       <workItem from="1561576136683" duration="3845000" />
-      <workItem from="1593456841304" duration="7780000" />
+      <workItem from="1593456841304" duration="12634000" />
+      <workItem from="1595064419830" duration="2026000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -84,7 +105,13 @@
       <option name="presentableId" value="LOCAL−00005" />
       <updated>1593458672990</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL−00006" summary="fix naive radar time, make weather icon dynamic for smaller screens">
+      <created>1593642485255</created>
+      <option name="number" value="LOCAL−00006" />
+      <option name="presentableId" value="LOCAL−00006" />
+      <updated>1593642485255</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView">
@@ -118,32 +145,53 @@
     <MESSAGE value="change status bar color during nighttime, improve text contrast against background" />
     <MESSAGE value="fix static background" />
     <MESSAGE value="improve background darkening logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve background darkening logic" />
+    <MESSAGE value="fix naive radar time, make weather icon dynamic for smaller screens" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix naive radar time, make weather icon dynamic for smaller screens" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="583" y="33" key="CommitChangelistDialog2" timestamp="1593642448612">
+    <state x="583" y="33" key="CommitChangelistDialog2" timestamp="1593642484452">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="583" y="33" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592735847031" />
-    <state x="583" y="33" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1593642448612" />
+    <state x="583" y="33" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1593642484452" />
     <state x="184" y="86" key="DiffContextDialog" timestamp="1593021458707">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="184" y="86" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1593021458707" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1593809790138">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1593809790138" />
+    <state width="1899" height="302" key="GridCell.Tab.0.bottom" timestamp="1595064846745">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="302" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595064846745" />
+    <state width="1899" height="302" key="GridCell.Tab.0.center" timestamp="1595064846745">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="302" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595064846745" />
+    <state width="1899" height="302" key="GridCell.Tab.0.left" timestamp="1595064846745">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="302" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595064846745" />
+    <state width="1899" height="302" key="GridCell.Tab.0.right" timestamp="1595064846745">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="302" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595064846745" />
     <state x="785" y="146" key="RollbackChangesDialog" timestamp="1592681589417">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="785" y="146" key="RollbackChangesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592681589417" />
-    <state width="498" height="446" key="SwitcherDM" timestamp="1593640247027">
+    <state width="498" height="446" key="SwitcherDM" timestamp="1595066402275">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592682580528" />
-    <state width="498" height="446" key="SwitcherDM/0.0.1920.1040@0.0.1920.1040" timestamp="1593640247027" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1593458775996">
+    <state width="498" height="446" key="SwitcherDM/0.0.1920.1040@0.0.1920.1040" timestamp="1595066402275" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1595065457510">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592735850939" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1593458775996" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1595065457510" />
     <state x="747" y="209" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1592681812216">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -153,16 +201,16 @@
     </state>
     <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592687641025" />
     <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1593021373247" />
-    <state x="646" y="256" width="627" height="528" key="find.popup" timestamp="1593640275369">
+    <state x="646" y="256" width="627" height="528" key="find.popup" timestamp="1595066337303">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="646" y="256" width="627" height="528" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592682528679" />
-    <state x="646" y="256" width="627" height="528" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1593640275369" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1593638071480">
+    <state x="646" y="256" width="627" height="528" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1595066337303" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1593724313504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592743830048" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1593638071480" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1593724313504" />
   </component>
   <component name="masterDetails">
     <states>
