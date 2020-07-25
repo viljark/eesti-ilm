@@ -41,12 +41,11 @@ function xmlResponseToJson(response: string): Promise<any> {
 
 
 export async function getLocationByName(name: string): Promise<any> {
-  const response = await axios.get('https://m.ilmateenistus.ee/wp-content/themes/emhi2013/async/locationAutocomplete.php?&mobile=true', {
+  const response = await axios.get('https://m.ilmateenistus.ee/wp-content/themes/emhi2013/async/locationAutocomplete.php?mobile=true', {
     params: {
       autocomplete: name,
     }
   });
-
   return response;
 }
 
@@ -57,7 +56,6 @@ export async function getDetailedForecast(coordinates: string): Promise<Detailed
     },
     responseType: "text",
   });
-
   const result = response.data.replace('callback(', '').replace(');', '');
   return JSON.parse(result);
 }

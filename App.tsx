@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AppContainer from './AppContainer';
 import * as Location from 'expo-location'
-import { AsyncStorage, Dimensions } from 'react-native';
+import { AppState, AppStateStatus, AsyncStorage, Dimensions, Text } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { LocationContext } from './LocationContext';
 import Background from './src/components/Background';
@@ -11,6 +11,23 @@ export default function App() {
 
   const [location, setLocation] = useState<Location.LocationData>(undefined);
   const [locationName, setLocationName] = useState<string>();
+  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
+
+  useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
+    return () => {
+      AppState.removeEventListener('change', handleAppStateChange);
+    }
+  }, []);
+
+  function handleAppStateChange(nextAppState: AppStateStatus) {
+    setAppState((oldAppState) => {
+      if (oldAppState.match(/inactive|background/) && nextAppState === 'active') {
+        getLocationAsync()
+      }
+      return nextAppState
+    });
+  }
   async function storeLocation (location: Location.LocationData){
     try {
       await AsyncStorage.setItem('location', JSON.stringify(location));
@@ -62,7 +79,6 @@ export default function App() {
   }
   return <LocationContext.Provider value={{location, locationName}}>
     <Background location={location}>
-
       <AppContainer/>
     </Background>
 

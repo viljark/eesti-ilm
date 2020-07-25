@@ -36,12 +36,13 @@ export default function ForecastScreen() {
       setData([]);
     }
     const response = await getLocationByName(query);
-    setData(response.data?.data || []);
+    setData(response.data || []);
   }
 
   async function getInitialData(query) {
+    if (!query) return
     const response = await getLocationByName(query);
-    const result = response.data?.data;
+    const result = response.data;
     const coords = result && result.length && result[0].koordinaat;
     setCoordinates(coords);
   }
@@ -179,10 +180,10 @@ export default function ForecastScreen() {
             }}
             renderItem={({ item, index }) => (
               <TouchableOpacity onPress={() => {
-                setQuery([item.nimi, item.vald, item.maakond].join(', '));
+                setQuery(item.label);
                 setCoordinates(item.koordinaat);
               }} key={index} style={{ paddingVertical: 10, paddingHorizontal: 5, borderTopColor: '#f1f1f1', borderTopWidth: 1, }}>
-                <Text>{[item.nimi, item.vald, item.maakond].join(', ')}</Text>
+                <Text>{item.label}</Text>
               </TouchableOpacity>
             )}
           />
