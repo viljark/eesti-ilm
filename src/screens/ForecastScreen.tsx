@@ -208,16 +208,6 @@ export default function ForecastScreen() {
               <Gradient/>
               <Line/>
             </AreaChart>
-            <BarChart
-              style={{ height: 100, width: width * 4.5, zIndex: 1, position: 'absolute', left: 0, bottom: 20, }}
-              data={detailedForecast.map(f => Number(f.precipitation['@attributes'].value))}
-              contentInset={{ top: 5 }}
-              yMax={7.6} // heavy rain
-              yMin={0}
-              svg={{ fill: '#204bff' }}
-            >
-              <PrecipitationDecorator/>
-            </BarChart>
             {iconLocation.map((icon, i) => (
               <View key={i + 200} style={{
                 position: 'absolute',
@@ -281,6 +271,17 @@ export default function ForecastScreen() {
                 }}>{new Date(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`).getHours()}:00</Text>}
               </View>
             ))}
+            <BarChart
+              style={{ height: 100, width: width * 4.5, zIndex: 1, position: 'absolute', left: 0, bottom: 20, }}
+              data={detailedForecast.map(f => Number(f.precipitation['@attributes'].value))}
+              contentInset={{ top: 5 }}
+              yMax={7.6} // heavy rain
+              yMin={0}
+              svg={{ fill: '#204bff' }}
+            >
+              <PrecipitationDecorator/>
+            </BarChart>
+
             {iconLocation.map((icon, i) => (
               detailedForecast[i] && !!detailedForecast[i].temperature['@attributes'].value && i % 2 === 0 &&
                 <View key={i} style={{
@@ -297,6 +298,7 @@ export default function ForecastScreen() {
                       textShadowColor: 'rgba(0, 0, 0, 0.3)',
                       textShadowOffset: { width: 0, height: 1 },
                       textShadowRadius: 5,
+                      fontFamily: ""
 
                     }}>
                       {Number(detailedForecast[i].temperature['@attributes'].value).toFixed(0)}
@@ -308,9 +310,9 @@ export default function ForecastScreen() {
                       textShadowColor: 'rgba(0, 0, 0, 0.3)',
                       textShadowOffset: { width: 0, height: 1 },
                       textShadowRadius: 5,
-
+                      fontFamily: ""
                     }}>
-                        °C
+                        ℃
                     </Text>
                 </View>)
             )}
