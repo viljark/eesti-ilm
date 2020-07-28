@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Text, TouchableOpacity, View, StyleSheet, RefreshControl, Dimensions } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
-import { getDetailedForecast, getLocationByName, Time } from '../services';
+import { getDetailedForecast, getLocationByName, getWarnings, Time, Warning, Warnings } from '../services';
 import _ from 'lodash';
 import { LocationContext } from '../../LocationContext';
 import { AreaChart, BarChart } from 'react-native-svg-charts';
@@ -15,7 +15,7 @@ import { getDayName } from '../utils/formatters';
 
 const width = Dimensions.get('window').width; //full width
 const height = Dimensions.get('window').height - 71; //full height
-
+const monthNames = ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'];
 export default function ForecastScreen() {
 
   const [query, setQuery] = useState(undefined);
@@ -26,11 +26,11 @@ export default function ForecastScreen() {
     locationY: number;
   }>>([]);
   const [coordinates, setCoordinates] = useState('');
-  const { location, locationName } = useContext<{ location: Location.LocationData, locationName: string }>(LocationContext);
+  const { location, locationName, locationRegion } = useContext<{ location: Location.LocationData, locationName: string, locationRegion: string }>(LocationContext);
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
   const [detailedForecast, setDetailedForecast] = useState<Time[]>(undefined);
-
+  const [warning, setWarning] = useState<Warning>(null);
   async function getData(query) {
     if (!query) {
       setData([]);
@@ -45,6 +45,15 @@ export default function ForecastScreen() {
     const result = response.data;
     const coords = result && result.length && result[0].koordinaat;
     setCoordinates(coords);
+  }
+
+  async function fetchWarnings(location) {
+    if (!locationRegion) return;
+    const warnings =  await getWarnings();
+    const warning = warnings?.warnings?.warning?.find((warning) => {
+      return warning.area_eng.includes(locationRegion) || warning.area_est.includes(locationRegion)
+    })
+    setWarning(warning);
   }
 
   async function getForecast(coordinates) {
@@ -74,6 +83,7 @@ export default function ForecastScreen() {
 
   useEffect(() => {
     getInitialData(locationName);
+    fetchWarnings(locationName)
   }, [locationName, latestUpdate]);
 
 
@@ -187,7 +197,33 @@ export default function ForecastScreen() {
               </TouchableOpacity>
             )}
           />
+          {warning && <View style={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: 10
+          }}>
+              <Text style={{
+                color: '#000',
+                fontWeight: 'bold',
+                fontSize: 14,
+              }}>
+                  <Text style={{
+                    color: 'red',
+                    fontWeight: 'bold',
+                    fontSize: 15,
+                  }}>⚠ </Text>
+                  Hoiatus: {new Date(warning.timestamp * 1000).getDate()} {monthNames[new Date(warning.timestamp * 1000).getMonth()]}
+              </Text>
+              <Text style={{
+                color: '#fff',
+                fontSize: 13,
+                paddingLeft: 18,
+              }}>
+                {warning.content_est}
+              </Text>
+          </View>}
         </View>
+
         {detailedForecast && (
           <ScrollView
             horizontal={true}
@@ -195,6 +231,7 @@ export default function ForecastScreen() {
             shouldActivateOnStart={true}
             style={{ display: 'flex', flexGrow: 1, zIndex: 10, position: 'absolute', bottom: 0, }}
           >
+
             <AreaChart
               style={{ height: 220, width: width * 4.5, paddingBottom: 20 }}
               data={detailedForecast.map(f => Number(f.temperature['@attributes'].value))}

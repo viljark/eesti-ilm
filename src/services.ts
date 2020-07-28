@@ -24,6 +24,22 @@ export async function getForecast(): Promise<ForecastResponse> {
   });
   return xmlResponseToJson(iconv.decode(new Buffer(response.data), RESPONSE_CHARSET));
 }
+export async function getWarnings(): Promise<WarningsResponse> {
+  let response;
+  try {
+    response = await axios({
+      method: 'get',
+      url: 'https://www.ilmateenistus.ee/ilma_andmed/xml/hoiatus.php',
+      responseType: 'arraybuffer'
+    });
+  } catch (e) {
+    if (e.response) {
+      response = e.response
+    }
+  }
+
+  return xmlResponseToJson(iconv.decode(new Buffer(response.data), 'UTF-8'));
+}
 
 function xmlResponseToJson(response: string): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -229,4 +245,20 @@ export interface DetailedForecast {
 export interface DetailedForecastResponse {
   location: string;
   forecast: DetailedForecast;
+}
+
+export interface Warning {
+  timestamp: number;
+  area_est: string;
+  area_eng: string;
+  content_est: string;
+  content_eng: string;
+}
+
+export interface Warnings {
+  warning: Warning[];
+}
+
+export interface WarningsResponse {
+  warnings: Warnings;
 }

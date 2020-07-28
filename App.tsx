@@ -11,6 +11,7 @@ export default function App() {
 
   const [location, setLocation] = useState<Location.LocationData>(undefined);
   const [locationName, setLocationName] = useState<string>();
+  const [locationRegion, setLocationRegion] = useState<string>();
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
 
   useEffect(() => {
@@ -68,7 +69,9 @@ export default function App() {
       latitude: location.coords.latitude,
     });
     const locationName = geoLocation && geoLocation.length && (geoLocation[0].city || geoLocation[0].region);
+    const locationRegion = geoLocation && geoLocation.length && (geoLocation[0].region);
     setLocationName(locationName);
+    setLocationRegion(locationRegion);
     console.log('geoLocation', locationName);
     const newLocation = location && storedLocation && location.coords.longitude !== storedLocation.coords.longitude && location.coords.latitude !== storedLocation.coords.latitude;
 
@@ -77,7 +80,7 @@ export default function App() {
       storeLocation(location)
     }
   }
-  return <LocationContext.Provider value={{location, locationName}}>
+  return <LocationContext.Provider value={{location, locationName, locationRegion}}>
     <Background location={location}>
       <AppContainer/>
     </Background>

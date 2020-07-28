@@ -5,7 +5,7 @@ import { PhenomenonIcon } from './PhenomenonIcon';
 import { getDayName } from '../utils/formatters';
 
 const width = Dimensions.get('window').width; //full width
-const monthNames = ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'];
+
 export function Forecast(props: { latestUpdate: Date }) {
 
   const [forecast, setForecast] = useState<ForecastResponse>();
