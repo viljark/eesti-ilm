@@ -47,7 +47,7 @@ export default function ForecastScreen() {
     setCoordinates(coords);
   }
 
-  async function fetchWarnings(location) {
+  async function fetchWarnings() {
     if (!locationRegion) return;
     const warnings =  await getWarnings();
     const warning = warnings?.warnings?.warning?.find((warning) => {
@@ -83,9 +83,11 @@ export default function ForecastScreen() {
 
   useEffect(() => {
     getInitialData(locationName);
-    fetchWarnings(locationName)
   }, [locationName, latestUpdate]);
 
+  useEffect(() => {
+    fetchWarnings()
+  }, [locationRegion, latestUpdate]);
 
   const Decorator = (props?: any) => {
     const decoratorLocations = [];
