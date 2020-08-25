@@ -1,36 +1,77 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Text, TouchableOpacity, View, StyleSheet, RefreshControl, Dimensions } from 'react-native';
-import Autocomplete from 'react-native-autocomplete-input';
-import { getDetailedForecast, getLocationByName, getWarnings, Time, Warning, Warnings } from '../services';
-import _ from 'lodash';
-import { LocationContext } from '../../LocationContext';
-import { AreaChart, BarChart } from 'react-native-svg-charts';
-import * as shape from 'd3-shape'
-import { Defs, G, LinearGradient, Path, Stop, Text as SvgText, TSpan } from 'react-native-svg';
-import { PhenomenonIcon } from '../components/PhenomenonIcon';
-import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
-import * as Location from 'expo-location'
-import { ScrollView } from 'react-native-gesture-handler';
-import { getDayName } from '../utils/formatters';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  RefreshControl,
+  Dimensions,
+} from "react-native";
+import Autocomplete from "react-native-autocomplete-input";
+import {
+  getDetailedForecast,
+  getLocationByName,
+  getWarnings,
+  Time,
+  Warning,
+  Warnings,
+} from "../services";
+import _ from "lodash";
+import { LocationContext } from "../../LocationContext";
+import { AreaChart, BarChart } from "react-native-svg-charts";
+import * as shape from "d3-shape";
+import {
+  Defs,
+  G,
+  LinearGradient,
+  Path,
+  Stop,
+  Text as SvgText,
+} from "react-native-svg";
+import { PhenomenonIcon } from "../components/PhenomenonIcon";
+import * as Location from "expo-location";
+import { ScrollView } from "react-native-gesture-handler";
+import { getDayName } from "../utils/formatters";
+import { ForecastListItem } from "../components/ForecastListItem";
+import { getUserLocalDate } from "../utils/dateUtil";
 
-const width = Dimensions.get('window').width; //full width
-const height = Dimensions.get('window').height - 71; //full height
-const monthNames = ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'];
+const width = Dimensions.get("window").width; //full width
+const height = Dimensions.get("window").height - 71; //full height
+const monthNames = [
+  "jaanuar",
+  "veebruar",
+  "märts",
+  "aprill",
+  "mai",
+  "juuni",
+  "juuli",
+  "august",
+  "september",
+  "oktoober",
+  "november",
+  "detsember",
+];
 export default function ForecastScreen() {
-
   const [query, setQuery] = useState(undefined);
   const [data, setData] = useState([]);
-  const [iconLocation, setIconLocation] = useState<Array<{
-    index: number;
-    locationX: number;
-    locationY: number;
-  }>>([]);
-  const [coordinates, setCoordinates] = useState('');
-  const { location, locationName, locationRegion } = useContext<{ location: Location.LocationData, locationName: string, locationRegion: string }>(LocationContext);
+  const [iconLocation, setIconLocation] = useState<
+    Array<{
+      index: number;
+      locationX: number;
+      locationY: number;
+    }>
+  >([]);
+  const [coordinates, setCoordinates] = useState("");
+  const { location, locationName, locationRegion } = useContext<{
+    location: Location.LocationData;
+    locationName: string;
+    locationRegion: string;
+  }>(LocationContext);
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
   const [detailedForecast, setDetailedForecast] = useState<Time[]>(undefined);
   const [warning, setWarning] = useState<Warning>(null);
+  const [topmostItemIndex, setTopmostItemIndex] = useState<number>(0);
   async function getData(query) {
     if (!query) {
       setData([]);
@@ -40,7 +81,7 @@ export default function ForecastScreen() {
   }
 
   async function getInitialData(query) {
-    if (!query) return
+    if (!query) return;
     const response = await getLocationByName(query);
     const result = response.data;
     const coords = result && result.length && result[0].koordinaat;
@@ -49,10 +90,13 @@ export default function ForecastScreen() {
 
   async function fetchWarnings() {
     if (!locationRegion) return;
-    const warnings =  await getWarnings();
+    const warnings = await getWarnings();
     const warning = warnings?.warnings?.warning?.find((warning) => {
-      return warning.area_eng.includes(locationRegion) || warning.area_est.includes(locationRegion)
-    })
+      return (
+        warning.area_eng.includes(locationRegion) ||
+        warning.area_est.includes(locationRegion)
+      );
+    });
     setWarning(warning);
   }
 
@@ -76,7 +120,6 @@ export default function ForecastScreen() {
     getForecast(coordinates);
   }, [coordinates]);
 
-
   useEffect(() => {
     debounceGetData.current(query);
   }, [query]);
@@ -86,8 +129,14 @@ export default function ForecastScreen() {
   }, [locationName, latestUpdate]);
 
   useEffect(() => {
-    fetchWarnings()
+    fetchWarnings();
   }, [locationRegion, latestUpdate]);
+  let a = 0;
+  function onScroll(e) {
+    setTopmostItemIndex(
+      Math.abs(Math.round(e.nativeEvent.contentOffset.y / 50))
+    );
+  }
 
   const Decorator = (props?: any) => {
     const decoratorLocations = [];
@@ -98,13 +147,13 @@ export default function ForecastScreen() {
         locationY: props.y(value),
       });
       return null;
-    })
+    });
 
     if (!_.isEqual(decoratorLocations, iconLocation)) {
       setIconLocation(decoratorLocations);
     }
     return decorators;
-  }
+  };
 
   const PrecipitationDecorator = (props?: any) => {
     const decorators = props.data.map((value, index) => {
@@ -120,55 +169,69 @@ export default function ForecastScreen() {
             {value} mm
           </SvgText>
         </G>
-      )
-    })
+      );
+    });
 
     return decorators;
-  }
+  };
 
   const Gradient = (props?: any) => (
     <Defs key={props.index}>
-      <LinearGradient id={'gradient'} x1={'0%'} y1={'0%'} x2={'0%'} y2={'100%'}>
-        <Stop offset={'100%'} stopColor={'#325571'} stopOpacity={0}/>
-        <Stop offset={'50%'} stopColor={'#12d8fa'} stopOpacity={.5}/>
-        <Stop offset={'0%'} stopColor={'#a6ffcb'} stopOpacity={1}/>
+      <LinearGradient id={"gradient"} x1={"0%"} y1={"0%"} x2={"0%"} y2={"100%"}>
+        <Stop offset={"100%"} stopColor={"#325571"} stopOpacity={0} />
+        <Stop offset={"50%"} stopColor={"#12d8fa"} stopOpacity={0.5} />
+        <Stop offset={"0%"} stopColor={"#a6ffcb"} stopOpacity={1} />
       </LinearGradient>
     </Defs>
   );
   const Line = (props?: any) => (
-    <Path
-      key={'line'}
-      d={props.line}
-      stroke={'#a6ffcb'}
-      fill={'none'}
-    />
-  )
+    <Path key={"line"} d={props.line} stroke={"#a6ffcb"} fill={"none"} />
+  );
 
-  const minTemp = detailedForecast && _.min(detailedForecast.map((f) => Number(f.temperature['@attributes'].value)));
+  const minTemp =
+    detailedForecast &&
+    _.min(
+      detailedForecast.map((f) => Number(f.temperature["@attributes"].value))
+    );
+
+  const stickyIndexes = [];
+  detailedForecast?.forEach((time, index) => {
+    if (
+      getUserLocalDate(time["@attributes"].from).getHours() === 0 ||
+      index === 0
+    ) {
+      stickyIndexes.push(index + stickyIndexes.length);
+    }
+  });
 
   return (
-    <ScrollView style={styles.scrollContainer} nestedScrollEnabled={true} refreshControl={
-      <RefreshControl
-        refreshing={isRefreshing}
-        onRefresh={() => {
-          setLatestUpdate(new Date());
-        }}/>
-    }>
+    <ScrollView
+      style={styles.scrollContainer}
+      nestedScrollEnabled={true}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={() => {
+            setLatestUpdate(new Date());
+          }}
+        />
+      }
+    >
       <View style={styles.container}>
         <View style={styles.autocompleteContainer}>
           <Autocomplete
             defaultValue={query === undefined ? locationName : query}
             data={data}
             onFocus={() => {
-              setQuery('');
+              setQuery("");
             }}
             style={{
               paddingLeft: 10,
               paddingRight: 5,
               paddingTop: 5,
               paddingBottom: 5,
-              backgroundColor: '#fff',
-              shadowColor: '#000',
+              backgroundColor: "#fff",
+              shadowColor: "#000",
               shadowOffset: {
                 width: 0,
                 height: 2,
@@ -178,7 +241,7 @@ export default function ForecastScreen() {
               elevation: 5,
               borderRadius: 3,
             }}
-            onChangeText={text => setQuery(text)}
+            onChangeText={(text) => setQuery(text)}
             inputContainerStyle={{
               borderWidth: 0,
             }}
@@ -191,39 +254,96 @@ export default function ForecastScreen() {
               borderBottomRightRadius: 3,
             }}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => {
-                setQuery(item.label);
-                setCoordinates(item.koordinaat);
-              }} key={index} style={{ paddingVertical: 10, paddingHorizontal: 5, borderTopColor: '#f1f1f1', borderTopWidth: 1, }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setQuery(item.label);
+                  setCoordinates(item.koordinaat);
+                }}
+                key={index}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 5,
+                  borderTopColor: "#f1f1f1",
+                  borderTopWidth: 1,
+                }}
+              >
                 <Text>{item.label}</Text>
               </TouchableOpacity>
             )}
           />
-          {warning && <View style={{
-            display: "flex",
-            flexDirection: "column",
-            marginTop: 10
-          }}>
-              <Text style={{
-                color: '#000',
-                fontWeight: 'bold',
-                fontSize: 14,
-              }}>
-                  <Text style={{
-                    color: 'red',
-                    fontWeight: 'bold',
+          {warning && (
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                marginTop: 10,
+                padding: 3,
+                borderRadius: 5,
+                backgroundColor: "rgba(0,0,0, .1)",
+                borderColor: "rgba(0,0,0, .3)",
+                borderWidth: 0.5,
+                maxHeight: 62,
+                overflow: "hidden",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "#fff",
+                  fontFamily: "Inter_700Bold",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "red",
                     fontSize: 15,
-                  }}>⚠ </Text>
-                  Hoiatus: {new Date(warning.timestamp * 1000).getDate()} {monthNames[new Date(warning.timestamp * 1000).getMonth()]}
+                    fontFamily: "Inter_700Bold",
+                  }}
+                >
+                  ⚠{" "}
+                </Text>
+                Hoiatus: {new Date(warning.timestamp * 1000).getDate()}{" "}
+                {monthNames[new Date(warning.timestamp * 1000).getMonth()]}
               </Text>
-              <Text style={{
-                color: '#fff',
-                fontSize: 13,
-                paddingLeft: 18,
-              }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 13,
+                  paddingLeft: 18,
+                  fontFamily: "Inter_300Light",
+                }}
+              >
                 {warning.content_est}
               </Text>
-          </View>}
+            </View>
+          )}
+          <ScrollView
+            stickyHeaderIndices={stickyIndexes}
+            style={{
+              display: "flex",
+              flexGrow: 1,
+              height: warning ? 255 : 325,
+              marginTop: 10,
+            }}
+          >
+            {detailedForecast &&
+              detailedForecast.map((time, index) => [
+                (getUserLocalDate(time["@attributes"].from).getHours() === 0 ||
+                  index === 0) && (
+                  <View style={styles.topMostItemDayWrapper}>
+                    <Text style={styles.topMostItemDay}>
+                      {getDayName(time["@attributes"].from)}
+                    </Text>
+                  </View>
+                ),
+                <ForecastListItem
+                  key={`${time["@attributes"].from}`}
+                  time={time}
+                  latestUpdate={latestUpdate}
+                  location={location}
+                />,
+              ])}
+          </ScrollView>
         </View>
 
         {detailedForecast && (
@@ -231,135 +351,192 @@ export default function ForecastScreen() {
             horizontal={true}
             showsHorizontalScrollIndicator={true}
             shouldActivateOnStart={true}
-            style={{ display: 'flex', flexGrow: 1, zIndex: 10, position: 'absolute', bottom: 0, }}
+            style={{
+              display: "flex",
+              flexGrow: 1,
+              zIndex: 10,
+              position: "absolute",
+              bottom: 0,
+            }}
           >
-
             <AreaChart
               style={{ height: 220, width: width * 4.5, paddingBottom: 20 }}
-              data={detailedForecast.map(f => Number(f.temperature['@attributes'].value))}
+              data={detailedForecast.map((f) =>
+                Number(f.temperature["@attributes"].value)
+              )}
               contentInset={{ top: 30, bottom: 5 }}
               curve={shape.curveNatural}
-              svg={{ fill: 'url(#gradient)' }}
+              svg={{ fill: "url(#gradient)" }}
               start={minTemp - 0.5}
               yMin={minTemp - 2}
             >
-              <Decorator/>
-              <Gradient/>
-              <Line/>
+              <Decorator />
+              <Gradient />
+              <Line />
             </AreaChart>
             {iconLocation.map((icon, i) => (
-              <View key={i + 200} style={{
-                position: 'absolute',
-                left: icon.locationX,
-                top: 160,
-                display: 'flex',
-                height: 70,
-              }}>
-                {detailedForecast[i] && !!detailedForecast[i].phenomen['@attributes'].en &&
-                <PhenomenonIcon
-                    latitude={location.coords.latitude}
-                    longitude={location.coords.longitude}
-                    key={i}
-                    width={30}
-                    height={30}
-                    style={{
-                      marginLeft: 0,
-                    }}
-                    date={new Date(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`)}
-                    phenomenon={detailedForecast[i].phenomen['@attributes'].en}
-                />}
-                {detailedForecast[i]
-                && !!detailedForecast[i]['@attributes'].from
-                && new Date(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`).getHours() === 0
-                && <>
-                    <Text key={i + 100} style={{
-                      position: 'absolute',
-                      bottom: 210,
-                      height: 20,
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      marginLeft: -2,
-                      fontSize: 12,
-                      textShadowColor: 'rgba(0, 0, 0, 0.3)',
-                      textShadowOffset: { width: 0, height: 1 },
-                      textShadowRadius: 5,
-                    }}>
-                      {getDayName(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`)}
+              <View
+                key={i + 200}
+                style={{
+                  position: "absolute",
+                  left: icon.locationX,
+                  top: 160,
+                  display: "flex",
+                  height: 70,
+                }}
+              >
+                {detailedForecast[i] &&
+                  !!detailedForecast[i].phenomen["@attributes"].en && (
+                    <PhenomenonIcon
+                      latitude={location.coords.latitude}
+                      longitude={location.coords.longitude}
+                      key={i}
+                      width={30}
+                      height={30}
+                      style={{
+                        marginLeft: 0,
+                      }}
+                      date={
+                        new Date(
+                          detailedForecast[i]["@attributes"].from +
+                            `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`
+                        )
+                      }
+                      phenomenon={
+                        detailedForecast[i].phenomen["@attributes"].en
+                      }
+                    />
+                  )}
+                {detailedForecast[i] &&
+                  !!detailedForecast[i]["@attributes"].from &&
+                  new Date(
+                    detailedForecast[i]["@attributes"].from +
+                      `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`
+                  ).getHours() === 0 && (
+                    <>
+                      <Text
+                        key={i + 100}
+                        style={{
+                          position: "absolute",
+                          bottom: 210,
+                          height: 20,
+                          color: "rgba(255, 255, 255, 0.8)",
+                          marginLeft: -2,
+                          fontSize: 12,
+                          textShadowColor: "rgba(0, 0, 0, 0.3)",
+                          textShadowOffset: { width: 0, height: 1 },
+                          textShadowRadius: 5,
+                        }}
+                      >
+                        {getDayName(detailedForecast[i]["@attributes"].from)}
+                      </Text>
+                      <View
+                        style={{
+                          position: "absolute",
+                          bottom: 0,
+                          width: 0.5,
+                          height: 210,
+                          backgroundColor: "rgba(255, 255, 255, 0.5)",
+                        }}
+                      />
+                    </>
+                  )}
+                {detailedForecast[i] &&
+                  !!detailedForecast[i]["@attributes"].from &&
+                  i % 2 === 0 && (
+                    <Text
+                      key={i + 100}
+                      style={{
+                        position: "absolute",
+                        bottom: 10,
+                        width: 30,
+                        height: 20,
+                        color: "#fff",
+                        fontSize: 10,
+                        textShadowColor: "rgba(0, 0, 0, 0.3)",
+                        textShadowOffset: { width: 0, height: 1 },
+                        textShadowRadius: 5,
+                        fontFamily: "Inter_700Bold",
+                      }}
+                    >
+                      {new Date(
+                        detailedForecast[i]["@attributes"].from +
+                          `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`
+                      ).getHours()}
+                      :00
                     </Text>
-                    <View style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      width: 0.5,
-                      height: 210,
-                      backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                    }}/>
-                </>
-                }
-                {detailedForecast[i] && !!detailedForecast[i]['@attributes'].from && i % 2 === 0 &&
-                <Text key={i + 100} style={{
-                  position: 'absolute',
-                  bottom: 10,
-                  width: 30,
-                  height: 20,
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  fontSize: 10,
-                  textShadowColor: 'rgba(0, 0, 0, 0.3)',
-                  textShadowOffset: { width: 0, height: 1 },
-                  textShadowRadius: 5,
-
-                }}>{new Date(detailedForecast[i]['@attributes'].from + `+0${new Date().getTimezoneOffset() / 60 * -1}:00`).getHours()}:00</Text>}
+                  )}
               </View>
             ))}
             <BarChart
-              style={{ height: 100, width: width * 4.5, zIndex: 1, position: 'absolute', left: 0, bottom: 20, }}
-              data={detailedForecast.map(f => Number(f.precipitation['@attributes'].value))}
+              style={{
+                height: 100,
+                width: width * 4.5,
+                zIndex: 1,
+                position: "absolute",
+                left: 0,
+                bottom: 20,
+              }}
+              data={detailedForecast.map((f) =>
+                Number(f.precipitation["@attributes"].value)
+              )}
               contentInset={{ top: 5 }}
               yMax={7.6} // heavy rain
               yMin={0}
-              svg={{ fill: '#204bff' }}
+              svg={{ fill: "#204bff" }}
             >
-              <PrecipitationDecorator/>
+              <PrecipitationDecorator />
             </BarChart>
 
-            {iconLocation.map((icon, i) => (
-              detailedForecast[i] && !!detailedForecast[i].temperature['@attributes'].value && i % 2 === 0 &&
-                <View key={i} style={{
-                  position: 'absolute',
-                  top: icon.locationY - 25,
-                  left: icon.locationX,
-                  display: 'flex',
-                  flexDirection: 'row',
-                }}>
-                    <Text style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      fontSize: 14,
-                      textShadowColor: 'rgba(0, 0, 0, 0.3)',
-                      textShadowOffset: { width: 0, height: 1 },
-                      textShadowRadius: 5,
-                      fontFamily: ""
-
-                    }}>
-                      {Number(detailedForecast[i].temperature['@attributes'].value).toFixed(0)}
+            {iconLocation.map(
+              (icon, i) =>
+                detailedForecast[i] &&
+                !!detailedForecast[i].temperature["@attributes"].value &&
+                i % 2 === 0 && (
+                  <View
+                    key={i}
+                    style={{
+                      position: "absolute",
+                      top: icon.locationY - 25,
+                      left: icon.locationX,
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 14,
+                        textShadowColor: "rgba(0, 0, 0, 0.3)",
+                        textShadowOffset: { width: 0, height: 1 },
+                        textShadowRadius: 5,
+                        fontFamily: "Inter_700Bold",
+                      }}
+                    >
+                      {Number(
+                        detailedForecast[i].temperature["@attributes"].value
+                      ).toFixed(0)}
                     </Text>
-                    <Text style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      fontSize: 10,
-                      textShadowColor: 'rgba(0, 0, 0, 0.3)',
-                      textShadowOffset: { width: 0, height: 1 },
-                      textShadowRadius: 5,
-                      fontFamily: ""
-                    }}>
-                        ℃
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 10,
+                        textShadowColor: "rgba(0, 0, 0, 0.3)",
+                        textShadowOffset: { width: 0, height: 1 },
+                        textShadowRadius: 5,
+                        fontFamily: "Inter_300Light",
+                      }}
+                    >
+                      ℃
                     </Text>
-                </View>)
+                  </View>
+                )
             )}
           </ScrollView>
         )}
       </View>
     </ScrollView>
-  )
+  );
 }
 const styles = StyleSheet.create({
   scrollContainer: {
@@ -376,9 +553,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
     left: 10,
-    position: 'absolute',
+    position: "absolute",
     right: 10,
     top: 13,
     zIndex: 2,
-  }
+  },
+  topMostItemDayWrapper: {
+    flexGrow: 1,
+    alignItems: "center",
+    paddingVertical: 5,
+  },
+  topMostItemDay: {
+    marginTop: 2,
+    color: "#fff",
+    borderRadius: 10,
+    backgroundColor: "rgba(51, 51, 51, .7)",
+    borderColor: "rgba(0,0,0,0.5)",
+    borderWidth: 0.5,
+    paddingHorizontal: 8,
+    fontSize: 12,
+    fontFamily: "Inter_300Light",
+  },
 });
