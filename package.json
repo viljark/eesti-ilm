@@ -4,6 +4,7 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
+    "build:android": "expo build:android -t app-bundle",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"
@@ -38,7 +39,8 @@
     "react-navigation": "^4.0.10",
     "react-navigation-tabs": "^2.5.5",
     "suncalc": "^1.8.0",
-    "util": "^0.12.0"
+    "util": "^0.12.0",
+    "expo-firebase-analytics": "~2.4.1"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

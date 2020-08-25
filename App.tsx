@@ -11,6 +11,7 @@ import {
 import * as Permissions from "expo-permissions";
 import { LocationContext } from "./LocationContext";
 import Background from "./src/components/Background";
+import * as Analytics from "expo-firebase-analytics";
 import {
   useFonts,
   Inter_700Bold,
@@ -108,12 +109,35 @@ export default function App() {
       storeLocation(location);
     }
   }
+  // Get the current screen from the navigation state
+  function getActiveRouteName(navigationState) {
+    if (!navigationState) return null;
+    const route = navigationState.routes[navigationState.index];
+    // Parse the nested navigators
+    if (route.routes) return getActiveRouteName(route);
+    return route.routeName;
+  }
+
   return (
     <LocationContext.Provider
       value={{ location, locationName, locationRegion }}
     >
       <Background location={location}>
-        <AppContainer />
+        <AppContainer
+          onNavigationStateChange={(prevState, currentState) => {
+            const currentScreen = getActiveRouteName(currentState);
+            const prevScreen = getActiveRouteName(prevState);
+            console.log("init");
+            if (prevScreen !== currentScreen) {
+              try {
+                Analytics.setCurrentScreen(currentScreen);
+              } catch (e) {
+                console.warn("analytics error", e);
+              }
+              // Update Firebase with the name of your screen
+            }
+          }}
+        />
       </Background>
     </LocationContext.Provider>
   );

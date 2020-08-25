@@ -23,6 +23,7 @@ import { Radar } from "../components/Radar";
 import { Forecast } from "../components/Forecast";
 import { Linking } from "expo";
 import { LocationContext } from "../../LocationContext";
+import * as Analytics from "expo-firebase-analytics";
 
 function addZeroBefore(n) {
   return (n < 10 ? "0" : "") + n;
@@ -95,6 +96,14 @@ export default function Main(props) {
       });
     }
   }, [location, allObservations]);
+
+  useEffect(() => {
+    try {
+      Analytics.setCurrentScreen("Main");
+    } catch (e) {
+      console.warn("analytics error", e);
+    }
+  }, []);
 
   async function fetchObservations() {
     setIsRefreshing(true);
