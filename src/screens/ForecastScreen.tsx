@@ -6,6 +6,7 @@ import {
   StyleSheet,
   RefreshControl,
   Dimensions,
+  Keyboard,
 } from "react-native";
 import Autocomplete from "react-native-autocomplete-input";
 import {
@@ -69,12 +70,14 @@ export default function ForecastScreen() {
   }>(LocationContext);
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
+  const [inInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [detailedForecast, setDetailedForecast] = useState<Time[]>(undefined);
   const [warning, setWarning] = useState<Warning>(null);
-  const [topmostItemIndex, setTopmostItemIndex] = useState<number>(0);
+
   async function getData(query) {
     if (!query) {
       setData([]);
+      return;
     }
     const response = await getLocationByName(query);
     setData(response.data || []);
@@ -131,12 +134,6 @@ export default function ForecastScreen() {
   useEffect(() => {
     fetchWarnings();
   }, [locationRegion, latestUpdate]);
-  let a = 0;
-  function onScroll(e) {
-    setTopmostItemIndex(
-      Math.abs(Math.round(e.nativeEvent.contentOffset.y / 50))
-    );
-  }
 
   const Decorator = (props?: any) => {
     const decoratorLocations = [];
@@ -207,6 +204,7 @@ export default function ForecastScreen() {
   return (
     <ScrollView
       style={styles.scrollContainer}
+      keyboardShouldPersistTaps="always"
       nestedScrollEnabled={true}
       refreshControl={
         <RefreshControl
@@ -220,10 +218,15 @@ export default function ForecastScreen() {
       <View style={styles.container}>
         <View style={styles.autocompleteContainer}>
           <Autocomplete
+            hideResults={!inInputFocused}
             defaultValue={query === undefined ? locationName : query}
             data={data}
             onFocus={() => {
               setQuery("");
+              setIsInputFocused(true);
+            }}
+            onBlur={() => {
+              setIsInputFocused(false);
             }}
             style={{
               paddingLeft: 10,
@@ -256,6 +259,7 @@ export default function ForecastScreen() {
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 onPress={() => {
+                  Keyboard.dismiss();
                   setQuery(item.label);
                   setCoordinates(item.koordinaat);
                 }}
@@ -271,6 +275,13 @@ export default function ForecastScreen() {
               </TouchableOpacity>
             )}
           />
+        </View>
+        <View
+          style={{
+            position: "relative",
+            top: 20,
+          }}
+        >
           {warning && (
             <View
               style={{

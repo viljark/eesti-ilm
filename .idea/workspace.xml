@@ -19,10 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="add hourly forecast as scrollable list, re-design warning">
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="small ui tweaks">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Main.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +98,7 @@
       <workItem from="1595252665299" duration="2652000" />
       <workItem from="1595679613367" duration="5669000" />
       <workItem from="1598194696824" duration="19528000" />
-      <workItem from="1598291753134" duration="15923000" />
+      <workItem from="1598291753134" duration="18106000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -159,7 +160,13 @@
       <option name="presentableId" value="LOCAL−00010" />
       <updated>1598333111358</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL−00011" summary="small ui tweaks">
+      <created>1598389070757</created>
+      <option name="number" value="LOCAL−00011" />
+      <option name="presentableId" value="LOCAL−00011" />
+      <updated>1598389070757</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TodoView">
@@ -197,7 +204,8 @@
     <MESSAGE value="add user position to radar map, get user location on focus" />
     <MESSAGE value="better current location visual&#10;added prettier&#10;format Radar.tsx" />
     <MESSAGE value="add hourly forecast as scrollable list, re-design warning" />
-    <option name="LAST_COMMIT_MESSAGE" value="add hourly forecast as scrollable list, re-design warning" />
+    <MESSAGE value="small ui tweaks" />
+    <option name="LAST_COMMIT_MESSAGE" value="small ui tweaks" />
   </component>
   <component name="WindowStateProjectService">
     <state x="583" y="33" key="CommitChangelistDialog2" timestamp="1595683978166">
@@ -214,25 +222,25 @@
     </state>
     <state x="592" y="218" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1598200926813" />
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1593809790138" />
-    <state width="1513" height="133" key="GridCell.Tab.0.bottom" timestamp="1598370974037">
+    <state width="1513" height="133" key="GridCell.Tab.0.bottom" timestamp="1598390164322">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
+    <state width="1513" height="133" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598390164322" />
     <state width="1899" height="233" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
-    <state width="1513" height="133" key="GridCell.Tab.0.center" timestamp="1598370974037">
+    <state width="1513" height="133" key="GridCell.Tab.0.center" timestamp="1598390164321">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
+    <state width="1513" height="133" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1598390164321" />
     <state width="1899" height="233" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
-    <state width="1513" height="133" key="GridCell.Tab.0.left" timestamp="1598370974037">
+    <state width="1513" height="133" key="GridCell.Tab.0.left" timestamp="1598390164321">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
+    <state width="1513" height="133" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1598390164321" />
     <state width="1899" height="233" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
-    <state width="1513" height="133" key="GridCell.Tab.0.right" timestamp="1598370974037">
+    <state width="1513" height="133" key="GridCell.Tab.0.right" timestamp="1598390164321">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
+    <state width="1513" height="133" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1598390164321" />
     <state width="1899" height="233" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
     <state x="785" y="146" key="RollbackChangesDialog" timestamp="1595845238845">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -243,20 +251,20 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1598217885356" />
-    <state width="498" height="398" key="SwitcherDM" timestamp="1598332953037">
+    <state width="498" height="398" key="SwitcherDM" timestamp="1598389931795">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="498" height="398" key="SwitcherDM/0.0.1536.824@0.0.1536.824" timestamp="1598332953037" />
+    <state width="498" height="398" key="SwitcherDM/0.0.1536.824@0.0.1536.824" timestamp="1598389931795" />
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592682580528" />
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040@0.0.1920.1040" timestamp="1595683822912" />
     <state x="807" y="142" key="VCS.ChangeListViewerDialog" timestamp="1595253764060">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="142" key="VCS.ChangeListViewerDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595253764060" />
-    <state x="442" y="200" key="Vcs.Push.Dialog.v2" timestamp="1598333115163">
+    <state x="442" y="200" key="Vcs.Push.Dialog.v2" timestamp="1598389072810">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1598333115163" />
+    <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1598389072810" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592735850939" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1595683981316" />
     <state x="598" y="52" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1598292392226">
@@ -284,10 +292,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1598210549804" />
-    <state x="498" y="178" width="672" height="538" key="search.everywhere.popup" timestamp="1598221310227">
+    <state x="498" y="178" width="672" height="538" key="search.everywhere.popup" timestamp="1598389840083">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="498" y="178" width="672" height="538" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1598221310227" />
+    <state x="498" y="178" width="672" height="538" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1598389840083" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592743830048" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1595843249259" />
   </component>
