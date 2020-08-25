@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "901351672052",
+    "firebase_url": "https://eesti-ilm-268322.firebaseio.com",
+    "project_id": "eesti-ilm-268322",
+    "storage_bucket": "eesti-ilm-268322.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901351672052:android:66abba4c26db7bb4d076a1",
+        "android_client_info": {
+          "package_name": "ee.viljark.eestiilm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "901351672052-nfefitgq1srdrt1tj76ummgfctdg2fcs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5PRr-p0XQwdVRlPZ8ICPwByqPoN_cTzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "901351672052-nfefitgq1srdrt1tj76ummgfctdg2fcs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
