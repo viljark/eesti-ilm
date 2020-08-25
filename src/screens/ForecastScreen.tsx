@@ -282,13 +282,13 @@ export default function ForecastScreen() {
                 backgroundColor: "rgba(0,0,0, .1)",
                 borderColor: "rgba(0,0,0, .3)",
                 borderWidth: 0.5,
-                maxHeight: 62,
+                maxHeight: 59,
                 overflow: "hidden",
               }}
             >
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   color: "#fff",
                   fontFamily: "Inter_700Bold",
                 }}
@@ -308,7 +308,7 @@ export default function ForecastScreen() {
               <Text
                 style={{
                   color: "#fff",
-                  fontSize: 13,
+                  fontSize: 12,
                   paddingLeft: 18,
                   fontFamily: "Inter_300Light",
                 }}
@@ -449,7 +449,7 @@ export default function ForecastScreen() {
                       style={{
                         position: "absolute",
                         bottom: 10,
-                        width: 30,
+                        width: 35,
                         height: 20,
                         color: "#fff",
                         fontSize: 10,

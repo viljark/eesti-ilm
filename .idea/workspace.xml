@@ -15,38 +15,14 @@
         <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:npm_and_yarn" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
     </expand>
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/ForecastListItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/icons/Raindrop.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/icons/RaindropOutline.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/dateUtil.ts" afterDir="false" />
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="add hourly forecast as scrollable list, re-design warning">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AppContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/AppContainer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Background.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Background.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/formatters.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/formatters.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +97,7 @@
       <workItem from="1595252665299" duration="2652000" />
       <workItem from="1595679613367" duration="5669000" />
       <workItem from="1598194696824" duration="19528000" />
-      <workItem from="1598291753134" duration="13456000" />
+      <workItem from="1598291753134" duration="15923000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -177,7 +153,13 @@
       <option name="presentableId" value="LOCAL−00009" />
       <updated>1598198197830</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL−00010" summary="add hourly forecast as scrollable list, re-design warning">
+      <created>1598333111358</created>
+      <option name="number" value="LOCAL−00010" />
+      <option name="presentableId" value="LOCAL−00010" />
+      <updated>1598333111358</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView">
@@ -214,7 +196,8 @@
     <MESSAGE value="adapt to API changes" />
     <MESSAGE value="add user position to radar map, get user location on focus" />
     <MESSAGE value="better current location visual&#10;added prettier&#10;format Radar.tsx" />
-    <option name="LAST_COMMIT_MESSAGE" value="better current location visual&#10;added prettier&#10;format Radar.tsx" />
+    <MESSAGE value="add hourly forecast as scrollable list, re-design warning" />
+    <option name="LAST_COMMIT_MESSAGE" value="add hourly forecast as scrollable list, re-design warning" />
   </component>
   <component name="WindowStateProjectService">
     <state x="583" y="33" key="CommitChangelistDialog2" timestamp="1595683978166">
@@ -231,25 +214,25 @@
     </state>
     <state x="592" y="218" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1598200926813" />
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1593809790138" />
-    <state width="1513" height="133" key="GridCell.Tab.0.bottom" timestamp="1598332265979">
+    <state width="1513" height="133" key="GridCell.Tab.0.bottom" timestamp="1598370974037">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598332265979" />
+    <state width="1513" height="133" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
     <state width="1899" height="233" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
-    <state width="1513" height="133" key="GridCell.Tab.0.center" timestamp="1598332265979">
+    <state width="1513" height="133" key="GridCell.Tab.0.center" timestamp="1598370974037">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1598332265979" />
+    <state width="1513" height="133" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
     <state width="1899" height="233" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
-    <state width="1513" height="133" key="GridCell.Tab.0.left" timestamp="1598332265979">
+    <state width="1513" height="133" key="GridCell.Tab.0.left" timestamp="1598370974037">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1598332265979" />
+    <state width="1513" height="133" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
     <state width="1899" height="233" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
-    <state width="1513" height="133" key="GridCell.Tab.0.right" timestamp="1598332265979">
+    <state width="1513" height="133" key="GridCell.Tab.0.right" timestamp="1598370974037">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1513" height="133" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1598332265979" />
+    <state width="1513" height="133" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1598370974037" />
     <state width="1899" height="233" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595683985688" />
     <state x="785" y="146" key="RollbackChangesDialog" timestamp="1595845238845">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -270,10 +253,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="142" key="VCS.ChangeListViewerDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595253764060" />
-    <state x="442" y="200" key="Vcs.Push.Dialog.v2" timestamp="1598198199854">
+    <state x="442" y="200" key="Vcs.Push.Dialog.v2" timestamp="1598333115163">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1598198199854" />
+    <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1598333115163" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592735850939" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1595683981316" />
     <state x="598" y="52" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1598292392226">
@@ -287,10 +270,10 @@
     </state>
     <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592687641025" />
     <state x="767" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1593021373247" />
-    <state x="517" y="176" width="548" height="648" key="find.popup" timestamp="1598220834753">
+    <state x="517" y="176" width="549" height="648" key="find.popup" timestamp="1598371343860">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="517" y="176" width="548" height="648" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1598220834753" />
+    <state x="517" y="176" width="549" height="648" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1598371343860" />
     <state x="646" y="256" width="627" height="528" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1592682528679" />
     <state x="646" y="256" width="627" height="528" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1595066337303" />
     <state x="485" y="220" key="jetbrains.nodejs.interpreters-dialog" timestamp="1598194800545">
