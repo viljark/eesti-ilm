@@ -279,7 +279,11 @@ export default function ForecastScreen() {
         <View
           style={{
             position: "relative",
-            top: 20,
+            paddingTop: 20,
+            flexGrow: 1,
+            flexShrink: 1,
+            paddingHorizontal: 10,
+            flexBasis: "65%",
           }}
         >
           {warning && (
@@ -293,8 +297,6 @@ export default function ForecastScreen() {
                 backgroundColor: "rgba(0,0,0, .1)",
                 borderColor: "rgba(0,0,0, .3)",
                 borderWidth: 0.5,
-                maxHeight: 59,
-                overflow: "hidden",
               }}
             >
               <Text
@@ -333,7 +335,6 @@ export default function ForecastScreen() {
             style={{
               display: "flex",
               flexGrow: 1,
-              height: warning ? 255 : 325,
               marginTop: 10,
             }}
           >
@@ -364,14 +365,13 @@ export default function ForecastScreen() {
             shouldActivateOnStart={true}
             style={{
               display: "flex",
-              flexGrow: 1,
+              position: "relative",
               zIndex: 10,
-              position: "absolute",
-              bottom: 0,
+              height: "35%",
             }}
           >
             <AreaChart
-              style={{ height: 220, width: width * 4.5, paddingBottom: 20 }}
+              style={{ height: "100%", width: width * 4.5, paddingBottom: 20 }}
               data={detailedForecast.map((f) =>
                 Number(f.temperature["@attributes"].value)
               )}
@@ -391,9 +391,9 @@ export default function ForecastScreen() {
                 style={{
                   position: "absolute",
                   left: icon.locationX,
-                  top: 160,
+                  bottom: 0,
                   display: "flex",
-                  height: 70,
+                  height: "100%",
                 }}
               >
                 {detailedForecast[i] &&
@@ -406,6 +406,8 @@ export default function ForecastScreen() {
                       height={30}
                       style={{
                         marginLeft: 0,
+                        position: "absolute",
+                        bottom: 30,
                       }}
                       date={
                         new Date(
@@ -429,7 +431,7 @@ export default function ForecastScreen() {
                         key={i + 100}
                         style={{
                           position: "absolute",
-                          bottom: 210,
+                          top: 0,
                           height: 20,
                           color: "rgba(255, 255, 255, 0.8)",
                           marginLeft: -2,
@@ -446,7 +448,7 @@ export default function ForecastScreen() {
                           position: "absolute",
                           bottom: 0,
                           width: 0.5,
-                          height: 210,
+                          height: "90%",
                           backgroundColor: "rgba(255, 255, 255, 0.5)",
                         }}
                       />
@@ -459,9 +461,8 @@ export default function ForecastScreen() {
                       key={i + 100}
                       style={{
                         position: "absolute",
-                        bottom: 10,
+                        bottom: 5,
                         width: 35,
-                        height: 20,
                         color: "#fff",
                         fontSize: 10,
                         textShadowColor: "rgba(0, 0, 0, 0.3)",

@@ -6,6 +6,7 @@ import { formatHours } from "../utils/formatters";
 import { Location } from "expo";
 import { RaindropOutline } from "../icons/RaindropOutline";
 import { Raindrop } from "../icons/Raindrop";
+import ArrowUp from "../icons/ArrowUp";
 
 const width = Dimensions.get("window").width; //full width
 
@@ -66,14 +67,41 @@ export function ForecastListItem({
             flexDirection: "row",
           }}
         >
-          <Text
+          <View
             style={{
-              ...styles.text,
-              fontSize: 10,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            {time.windSpeed["@attributes"].mps} m/s
-          </Text>
+            <Text
+              style={{
+                ...styles.text,
+                fontSize: 10,
+              }}
+            >
+              {time.windSpeed["@attributes"].mps} m/s
+            </Text>
+            <View
+              style={{
+                marginLeft: 3,
+
+                transform: [
+                  {
+                    rotate: `${Number(
+                      time.windDirection["@attributes"].deg
+                    )}deg`,
+                  },
+                ],
+              }}
+            >
+              <ArrowUp
+                width={10}
+                height={10}
+                style={{ transform: [{ rotate: "180deg" }] }}
+              />
+            </View>
+          </View>
           <View
             style={{
               display: "flex",

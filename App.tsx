@@ -127,7 +127,6 @@ export default function App() {
           onNavigationStateChange={(prevState, currentState) => {
             const currentScreen = getActiveRouteName(currentState);
             const prevScreen = getActiveRouteName(prevState);
-            console.log("init");
             if (prevScreen !== currentScreen) {
               try {
                 Analytics.setCurrentScreen(currentScreen);
