@@ -23,7 +23,7 @@ interface ForecastGraphProps {
   graphWidth: number;
   minTemp;
   location: LocationData;
-  style: ViewStyle;
+  style?: ViewStyle;
 }
 
 export function ForecastGraph({
@@ -65,11 +65,12 @@ export function ForecastGraph({
           horizontal={true}
           showsHorizontalScrollIndicator={true}
           shouldActivateOnStart={true}
-          onScroll={(e) => {
-            console.log(e.nativeEvent.contentOffset.y);
-          }}
           ref={graphRef}
-          style={{ ...style }}
+          style={{
+            display: "flex",
+            position: "relative",
+            ...style,
+          }}
         >
           <AreaChart
             style={{ height: "100%", width: graphWidth, paddingBottom: 20 }}
