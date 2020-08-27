@@ -190,8 +190,6 @@ export default function ForecastScreen() {
           minTemp={minTemp}
           location={location}
           style={{
-            display: "flex",
-            position: "relative",
             zIndex: 10,
             height: "35%",
           }}
