@@ -15,53 +15,22 @@ import {
   getWarnings,
   Time,
   Warning,
-  Warnings,
 } from "../services";
 import _ from "lodash";
 import { LocationContext } from "../../LocationContext";
-import { AreaChart, BarChart } from "react-native-svg-charts";
-import * as shape from "d3-shape";
-import {
-  Defs,
-  G,
-  LinearGradient,
-  Path,
-  Stop,
-  Text as SvgText,
-} from "react-native-svg";
-import { PhenomenonIcon } from "../components/PhenomenonIcon";
 import * as Location from "expo-location";
 import { ScrollView } from "react-native-gesture-handler";
-import { getDayName } from "../utils/formatters";
-import { ForecastListItem } from "../components/ForecastListItem";
-import { getUserLocalDate } from "../utils/dateUtil";
+import { Alert } from "../components/Alert";
+import { ForecastGraph } from "../components/ForecastGraph";
+import { ForecastHourlyList } from "../components/ForecastHourlyList";
 
 const width = Dimensions.get("window").width; //full width
 const height = Dimensions.get("window").height - 71; //full height
-const monthNames = [
-  "jaanuar",
-  "veebruar",
-  "märts",
-  "aprill",
-  "mai",
-  "juuni",
-  "juuli",
-  "august",
-  "september",
-  "oktoober",
-  "november",
-  "detsember",
-];
+
 export default function ForecastScreen() {
   const [query, setQuery] = useState(undefined);
   const [data, setData] = useState([]);
-  const [iconLocation, setIconLocation] = useState<
-    Array<{
-      index: number;
-      locationX: number;
-      locationY: number;
-    }>
-  >([]);
+
   const [coordinates, setCoordinates] = useState("");
   const { location, locationName, locationRegion } = useContext<{
     location: Location.LocationData;
@@ -135,72 +104,14 @@ export default function ForecastScreen() {
     fetchWarnings();
   }, [locationRegion, latestUpdate]);
 
-  const Decorator = (props?: any) => {
-    const decoratorLocations = [];
-    const decorators = props.data.map((value, index) => {
-      decoratorLocations.push({
-        index,
-        locationX: props.x(index),
-        locationY: props.y(value),
-      });
-      return null;
-    });
-
-    if (!_.isEqual(decoratorLocations, iconLocation)) {
-      setIconLocation(decoratorLocations);
-    }
-    return decorators;
-  };
-
-  const PrecipitationDecorator = (props?: any) => {
-    const decorators = props.data.map((value, index) => {
-      return value === 0 ? null : (
-        <G key={index}>
-          <SvgText
-            fill="#fff"
-            fontSize="6"
-            x={props.x(index) + 5}
-            y={props.y(value) - 1}
-            textAnchor="middle"
-          >
-            {value} mm
-          </SvgText>
-        </G>
-      );
-    });
-
-    return decorators;
-  };
-
-  const Gradient = (props?: any) => (
-    <Defs key={props.index}>
-      <LinearGradient id={"gradient"} x1={"0%"} y1={"0%"} x2={"0%"} y2={"100%"}>
-        <Stop offset={"100%"} stopColor={"#325571"} stopOpacity={0} />
-        <Stop offset={"50%"} stopColor={"#12d8fa"} stopOpacity={0.5} />
-        <Stop offset={"0%"} stopColor={"#a6ffcb"} stopOpacity={1} />
-      </LinearGradient>
-    </Defs>
-  );
-  const Line = (props?: any) => (
-    <Path key={"line"} d={props.line} stroke={"#a6ffcb"} fill={"none"} />
-  );
-
   const minTemp =
     detailedForecast &&
     _.min(
       detailedForecast.map((f) => Number(f.temperature["@attributes"].value))
     );
 
-  const stickyIndexes = [];
-  detailedForecast?.forEach((time, index) => {
-    if (
-      getUserLocalDate(time["@attributes"].from).getHours() === 0 ||
-      index === 0
-    ) {
-      stickyIndexes.push(index + stickyIndexes.length);
-    }
-  });
-
+  const graphRef = useRef(null);
+  const graphWidth = width * 4.5;
   return (
     <ScrollView
       style={styles.scrollContainer}
@@ -228,22 +139,7 @@ export default function ForecastScreen() {
             onBlur={() => {
               setIsInputFocused(false);
             }}
-            style={{
-              paddingLeft: 10,
-              paddingRight: 5,
-              paddingTop: 5,
-              paddingBottom: 5,
-              backgroundColor: "#fff",
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-              borderRadius: 3,
-            }}
+            style={styles.autocomplete}
             onChangeText={(text) => setQuery(text)}
             inputContainerStyle={{
               borderWidth: 0,
@@ -276,276 +172,30 @@ export default function ForecastScreen() {
             )}
           />
         </View>
-        <View
-          style={{
-            position: "relative",
-            paddingTop: 20,
-            flexGrow: 1,
-            flexShrink: 1,
-            paddingHorizontal: 10,
-            flexBasis: "65%",
-          }}
-        >
-          {warning && (
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginTop: 10,
-                padding: 3,
-                borderRadius: 5,
-                backgroundColor: "rgba(0,0,0, .1)",
-                borderColor: "rgba(0,0,0, .3)",
-                borderWidth: 0.5,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: "#fff",
-                  fontFamily: "Inter_700Bold",
-                }}
-              >
-                <Text
-                  style={{
-                    color: "red",
-                    fontSize: 15,
-                    fontFamily: "Inter_700Bold",
-                  }}
-                >
-                  ⚠{" "}
-                </Text>
-                Hoiatus: {new Date(warning.timestamp * 1000).getDate()}{" "}
-                {monthNames[new Date(warning.timestamp * 1000).getMonth()]}
-              </Text>
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 12,
-                  paddingLeft: 18,
-                  fontFamily: "Inter_300Light",
-                }}
-              >
-                {warning.content_est}
-              </Text>
-            </View>
-          )}
-          <ScrollView
-            stickyHeaderIndices={stickyIndexes}
-            style={{
-              display: "flex",
-              flexGrow: 1,
-              marginTop: 10,
-            }}
-          >
-            {detailedForecast &&
-              detailedForecast.map((time, index) => [
-                (getUserLocalDate(time["@attributes"].from).getHours() === 0 ||
-                  index === 0) && (
-                  <View style={styles.topMostItemDayWrapper}>
-                    <Text style={styles.topMostItemDay}>
-                      {getDayName(time["@attributes"].from)}
-                    </Text>
-                  </View>
-                ),
-                <ForecastListItem
-                  key={`${time["@attributes"].from}`}
-                  time={time}
-                  latestUpdate={latestUpdate}
-                  location={location}
-                />,
-              ])}
-          </ScrollView>
+        <View style={styles.forecastHourlyListWrapper}>
+          <Alert alert={warning} />
+          <ForecastHourlyList
+            graphWidth={graphWidth}
+            graphRef={graphRef}
+            detailedForecast={detailedForecast}
+            latestUpdate={latestUpdate}
+            location={location}
+          />
         </View>
 
-        {detailedForecast && (
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={true}
-            shouldActivateOnStart={true}
-            style={{
-              display: "flex",
-              position: "relative",
-              zIndex: 10,
-              height: "35%",
-            }}
-          >
-            <AreaChart
-              style={{ height: "100%", width: width * 4.5, paddingBottom: 20 }}
-              data={detailedForecast.map((f) =>
-                Number(f.temperature["@attributes"].value)
-              )}
-              contentInset={{ top: 30, bottom: 5 }}
-              curve={shape.curveNatural}
-              svg={{ fill: "url(#gradient)" }}
-              start={minTemp - 0.5}
-              yMin={minTemp - 2}
-            >
-              <Decorator />
-              <Gradient />
-              <Line />
-            </AreaChart>
-            {iconLocation.map((icon, i) => (
-              <View
-                key={i + 200}
-                style={{
-                  position: "absolute",
-                  left: icon.locationX,
-                  bottom: 0,
-                  display: "flex",
-                  height: "100%",
-                }}
-              >
-                {detailedForecast[i] &&
-                  !!detailedForecast[i].phenomen["@attributes"].en && (
-                    <PhenomenonIcon
-                      latitude={location.coords.latitude}
-                      longitude={location.coords.longitude}
-                      key={i}
-                      width={30}
-                      height={30}
-                      style={{
-                        marginLeft: 0,
-                        position: "absolute",
-                        bottom: 30,
-                      }}
-                      date={
-                        new Date(
-                          detailedForecast[i]["@attributes"].from +
-                            `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`
-                        )
-                      }
-                      phenomenon={
-                        detailedForecast[i].phenomen["@attributes"].en
-                      }
-                    />
-                  )}
-                {detailedForecast[i] &&
-                  !!detailedForecast[i]["@attributes"].from &&
-                  new Date(
-                    detailedForecast[i]["@attributes"].from +
-                      `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`
-                  ).getHours() === 0 && (
-                    <>
-                      <Text
-                        key={i + 100}
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          height: 20,
-                          color: "rgba(255, 255, 255, 0.8)",
-                          marginLeft: -2,
-                          fontSize: 12,
-                          textShadowColor: "rgba(0, 0, 0, 0.3)",
-                          textShadowOffset: { width: 0, height: 1 },
-                          textShadowRadius: 5,
-                        }}
-                      >
-                        {getDayName(detailedForecast[i]["@attributes"].from)}
-                      </Text>
-                      <View
-                        style={{
-                          position: "absolute",
-                          bottom: 0,
-                          width: 0.5,
-                          height: "90%",
-                          backgroundColor: "rgba(255, 255, 255, 0.5)",
-                        }}
-                      />
-                    </>
-                  )}
-                {detailedForecast[i] &&
-                  !!detailedForecast[i]["@attributes"].from &&
-                  i % 2 === 0 && (
-                    <Text
-                      key={i + 100}
-                      style={{
-                        position: "absolute",
-                        bottom: 5,
-                        width: 35,
-                        color: "#fff",
-                        fontSize: 10,
-                        textShadowColor: "rgba(0, 0, 0, 0.3)",
-                        textShadowOffset: { width: 0, height: 1 },
-                        textShadowRadius: 5,
-                        fontFamily: "Inter_700Bold",
-                      }}
-                    >
-                      {new Date(
-                        detailedForecast[i]["@attributes"].from +
-                          `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`
-                      ).getHours()}
-                      :00
-                    </Text>
-                  )}
-              </View>
-            ))}
-            <BarChart
-              style={{
-                height: 100,
-                width: width * 4.5,
-                zIndex: 1,
-                position: "absolute",
-                left: 0,
-                bottom: 20,
-              }}
-              data={detailedForecast.map((f) =>
-                Number(f.precipitation["@attributes"].value)
-              )}
-              contentInset={{ top: 5 }}
-              yMax={7.6} // heavy rain
-              yMin={0}
-              svg={{ fill: "#204bff" }}
-            >
-              <PrecipitationDecorator />
-            </BarChart>
-
-            {iconLocation.map(
-              (icon, i) =>
-                detailedForecast[i] &&
-                !!detailedForecast[i].temperature["@attributes"].value &&
-                i % 2 === 0 && (
-                  <View
-                    key={i}
-                    style={{
-                      position: "absolute",
-                      top: icon.locationY - 25,
-                      left: icon.locationX,
-                      display: "flex",
-                      flexDirection: "row",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 14,
-                        textShadowColor: "rgba(0, 0, 0, 0.3)",
-                        textShadowOffset: { width: 0, height: 1 },
-                        textShadowRadius: 5,
-                        fontFamily: "Inter_700Bold",
-                      }}
-                    >
-                      {Number(
-                        detailedForecast[i].temperature["@attributes"].value
-                      ).toFixed(0)}
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 10,
-                        textShadowColor: "rgba(0, 0, 0, 0.3)",
-                        textShadowOffset: { width: 0, height: 1 },
-                        textShadowRadius: 5,
-                        fontFamily: "Inter_300Light",
-                      }}
-                    >
-                      ℃
-                    </Text>
-                  </View>
-                )
-            )}
-          </ScrollView>
-        )}
+        <ForecastGraph
+          detailedForecast={detailedForecast}
+          graphRef={graphRef}
+          graphWidth={graphWidth}
+          minTemp={minTemp}
+          location={location}
+          style={{
+            display: "flex",
+            position: "relative",
+            zIndex: 10,
+            height: "35%",
+          }}
+        />
       </View>
     </ScrollView>
   );
@@ -570,20 +220,28 @@ const styles = StyleSheet.create({
     top: 13,
     zIndex: 2,
   },
-  topMostItemDayWrapper: {
-    flexGrow: 1,
-    alignItems: "center",
-    paddingVertical: 5,
+  autocomplete: {
+    paddingLeft: 10,
+    paddingRight: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderRadius: 3,
   },
-  topMostItemDay: {
-    marginTop: 2,
-    color: "#fff",
-    borderRadius: 10,
-    backgroundColor: "rgba(51, 51, 51, .7)",
-    borderColor: "rgba(0,0,0,0.5)",
-    borderWidth: 0.5,
-    paddingHorizontal: 8,
-    fontSize: 12,
-    fontFamily: "Inter_300Light",
+  forecastHourlyListWrapper: {
+    position: "relative",
+    paddingTop: 20,
+    flexGrow: 1,
+    flexShrink: 1,
+    paddingHorizontal: 10,
+    flexBasis: "65%",
   },
 });
