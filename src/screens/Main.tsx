@@ -24,6 +24,7 @@ import { Forecast } from "../components/Forecast";
 import { Linking } from "expo";
 import { LocationContext } from "../../LocationContext";
 import * as Analytics from "expo-firebase-analytics";
+import ArrowUp from "../icons/ArrowUp";
 
 function addZeroBefore(n) {
   return (n < 10 ? "0" : "") + n;
@@ -207,6 +208,26 @@ export default function Main(props) {
                   <Text style={styles.smallText}>
                     tuul {getWindSpeedStation().windspeed} -{" "}
                     {getWindSpeedMax().windspeedmax}m/s{" "}
+                    <View
+                      style={{
+                        margin: 3,
+                        width: 10,
+                        height: 10,
+                        transform: [
+                          {
+                            rotate: `${Number(
+                              getWindSpeedStation().winddirection
+                            )}deg`,
+                          },
+                        ],
+                      }}
+                    >
+                      <ArrowUp
+                        width={7}
+                        height={7}
+                        style={{ transform: [{ rotate: "180deg" }] }}
+                      />
+                    </View>
                     {showDataOrigin && (
                       <Text style={styles.smallText}>
                         ({getWindSpeedStation().name})
