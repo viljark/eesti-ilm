@@ -80,11 +80,11 @@ export async function getDetailedForecast(
       params: {
         coordinates,
       },
-      responseType: "text",
+      responseType: "json",
     }
   );
-  const result = response.data.replace("callback(", "").replace(");", "");
-  return JSON.parse(result);
+
+  return response.data;
 }
 
 export interface ObservationsResponse {
