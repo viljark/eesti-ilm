@@ -16,7 +16,7 @@ export function ForecastListItem({
 }: {
   latestUpdate: Date;
   time: Time;
-  location: Location.LocationData;
+  location: Location.LocationObject;
 }) {
   const date = new Date(
     time["@attributes"].from +
@@ -174,7 +174,7 @@ export function ForecastListItem({
               marginRight: 8,
             }}
           >
-            <PhenomenonIcon
+            {location && <PhenomenonIcon
               latitude={location.coords.latitude}
               longitude={location.coords.longitude}
               width={30}
@@ -185,7 +185,7 @@ export function ForecastListItem({
               }}
               date={date}
               phenomenon={time.phenomen["@attributes"].en}
-            />
+            />}
           </View>
         </View>
       </View>

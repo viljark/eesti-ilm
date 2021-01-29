@@ -13,7 +13,7 @@ const height = Dimensions.get("window").height - 71; //full height
 
 const Background = (props: {
   children: React.ReactNode;
-  location: Location.LocationData;
+  location: Location.LocationObject;
 }) => {
   const [gradient, setGradient] = useState<{
     color: string[];

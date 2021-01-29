@@ -1,16 +1,16 @@
-import axios from "axios";
-import iconv from "iconv-lite";
-import { Buffer } from "buffer";
+import axios from 'axios';
+import iconv from 'iconv-lite';
+import { Buffer } from 'buffer';
 
-const parseString = require("react-native-xml2js").parseString;
+const parseString = require('react-native-xml2js').parseString;
 
-const RESPONSE_CHARSET = "ISO-8859-15";
+const RESPONSE_CHARSET = 'ISO-8859-15';
 
 export async function getObservations(): Promise<ObservationsResponse> {
   const response = await axios({
-    method: "get",
-    url: "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php",
-    responseType: "arraybuffer",
+    method: 'get',
+    url: 'https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php',
+    responseType: 'arraybuffer',
   });
 
   return xmlResponseToJson(
@@ -20,21 +20,22 @@ export async function getObservations(): Promise<ObservationsResponse> {
 
 export async function getForecast(): Promise<ForecastResponse> {
   const response = await axios({
-    method: "get",
-    url: "https://www.ilmateenistus.ee/ilma_andmed/xml/forecast.php",
-    responseType: "arraybuffer",
+    method: 'get',
+    url: 'https://www.ilmateenistus.ee/ilma_andmed/xml/forecast.php',
+    responseType: 'arraybuffer',
   });
   return xmlResponseToJson(
     iconv.decode(new Buffer(response.data), RESPONSE_CHARSET)
   );
 }
+
 export async function getWarnings(): Promise<WarningsResponse> {
   let response;
   try {
     response = await axios({
-      method: "get",
-      url: "https://www.ilmateenistus.ee/ilma_andmed/xml/hoiatus.php",
-      responseType: "arraybuffer",
+      method: 'get',
+      url: 'https://www.ilmateenistus.ee/ilma_andmed/xml/hoiatus.php',
+      responseType: 'arraybuffer',
     });
   } catch (e) {
     if (e.response) {
@@ -42,7 +43,7 @@ export async function getWarnings(): Promise<WarningsResponse> {
     }
   }
 
-  return xmlResponseToJson(iconv.decode(new Buffer(response.data), "UTF-8"));
+  return xmlResponseToJson(iconv.decode(new Buffer(response.data), 'UTF-8'));
 }
 
 function xmlResponseToJson(response: string): Promise<any> {
@@ -61,26 +62,26 @@ function xmlResponseToJson(response: string): Promise<any> {
 
 export async function getLocationByName(name: string): Promise<any> {
   const response = await axios.get(
-    "https://m.ilmateenistus.ee/wp-content/themes/emhi2013/async/locationAutocomplete.php?mobile=true",
+    'https://m.ilmateenistus.ee/wp-content/themes/emhi2013/async/locationAutocomplete.php?mobile=true',
     {
       params: {
         autocomplete: name,
       },
     }
   );
-  return response;
+  return response.data;
 }
 
 export async function getDetailedForecast(
   coordinates: string
 ): Promise<DetailedForecastResponse> {
   const response = await axios.get(
-    "https://www.ilmateenistus.ee/wp-content/themes/emhi2013/meteogram.php",
+    'https://www.ilmateenistus.ee/wp-content/themes/emhi2013/meteogram.php',
     {
       params: {
         coordinates,
       },
-      responseType: "json",
+      responseType: 'json',
     }
   );
 
@@ -189,7 +190,7 @@ export interface Attributes2 {
 }
 
 export interface Phenomen {
-  "@attributes": Attributes2;
+  '@attributes': Attributes2;
 }
 
 export interface Attributes3 {
@@ -197,7 +198,7 @@ export interface Attributes3 {
 }
 
 export interface Precipitation {
-  "@attributes": Attributes3;
+  '@attributes': Attributes3;
 }
 
 export interface Attributes4 {
@@ -207,7 +208,7 @@ export interface Attributes4 {
 }
 
 export interface WindDirection {
-  "@attributes": Attributes4;
+  '@attributes': Attributes4;
 }
 
 export interface Attributes5 {
@@ -215,7 +216,7 @@ export interface Attributes5 {
 }
 
 export interface WindSpeed {
-  "@attributes": Attributes5;
+  '@attributes': Attributes5;
 }
 
 export interface Attributes6 {
@@ -224,7 +225,7 @@ export interface Attributes6 {
 }
 
 export interface Temperature {
-  "@attributes": Attributes6;
+  '@attributes': Attributes6;
 }
 
 export interface Attributes7 {
@@ -232,11 +233,11 @@ export interface Attributes7 {
 }
 
 export interface Pressure {
-  "@attributes": Attributes7;
+  '@attributes': Attributes7;
 }
 
 export interface Time {
-  "@attributes": Attributes;
+  '@attributes': Attributes;
   phenomen: Phenomen;
   precipitation: Precipitation;
   windDirection: WindDirection;
@@ -267,7 +268,7 @@ export interface Warning {
 }
 
 export interface Warnings {
-  warning: Warning[];
+  warning: Warning[] | Warning;
 }
 
 export interface WarningsResponse {
