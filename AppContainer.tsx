@@ -40,7 +40,7 @@ const AppNavigator = createMaterialTopTabNavigator(
         opacity: 0.3,
       },
       style: {
-        paddingTop: 23,
+        paddingTop: 73,
         width,
         backgroundColor: "transparent",
       },

@@ -45,18 +45,18 @@ interface PhenomenonIconProps {
   isDay?: boolean;
 }
 
-const height = Dimensions.get('window').height - 71; //full height
+const height = Dimensions.get('window').height - 121; //full height
 
 export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
-  const size = Math.max(110, Math.min(height * 0.3, 150));
+  const size = Math.max(100, Math.min(height * 0.3, 140));
   const iconProps = {
     width: props.width || size,
     height: props.height || size,
     fill: '#fff',
     style: props.style || {
       opacity: 1,
-      marginTop: 20,
-      marginBottom: 20,
+      marginTop: 10,
+      marginBottom: 10,
     }
   };
   const sunTimes = getTimes(props.date, props.latitude, props.longitude);

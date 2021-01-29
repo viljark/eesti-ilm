@@ -1,4 +1,4 @@
-import { getUserLocalDate } from "./dateUtil";
+import { getUserLocalDate, monthNames } from './dateUtil';
 
 export const dayNames = [
   "pühapäev",
@@ -13,6 +13,11 @@ export const dayNames = [
 export function getDayName(input: string) {
   const date = getUserLocalDate(input);
   return dayNames[date.getDay()];
+}
+
+export function getDate(input: string) {
+  const date = getUserLocalDate(input);
+  return date.getDate() + '. ' + monthNames[date.getMonth()]
 }
 
 export function getDayNameShort(input: string) {

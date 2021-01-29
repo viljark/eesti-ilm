@@ -1,12 +1,12 @@
 import { Time } from "../services";
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { ScrollView } from "react-native-gesture-handler";
 import { AreaChart, BarChart } from "react-native-svg-charts";
 import * as shape from "d3-shape";
 import { Text, View, ViewStyle } from "react-native";
 import { PhenomenonIcon } from "./PhenomenonIcon";
 import { getDayName } from "../utils/formatters";
-import { LocationData } from "expo-location";
+import { LocationObject } from "expo-location";
 import {
   Defs,
   G,
@@ -22,7 +22,7 @@ interface ForecastGraphProps {
   graphRef: React.MutableRefObject<null>;
   graphWidth: number;
   minTemp;
-  location: LocationData;
+  location: LocationObject;
   style?: ViewStyle;
 }
 

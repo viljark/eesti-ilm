@@ -153,6 +153,7 @@ export default function Main(props) {
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={() => {
+              console.log('setLatestUpdate')
               setLatestUpdate(new Date());
             }}
           />
@@ -279,7 +280,7 @@ export default function Main(props) {
 }
 
 const width = Dimensions.get("window").width; //full width
-const height = Dimensions.get("window").height - 71; //full height
+const height = Dimensions.get("window").height - 121; //full height
 
 const styles = StyleSheet.create({
   scrollContainer: {

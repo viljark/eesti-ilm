@@ -3,16 +3,16 @@ import { Time } from "../services";
 import { ScrollView } from "react-native-gesture-handler";
 import { getUserLocalDate } from "../utils/dateUtil";
 import { StyleSheet, Text, View } from "react-native";
-import { getDayName } from "../utils/formatters";
+import { getDate, getDayName } from '../utils/formatters';
 import { ForecastListItem } from "./ForecastListItem";
-import { LocationData } from "expo-location";
+import { LocationObject } from "expo-location";
 
 interface ForecastHourlyListProps {
   graphWidth: number;
   graphRef: React.MutableRefObject<any>;
   detailedForecast: Time[];
   latestUpdate: Date;
-  location: LocationData;
+  location: LocationObject;
 }
 
 export function ForecastHourlyList({
@@ -63,7 +63,7 @@ export function ForecastHourlyList({
             index === 0) && (
             <View style={styles.dayNameWrapper}>
               <Text style={styles.dayName}>
-                {getDayName(time["@attributes"].from)}
+                {getDayName(time["@attributes"].from)}, {getDate(time["@attributes"].from)}
               </Text>
             </View>
           ),
