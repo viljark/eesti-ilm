@@ -26,6 +26,7 @@ import { LocationContext } from "../../LocationContext";
 import * as Analytics from "expo-firebase-analytics";
 import ArrowUp from "../icons/ArrowUp";
 import Constants from 'expo-constants';
+import * as WebBrowser from 'expo-web-browser';
 
 function addZeroBefore(n) {
   return (n < 10 ? "0" : "") + n;
@@ -142,8 +143,8 @@ export default function Main(props) {
     <View style={{ flex: 1 }}>
       <Text
         style={styles.ilmateenistus}
-        onPress={() => {
-          Linking.openURL("https://www.ilmateenistus.ee");
+        onPress={async () => {
+          await WebBrowser.openBrowserAsync('https://www.ilmateenistus.ee');
         }}
       >
         Riigi Ilmateenistus - www.ilmateenistus.ee

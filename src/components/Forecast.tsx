@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     width,
     height: 60,
     position: 'absolute',
-    bottom: 65,
+    bottom: 70,
     left: 0,
     display: 'flex',
     alignSelf: 'stretch',
