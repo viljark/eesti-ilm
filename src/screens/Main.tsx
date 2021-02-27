@@ -21,10 +21,11 @@ import { getPhenomenonText } from "../utils/phenomenonUtil";
 import { PhenomenonIcon } from "../components/PhenomenonIcon";
 import { Radar } from "../components/Radar";
 import { Forecast } from "../components/Forecast";
-import { Linking } from "expo";
+import * as Linking from 'expo-linking'
 import { LocationContext } from "../../LocationContext";
 import * as Analytics from "expo-firebase-analytics";
 import ArrowUp from "../icons/ArrowUp";
+import Constants from 'expo-constants';
 
 function addZeroBefore(n) {
   return (n < 10 ? "0" : "") + n;
@@ -280,7 +281,7 @@ export default function Main(props) {
 }
 
 const width = Dimensions.get("window").width; //full width
-const height = Dimensions.get("window").height - 121; //full height
+const height = Dimensions.get("window").height - (Constants.statusBarHeight + 50); //full height
 
 const styles = StyleSheet.create({
   scrollContainer: {

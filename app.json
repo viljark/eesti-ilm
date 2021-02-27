@@ -8,7 +8,7 @@
       "android",
       "web"
     ],
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -29,7 +29,7 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "package": "ee.viljark.eestiilm",
-      "versionCode": 7,
+      "versionCode": 8,
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
@@ -43,7 +43,7 @@
           "config": {
             "organization": "viljar-kargenberg",
             "project": "eesti-ilm",
-            "authToken": ""
+            "authToken": "d420fd34a9a540a1ae67b8bb1e7f72982ba7af8c5d31447699b1aaaef09730eb"
           }
         }
       ]

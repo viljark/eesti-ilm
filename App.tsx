@@ -23,11 +23,14 @@ import {
 import { Autocomplete } from 'react-native-dropdown-autocomplete';
 import { getLocationByName } from './src/services';
 import * as Sentry from 'sentry-expo';
+import Constants from 'expo-constants';
+
+
 
 Sentry.init({
-  dsn: '',
+  dsn: 'https://af51d092fe394c5b832520eb8e494f93@o512763.ingest.sentry.io/5613608',
   enableInExpoDevelopment: true,
-  debug: false,
+  debug: false, // Sentry will try to print out useful debugging information if something goes wrong with sending an event. Set this to `false` in production.
 });
 
 
@@ -263,7 +266,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   autocompleteContainer: {
-    marginTop: 12,
+    marginTop: 0,
     paddingTop: 0,
     width: '100%',
     paddingHorizontal: 8,
@@ -271,7 +274,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     left: 0,
     position: 'absolute',
-    top: 13,
+    top: Constants.statusBarHeight + 3,
     zIndex: 2,
   },
   input: {

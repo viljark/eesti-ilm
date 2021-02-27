@@ -4,9 +4,9 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "build:android": "expo build:android -t app-bundle",
-    "build:android:apk": "expo build:android -t apk",
-    "publish": "expo publish",
+    "build:android": "expo build:android -t app-bundle --release-channel v2.0.1",
+    "build:android:apk": "expo build:android -t apk --release-channel v2.0.1",
+    "publish": "expo publish --release-channel v2.0.1",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"
@@ -43,7 +43,9 @@
     "react-navigation-tabs": "^2.5.5",
     "sentry-expo": "^3.0.4",
     "suncalc": "^1.8.0",
-    "util": "^0.12.0"
+    "util": "^0.12.0",
+    "expo-constants": "~9.3.3",
+    "expo-linking": "~2.0.1"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
