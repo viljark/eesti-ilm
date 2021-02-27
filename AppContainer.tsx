@@ -4,6 +4,7 @@ import { createAppContainer } from "react-navigation";
 import { createMaterialTopTabNavigator } from "react-navigation-tabs";
 import ForecastScreen from "./src/screens/ForecastScreen";
 import { Dimensions } from "react-native";
+import Constants from 'expo-constants';
 
 const height = Dimensions.get("window").height; //full height
 const width = Dimensions.get("window").width; //full width
@@ -40,7 +41,7 @@ const AppNavigator = createMaterialTopTabNavigator(
         opacity: 0.3,
       },
       style: {
-        paddingTop: 73,
+        paddingTop: 50 + Constants.statusBarHeight,
         width,
         backgroundColor: "transparent",
       },

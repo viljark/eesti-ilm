@@ -9,7 +9,7 @@ import * as Location from "expo-location";
 import { StatusBar } from "expo-status-bar";
 
 const width = Dimensions.get("window").width; //full width
-const height = Dimensions.get("window").height - 71; //full height
+const height = Dimensions.get("window").height; //full height
 
 const Background = (props: {
   children: React.ReactNode;
