@@ -116,7 +116,16 @@ export default function App() {
       setLocationData(storedLocationObject);
       console.log('set setLocationData from cache ', JSON.stringify(storedLocationObject))
     }
-    let { status } = await Permissions.getAsync(Permissions.LOCATION);
+    const providerStatus = await Location.getProviderStatusAsync();
+    let status;
+    console.log('providerStatus.locationServicesEnabled', providerStatus.locationServicesEnabled)
+    if (providerStatus.locationServicesEnabled) {
+      const locationPermissionResult = await Permissions.getAsync(Permissions.LOCATION);
+      status = locationPermissionResult.status
+    } else {
+      status = 'location-services-disabled'
+    }
+
     console.log('permission', status)
     if (status !== 'granted') {
       if (!storedLocationObject?.location) {
