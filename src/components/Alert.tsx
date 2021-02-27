@@ -1,13 +1,14 @@
 import { Warning } from "../services";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from 'react-native';
 import React from "react";
 import { monthNames } from "../utils/dateUtil";
+import * as WebBrowser from 'expo-web-browser';
 
 export function Alert({ alert }: { alert: Warning }) {
   return (
     <>
       {alert && (
-        <View
+        <TouchableOpacity
           style={{
             display: "flex",
             flexDirection: "column",
@@ -17,6 +18,9 @@ export function Alert({ alert }: { alert: Warning }) {
             backgroundColor: "rgba(0,0,0, .1)",
             borderColor: "rgba(0,0,0, .3)",
             borderWidth: 0.5,
+          }}
+          onPress={async () => {
+            await WebBrowser.openBrowserAsync('https://www.ilmateenistus.ee/ilm/prognoosid/hoiatused/');
           }}
         >
           <Text
@@ -48,7 +52,7 @@ export function Alert({ alert }: { alert: Warning }) {
           >
             {alert.content_est}
           </Text>
-        </View>
+        </TouchableOpacity>
       )}
     </>
   );
