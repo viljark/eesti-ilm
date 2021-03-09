@@ -21,12 +21,12 @@ import { getPhenomenonText } from "../utils/phenomenonUtil";
 import { PhenomenonIcon } from "../components/PhenomenonIcon";
 import { Radar } from "../components/Radar";
 import { Forecast } from "../components/Forecast";
-import * as Linking from 'expo-linking'
 import { LocationContext } from "../../LocationContext";
 import * as Analytics from "expo-firebase-analytics";
 import ArrowUp from "../icons/ArrowUp";
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
+import Feels from 'feels'
 
 function addZeroBefore(n) {
   return (n < 10 ? "0" : "") + n;
@@ -45,6 +45,7 @@ export default function Main(props) {
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
   const [showDataOrigin, setShowDataOrigin] = useState<boolean>(false);
+  const [realFeel, setRealFeel] = useState<number>(null);
   const { location, locationName } = useContext(LocationContext);
 
   useEffect(() => {
@@ -107,6 +108,23 @@ export default function Main(props) {
       console.warn("analytics error", e);
     }
   }, []);
+
+  useEffect(() => {
+    if (closestStation && observations) {
+      try {
+        const config = {
+          temp: Number(closestStation.airtemperature),
+          humidity: Number(getHumidity().relativehumidity),
+          speed: Number(getWindSpeedStation().windspeed)
+        };
+        setRealFeel(Math.round(new Feels(config).like() * 10)/10)
+      } catch (e) {
+        console.error('Real feel calculation failed', e)
+        setRealFeel(null)
+      }
+
+    }
+  }, [observations, closestStation]);
 
   async function fetchObservations() {
     setIsRefreshing(true);
@@ -186,6 +204,12 @@ export default function Main(props) {
                   </Text>
                   <Text style={styles.degree}>°C</Text>
                 </View>
+                {realFeel !== null && (
+                  <Text style={styles.realFeel}>
+                    Tajutav {realFeel}°C
+                  </Text>
+                )}
+
                 <Text style={styles.phenomenon}>
                   {phenomenon}{" "}
                   {showDataOrigin && (
@@ -342,7 +366,17 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
     marginTop: -10,
-    marginBottom: 30,
+    marginBottom: 10,
+  },
+  realFeel: {
+    color: "#fff",
+    opacity: 0.9,
+    fontSize: 12,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+    marginTop: -15,
+    marginBottom: 20,
   },
   ilmateenistus: {
     position: "absolute",
