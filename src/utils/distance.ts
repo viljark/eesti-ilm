@@ -18,5 +18,5 @@ export function closestObservationField(stations: Station[], field: keyof Statio
 export function closestStationWithObservationField(stations: Station[], field: keyof Station): Station {
   const withPhenomenons = stations.filter((s) => s[field]);
   const orderedStations = withPhenomenons.sort((a, b) => a.distance - b.distance);
-  return orderedStations[0];
+  return orderedStations[0]  || {} as Station;
 }
