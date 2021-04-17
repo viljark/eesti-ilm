@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-const Thunder = props => (
+const Thunder = (props) => (
   <Svg height="512pt" viewBox="0 -6 512 512" width="512pt" {...props}>
     <Path
       d="M281.98 363.223L79.832 498.493c-5.73 3.835-11.777 1.816-15.105-2.36-3.25-4.082-3.914-10.223.855-14.992l99.563-99.563H98.953c-10.039 0-15.082-12.152-7.973-19.258l106.512-106.5h95.117l-86.746 86.746h69.844c11.148 0 15.535 14.45 6.273 20.657zm0 0"

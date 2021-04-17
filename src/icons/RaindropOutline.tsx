@@ -1,5 +1,5 @@
-import * as React from "react";
-import Svg, { Path, G } from "react-native-svg";
+import * as React from 'react'
+import Svg, { Path, G } from 'react-native-svg'
 
 export function RaindropOutline(props) {
   return (
@@ -22,5 +22,5 @@ export function RaindropOutline(props) {
         />
       </G>
     </Svg>
-  );
+  )
 }

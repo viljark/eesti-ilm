@@ -1,13 +1,11 @@
-import React from 'react';
-
-
+import React from 'react'
 
 const phenomenonMap = {
-  'Clear': 'Selge',
+  Clear: 'Selge',
   'Few clouds': 'Vähene pilvisus',
   'Variable clouds': 'Poolpilves',
   'Cloudy with clear spells': 'Peamiselt pilves',
-  'Overcast': 'Pilves',
+  Overcast: 'Pilves',
   'Light snow shower': 'Nõrk hooglumi',
   'Moderate snow shower': 'Mõõdukas hooglumi',
   'Heavy snow shower': 'Tugev hooglumi',
@@ -17,7 +15,7 @@ const phenomenonMap = {
   'Light rain': 'Nõrk vihm',
   'Moderate rain': 'Mõõdukas vihm',
   'Heavy rain': 'Tugev vihm',
-  'Glaze': 'Jäide',
+  Glaze: 'Jäide',
   'Light sleet': 'Nõrk lörtsisadu',
   'Moderate sleet': 'Mõõdukas lörtsisadu',
   'Light snowfall': 'Nõrk lumesadu',
@@ -25,22 +23,21 @@ const phenomenonMap = {
   'Heavy snowfall': 'Tugev lumesadu',
   'Blowing snow': 'Üldtuisk',
   'Drifting snow': 'Pinnatuisk',
-  'Hail': 'Rahe',
-  'Mist': 'Uduvine',
-  'Fog': 'Udu',
-  'Thunder': 'Äike',
-  'Thunderstorm': 'Äikesevihm',
-};
-
+  Hail: 'Rahe',
+  Mist: 'Uduvine',
+  Fog: 'Udu',
+  Thunder: 'Äike',
+  Thunderstorm: 'Äikesevihm',
+}
 
 export function getIcon(phenomenon: string): React.ReactElement {
-  return null;
+  return null
 }
 
 export function getPhenomenonText(phenomenon: string): string {
   if (!phenomenon) {
-    return 'pole saadaval';
+    return 'pole saadaval'
   }
-  const phenomenonText = phenomenonMap[phenomenon];
-  return phenomenonText ? phenomenonText : 'pole saadaval';
+  const phenomenonText = phenomenonMap[phenomenon]
+  return phenomenonText ? phenomenonText : 'pole saadaval'
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-const StrongRain = props => (
+const StrongRain = (props) => (
   <Svg height="512pt" viewBox="-2 0 512 512" width="512pt" {...props}>
     <Path
       d="M435.754 131.36C431.316 58.07 370.484 0 296.078 0 236.07 0 184.891 37.773 165 90.84c-51.676.625-93.379 42.683-93.379 94.508 0 52.214 42.328 94.543 94.54 94.543h266.995c41.035 0 74.297-33.266 74.297-74.297 0-40.164-31.871-72.864-71.7-74.235zm0 0"

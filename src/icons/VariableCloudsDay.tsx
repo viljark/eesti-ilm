@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, G } from 'react-native-svg'
 
-const VariableCloudsDay = props => (
+const VariableCloudsDay = (props) => (
   <Svg height="512pt" viewBox="0 -32 512 512" width="512pt" {...props}>
     <Path
       d="M62.64 137.23c2.805-46.37 41.294-83.113 88.372-83.113 37.965 0 70.347 23.903 82.93 57.477 32.695.394 59.081 27.004 59.081 59.793 0 33.035-26.78 59.816-59.816 59.816H64.281c-25.96 0-47.008-21.047-47.008-47.008 0-25.41 20.168-46.097 45.368-46.965zm0 0"
@@ -57,4 +57,4 @@ const VariableCloudsDay = props => (
   </Svg>
 )
 
-export default VariableCloudsDay;
+export default VariableCloudsDay
