@@ -1,146 +1,123 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  RefreshControl,
-  Dimensions, AppStateStatus, AppState,
-} from 'react-native';
-import {
-  getDetailedForecast,
-  getLocationByName,
-  getWarnings,
-  Time,
-  Warning,
-} from '../services';
-import _ from 'lodash';
-import { LocationContext } from '../../LocationContext';
-import * as Location from 'expo-location';
-import { ScrollView } from 'react-native-gesture-handler';
-import { Alert } from '../components/Alert';
-import { ForecastGraph } from '../components/ForecastGraph';
-import { ForecastHourlyList } from '../components/ForecastHourlyList';
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { View, StyleSheet, RefreshControl, Dimensions, AppStateStatus, AppState } from 'react-native'
+import { getDetailedForecast, getLocationByName, getWarnings, Time, Warning } from '../services'
+import _ from 'lodash'
+import { LocationContext } from '../../LocationContext'
+import * as Location from 'expo-location'
+import { ScrollView } from 'react-native-gesture-handler'
+import { Alert } from '../components/Alert'
+import { ForecastGraph } from '../components/ForecastGraph'
+import { ForecastHourlyList } from '../components/ForecastHourlyList'
 
-const width = Dimensions.get('window').width; //full width
-const height = Dimensions.get('window').height - 121; //full height
+const width = Dimensions.get('window').width //full width
+const height = Dimensions.get('window').height - 121 //full height
 
 export default function ForecastScreen() {
-  const [query, setQuery] = useState(undefined);
-  const [data, setData] = useState([]);
+  const [query, setQuery] = useState(undefined)
+  const [data, setData] = useState([])
 
-  const [coordinates, setCoordinates] = useState('');
+  const [coordinates, setCoordinates] = useState('')
   const { location, locationName, locationRegion } = useContext<{
-    location: Location.LocationObject;
-    locationName: string;
-    locationRegion: string;
-  }>(LocationContext);
-  const [latestUpdate, setLatestUpdate] = useState<Date>(new Date());
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
-  const [detailedForecast, setDetailedForecast] = useState<Time[]>(undefined);
-  const [warning, setWarning] = useState<Warning>(null);
-  const [appState, setAppState] = useState<AppStateStatus>(
-    AppState.currentState
-  );
+    location: Location.LocationObject
+    locationName: string
+    locationRegion: string
+  }>(LocationContext)
+  const [latestUpdate, setLatestUpdate] = useState<Date>(new Date())
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(true)
+  const [detailedForecast, setDetailedForecast] = useState<Time[]>(undefined)
+  const [warning, setWarning] = useState<Warning>(null)
+  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
 
   async function getData(query) {
     if (!query) {
-      setData([]);
-      return;
+      setData([])
+      return
     }
-    const response = await getLocationByName(query);
-    setData(response || []);
+    const response = await getLocationByName(query)
+    setData(response || [])
   }
 
   async function getInitialData(query) {
-    if (!query) return;
-    const result = await getLocationByName(query);
-    const coords = result && result.length && result[0].koordinaat;
-    setCoordinates(coords);
+    if (!query) return
+    const result = await getLocationByName(query)
+    const coords = result && result.length && result[0].koordinaat
+    setCoordinates(coords)
   }
 
   async function fetchWarnings() {
-    if (!locationRegion) return;
-    const warningsResponse = await getWarnings();
-    let warning = warningsResponse?.warnings?.warning;
-    let locationWarning;
+    if (!locationRegion) return
+    const warningsResponse = await getWarnings()
+    let warning = warningsResponse?.warnings?.warning
+    let locationWarning
     if (warning) {
       if (Array.isArray(warning)) {
         locationWarning = warning.find((w) => {
-          return (
-            w.area_eng.includes(locationRegion) ||
-            w.area_est.includes(locationRegion)
-          );
-        });
+          return w.area_eng.includes(locationRegion) || w.area_est.includes(locationRegion)
+        })
       } else {
         if (warning.area_eng.includes(locationRegion) || warning.area_est.includes(locationRegion)) {
           locationWarning = warning
         }
       }
 
-      setWarning(locationWarning);
+      setWarning(locationWarning)
     }
   }
 
   async function getForecast(coordinates) {
-    setIsRefreshing(true);
-    const response = await getDetailedForecast(coordinates);
-    setDetailedForecast(response.forecast.tabular.time);
-    setIsRefreshing(false);
+    setIsRefreshing(true)
+    const response = await getDetailedForecast(coordinates)
+    setDetailedForecast(response.forecast.tabular.time)
+    setIsRefreshing(false)
   }
 
-  const debounceGetData = useRef<Function>();
+  const debounceGetData = useRef<Function>()
 
   useEffect(() => {
-    debounceGetData.current = _.debounce(getData, 500);
-  }, []);
+    debounceGetData.current = _.debounce(getData, 500)
+  }, [])
 
   useEffect(() => {
     if (!coordinates) {
-      return;
+      return
     }
-    getForecast(coordinates);
-  }, [coordinates, latestUpdate]);
+    getForecast(coordinates)
+  }, [coordinates, latestUpdate])
 
   useEffect(() => {
-    debounceGetData.current(query);
-  }, [query]);
+    debounceGetData.current(query)
+  }, [query])
 
   useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange);
+    AppState.addEventListener('change', handleAppStateChange)
     return () => {
-      AppState.removeEventListener('change', handleAppStateChange);
-    };
-  }, []);
+      AppState.removeEventListener('change', handleAppStateChange)
+    }
+  }, [])
 
   function handleAppStateChange(nextAppState: AppStateStatus) {
     setAppState((oldAppState) => {
-      if (
-        oldAppState.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        if (latestUpdate && (new Date().getTime() - latestUpdate.getTime()) > 1000 * 60 * 1) {
-          setLatestUpdate(new Date());
+      if (oldAppState.match(/inactive|background/) && nextAppState === 'active') {
+        if (latestUpdate && new Date().getTime() - latestUpdate.getTime() > 1000 * 60 * 1) {
+          setLatestUpdate(new Date())
         }
       }
-      return nextAppState;
-    });
+      return nextAppState
+    })
   }
 
   useEffect(() => {
-    getInitialData(locationName);
-  }, [locationName, latestUpdate]);
+    getInitialData(locationName)
+  }, [locationName, latestUpdate])
 
   useEffect(() => {
-    fetchWarnings();
-  }, [locationRegion, latestUpdate]);
+    fetchWarnings()
+  }, [locationRegion, latestUpdate])
 
-  const minTemp =
-    detailedForecast &&
-    _.min(
-      detailedForecast.map((f) => Number(f.temperature['@attributes'].value))
-    );
+  const minTemp = detailedForecast && _.min(detailedForecast.map((f) => Number(f.temperature['@attributes'].value)))
 
-  const graphRef = useRef(null);
-  const graphWidth = width * 4.5;
+  const graphRef = useRef(null)
+  const graphWidth = width * 4.5
   return (
     <ScrollView
       style={styles.scrollContainer}
@@ -150,21 +127,15 @@ export default function ForecastScreen() {
         <RefreshControl
           refreshing={isRefreshing}
           onRefresh={() => {
-            setLatestUpdate(new Date());
+            setLatestUpdate(new Date())
           }}
         />
       }
     >
       <View style={styles.container}>
         <View style={styles.forecastHourlyListWrapper}>
-          <Alert alert={warning}/>
-          <ForecastHourlyList
-            graphWidth={graphWidth}
-            graphRef={graphRef}
-            detailedForecast={detailedForecast}
-            latestUpdate={latestUpdate}
-            location={location}
-          />
+          <Alert alert={warning} />
+          <ForecastHourlyList graphWidth={graphWidth} graphRef={graphRef} detailedForecast={detailedForecast} latestUpdate={latestUpdate} location={location} />
         </View>
 
         <ForecastGraph
@@ -180,7 +151,7 @@ export default function ForecastScreen() {
         />
       </View>
     </ScrollView>
-  );
+  )
 }
 const styles = StyleSheet.create({
   scrollContainer: {
@@ -201,4 +172,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexBasis: '65%',
   },
-});
+})

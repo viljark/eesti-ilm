@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Circle, Path } from 'react-native-svg'
 
-const ClearDay = props => (
+const ClearDay = (props) => (
   <Svg viewBox="0 0 512 512" {...props}>
     <Circle cx={256} cy={256} r={112} fill="#ffcf00" />
     <Path

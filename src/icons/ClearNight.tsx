@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, G, Circle } from 'react-native-svg'
 
-const ClearNight = props => (
+const ClearNight = (props) => (
   <Svg viewBox="0 0 512.001 512.001" {...props}>
     <Path
       d="M350.012 150.789c-24.43 0-44.304-19.876-44.304-44.305a2.783 2.783 0 1 0-5.568 0c0 24.431-19.876 44.305-44.305 44.305a2.783 2.783 0 1 0 0 5.568c24.43 0 44.305 19.876 44.305 44.304a2.783 2.783 0 1 0 5.568 0c0-24.43 19.876-44.304 44.304-44.304a2.783 2.783 0 1 0 0-5.568z"

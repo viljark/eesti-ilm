@@ -1,52 +1,52 @@
-import React from "react";
-import Main from "./src/screens/Main";
-import { createAppContainer } from "react-navigation";
-import { createMaterialTopTabNavigator } from "react-navigation-tabs";
-import ForecastScreen from "./src/screens/ForecastScreen";
-import { Dimensions } from "react-native";
-import Constants from 'expo-constants';
+import React from 'react'
+import Main from './src/screens/Main'
+import { createAppContainer } from 'react-navigation'
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs'
+import ForecastScreen from './src/screens/ForecastScreen'
+import { Dimensions } from 'react-native'
+import Constants from 'expo-constants'
 
-const height = Dimensions.get("window").height; //full height
-const width = Dimensions.get("window").width; //full width
+const height = Dimensions.get('window').height //full height
+const width = Dimensions.get('window').width //full width
 
 const AppNavigator = createMaterialTopTabNavigator(
   {
     Main: {
       screen: Main,
       navigationOptions: ({ navigation }) => {
-        const params = navigation.state.params;
+        const params = navigation.state.params
         return {
-          title: "Ilm hetkel",
-        };
+          title: 'Ilm hetkel',
+        }
       },
     },
     Forecast: {
       screen: ForecastScreen,
       navigationOptions: ({ navigation }) => {
-        const params = navigation.state.params;
+        const params = navigation.state.params
         return {
           swipeEnabled: params ? params.swipeEnabled : true,
-          title: "72 tunni ennustus",
-        };
+          title: '72 tunni ennustus',
+        }
       },
     },
   },
   {
-    initialRouteName: "Main",
+    initialRouteName: 'Main',
     tabBarOptions: {
       showLabel: true,
       upperCaseLabel: false,
       indicatorStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         opacity: 0.3,
       },
       style: {
         paddingTop: 50 + Constants.statusBarHeight,
         width,
-        backgroundColor: "transparent",
+        backgroundColor: 'transparent',
       },
     },
   }
-);
+)
 
-export default createAppContainer(AppNavigator);
+export default createAppContainer(AppNavigator)

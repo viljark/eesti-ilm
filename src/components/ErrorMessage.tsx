@@ -1,14 +1,10 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
-
-
-export function ErrorMessage ({children}) {
+export function ErrorMessage({ children }) {
   return (
     <View style={styles.container}>
-      <Text>
-        {children}
-      </Text>
+      <Text>{children}</Text>
     </View>
   )
 }
@@ -22,4 +18,4 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-});
+})

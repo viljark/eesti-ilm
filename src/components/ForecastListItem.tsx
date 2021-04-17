@@ -1,43 +1,32 @@
-import React from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import { Time } from "../services";
-import { PhenomenonIcon } from "./PhenomenonIcon";
-import { formatHours } from "../utils/formatters";
-import { Location } from "expo";
-import { RaindropOutline } from "../icons/RaindropOutline";
-import { Raindrop } from "../icons/Raindrop";
-import ArrowUp from "../icons/ArrowUp";
+import React from 'react'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Time } from '../services'
+import { PhenomenonIcon } from './PhenomenonIcon'
+import { formatHours } from '../utils/formatters'
+import { Location } from 'expo'
+import { RaindropOutline } from '../icons/RaindropOutline'
+import { Raindrop } from '../icons/Raindrop'
+import ArrowUp from '../icons/ArrowUp'
 
-const width = Dimensions.get("window").width; //full width
+const width = Dimensions.get('window').width //full width
 
-export function ForecastListItem({
-  time,
-  location,
-}: {
-  latestUpdate: Date;
-  time: Time;
-  location: Location.LocationObject;
-}) {
-  const date = new Date(
-    time["@attributes"].from +
-      `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`
-  );
-  const raindropHeight = 20;
+export function ForecastListItem({ time, location }: { latestUpdate: Date; time: Time; location: Location.LocationObject }) {
+  const date = new Date(time['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`)
+  const raindropHeight = 20
+
   return (
     <View style={styles.item}>
       {/*<Text style={{ ...styles.text, ...styles.day }}>{getDay(date)}</Text>*/}
       <View style={styles.itemContainer}>
         <View style={styles.time}>
-          <Text style={{ ...styles.text, ...styles.hours }}>
-            {formatHours(date)}
-          </Text>
+          <Text style={{ ...styles.text, ...styles.hours }}>{formatHours(date)}</Text>
           <Text style={{ ...styles.text, ...styles.minutes }}>00</Text>
         </View>
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "flex-start",
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
           }}
         >
           <Text
@@ -46,13 +35,13 @@ export function ForecastListItem({
               ...styles.temperature,
             }}
           >
-            {Math.round(Number(time.temperature["@attributes"].value))}
+            {Math.round(Number(time.temperature['@attributes'].value))}
           </Text>
           <Text
             style={{
               ...styles.text,
               fontSize: 10,
-              fontFamily: "Inter_200ExtraLight",
+              fontFamily: 'Inter_200ExtraLight',
               marginTop: 3,
             }}
           >
@@ -61,17 +50,17 @@ export function ForecastListItem({
         </View>
         <View
           style={{
-            marginLeft: "auto",
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
+            marginLeft: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
           }}
         >
           <View
             style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
             }}
           >
             <Text
@@ -80,7 +69,7 @@ export function ForecastListItem({
                 fontSize: 10,
               }}
             >
-              {time.windSpeed["@attributes"].mps} m/s
+              {time.windSpeed['@attributes'].mps} m/s
             </Text>
             <View
               style={{
@@ -88,25 +77,19 @@ export function ForecastListItem({
 
                 transform: [
                   {
-                    rotate: `${Number(
-                      time.windDirection["@attributes"].deg
-                    )}deg`,
+                    rotate: `${Number(time.windDirection['@attributes'].deg)}deg`,
                   },
                 ],
               }}
             >
-              <ArrowUp
-                width={10}
-                height={10}
-                style={{ transform: [{ rotate: "180deg" }] }}
-              />
+              <ArrowUp width={10} height={10} style={{ transform: [{ rotate: '180deg' }] }} />
             </View>
           </View>
           <View
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
               width: 50,
             }}
           >
@@ -115,47 +98,28 @@ export function ForecastListItem({
                 width: raindropHeight,
               }}
             >
-              {Number(time.precipitation["@attributes"].value) !== 0 && (
+              {Number(time.precipitation['@attributes'].value) !== 0 && (
                 <View
                   style={{
-                    position: "relative",
+                    position: 'relative',
                     height: raindropHeight,
                   }}
                 >
                   <View
                     style={{
-                      position: "relative",
-                      height: Math.min(
-                        raindropHeight,
-                        (Number(time.precipitation["@attributes"].value) / 3) *
-                          raindropHeight
-                      ),
-                      overflow: "hidden",
-                      top:
-                        raindropHeight -
-                        Math.min(
-                          raindropHeight,
-                          (Number(time.precipitation["@attributes"].value) /
-                            3) *
-                            raindropHeight
-                        ),
+                      position: 'relative',
+                      height: Math.min(raindropHeight, (Number(time.precipitation['@attributes'].value) / 3) * raindropHeight),
+                      overflow: 'hidden',
+                      top: raindropHeight - Math.min(raindropHeight, (Number(time.precipitation['@attributes'].value) / 3) * raindropHeight),
                     }}
                   >
-                    <Raindrop
-                      width={raindropHeight}
-                      height={raindropHeight}
-                      style={{ position: "absolute", bottom: 0 }}
-                    />
+                    <Raindrop width={raindropHeight} height={raindropHeight} style={{ position: 'absolute', bottom: 0 }} />
                   </View>
-                  <RaindropOutline
-                    width={raindropHeight}
-                    height={raindropHeight}
-                    style={{ position: "absolute" }}
-                  />
+                  <RaindropOutline width={raindropHeight} height={raindropHeight} style={{ position: 'absolute' }} />
                 </View>
               )}
             </View>
-            {Number(time.precipitation["@attributes"].value) !== 0 && (
+            {Number(time.precipitation['@attributes'].value) !== 0 && (
               <Text
                 style={{
                   ...styles.text,
@@ -163,7 +127,7 @@ export function ForecastListItem({
                   marginTop: 2,
                 }}
               >
-                {time.precipitation["@attributes"].value} mm
+                {time.precipitation['@attributes'].value} mm
               </Text>
             )}
           </View>
@@ -174,23 +138,25 @@ export function ForecastListItem({
               marginRight: 8,
             }}
           >
-            {location && <PhenomenonIcon
-              latitude={location.coords.latitude}
-              longitude={location.coords.longitude}
-              width={30}
-              height={30}
-              style={{
-                width: 30,
-                height: 30,
-              }}
-              date={date}
-              phenomenon={time.phenomen["@attributes"].en}
-            />}
+            {location && (
+              <PhenomenonIcon
+                latitude={location.coords.latitude}
+                longitude={location.coords.longitude}
+                width={30}
+                height={30}
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+                date={date}
+                phenomenon={time.phenomen['@attributes'].en}
+              />
+            )}
           </View>
         </View>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -198,22 +164,22 @@ const styles = StyleSheet.create({
     padding: 3,
     flexGrow: 1,
     borderRadius: 5,
-    backgroundColor: "rgba(0,0,0, .1)",
-    borderColor: "rgba(0,0,0, .3)",
+    backgroundColor: 'rgba(0,0,0, .1)',
+    borderColor: 'rgba(0,0,0, .3)',
     borderWidth: 0.5,
     marginTop: 4,
     height: 48,
   },
   itemContainer: {
     flexGrow: 1,
-    flexDirection: "row",
-    alignContent: "flex-end",
+    flexDirection: 'row',
+    alignContent: 'flex-end',
   },
   text: {
-    fontFamily: "Inter_300Light",
-    color: "#fff",
+    fontFamily: 'Inter_300Light',
+    color: '#fff',
     fontSize: 12,
-    fontWeight: "100",
+    fontWeight: '100',
   },
   day: {
     fontSize: 10,
@@ -225,7 +191,7 @@ const styles = StyleSheet.create({
   },
   hours: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   minutes: {
     fontSize: 15,
@@ -237,9 +203,9 @@ const styles = StyleSheet.create({
     lineHeight: 34,
     paddingTop: 9,
     height: 34,
-    fontFamily: "Inter_200ExtraLight",
+    fontFamily: 'Inter_200ExtraLight',
   },
   precipitation: {
     fontSize: 8,
   },
-});
+})

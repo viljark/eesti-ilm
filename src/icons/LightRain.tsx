@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, G } from 'react-native-svg'
 
-const LightRain = props => (
+const LightRain = (props) => (
   <Svg height="512pt" viewBox="0 -26 512 512" width="512pt" {...props}>
     <Path
       d="M72.344 145.23C76.82 71.285 138.195 12.695 213.27 12.695c60.546 0 112.183 38.114 132.25 91.653 52.14.629 94.218 43.066 94.218 95.355 0 52.68-42.707 95.387-95.386 95.387H74.96C33.563 295.09 0 261.527 0 220.129c0-40.524 32.156-73.516 72.344-74.899zm0 0"
