@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import AppContainer from './AppContainer'
 import * as Location from 'expo-location'
 import { Alert, AppState, AppStateStatus, AsyncStorage, SafeAreaView, StyleSheet } from 'react-native'
-import * as Permissions from 'expo-permissions'
 import { LocationContext } from './LocationContext'
 import Background from './src/components/Background'
 import * as Analytics from 'expo-firebase-analytics'
@@ -83,10 +82,10 @@ export default function App() {
   }, [])
 
   async function loadPermissionStatus() {
-    const { status, canAskAgain } = await Permissions.getAsync(Permissions.LOCATION)
+    const { status, canAskAgain } = await Location.getForegroundPermissionsAsync()
     console.log('canAskAgain', canAskAgain)
     if (status !== 'granted' && canAskAgain) {
-      await Permissions.askAsync(Permissions.LOCATION)
+      await Location.requestForegroundPermissionsAsync()
     }
     getLocationAsync()
   }
@@ -100,7 +99,7 @@ export default function App() {
     let status
     console.log('providerStatus.locationServicesEnabled', providerStatus.locationServicesEnabled)
     if (providerStatus.locationServicesEnabled) {
-      const locationPermissionResult = await Permissions.getAsync(Permissions.LOCATION)
+      const locationPermissionResult = await Location.getForegroundPermissionsAsync()
       status = locationPermissionResult.status
     } else {
       status = 'location-services-disabled'
