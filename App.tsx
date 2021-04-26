@@ -230,20 +230,22 @@ export default function App() {
             listFooterStyle={styles.listFooterStyle}
           />
         </SafeAreaView>
-        <AppContainer
-          onNavigationStateChange={(prevState, currentState) => {
-            const currentScreen = getActiveRouteName(currentState)
-            const prevScreen = getActiveRouteName(prevState)
-            if (prevScreen !== currentScreen) {
-              try {
-                Analytics.setCurrentScreen(currentScreen)
-              } catch (e) {
-                console.warn('analytics error', e)
+        {fontsLoaded && (
+          <AppContainer
+            onNavigationStateChange={(prevState, currentState) => {
+              const currentScreen = getActiveRouteName(currentState)
+              const prevScreen = getActiveRouteName(prevState)
+              if (prevScreen !== currentScreen) {
+                try {
+                  Analytics.setCurrentScreen(currentScreen)
+                } catch (e) {
+                  console.warn('analytics error', e)
+                }
+                // Update Firebase with the name of your screen
               }
-              // Update Firebase with the name of your screen
-            }
-          }}
-        />
+            }}
+          />
+        )}
       </Background>
     </LocationContext.Provider>
   )

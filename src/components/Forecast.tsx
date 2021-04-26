@@ -57,10 +57,8 @@ export function Forecast(props: { latestUpdate: Date }) {
 
 const styles = StyleSheet.create({
   container: {
-    width,
+    width: width - 20,
     height: 60,
-    position: 'absolute',
-    bottom: 70,
     left: 0,
     display: 'flex',
     alignSelf: 'stretch',
@@ -76,6 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   smallText: {
+    fontFamily: 'Inter_200ExtraLight',
     color: '#fff',
     opacity: 1,
     fontSize: 10,

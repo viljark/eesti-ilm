@@ -36,8 +36,8 @@ export function getIcon(phenomenon: string): React.ReactElement {
 
 export function getPhenomenonText(phenomenon: string): string {
   if (!phenomenon) {
-    return 'pole saadaval'
+    return ''
   }
   const phenomenonText = phenomenonMap[phenomenon]
-  return phenomenonText ? phenomenonText : 'pole saadaval'
+  return phenomenonText ? phenomenonText : ''
 }
