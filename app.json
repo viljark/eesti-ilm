@@ -8,7 +8,7 @@
       "android",
       "web"
     ],
-    "version": "2.0.2",
+    "version": "2.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -29,7 +29,7 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "package": "ee.viljark.eestiilm",
-      "versionCode": 9,
+      "versionCode": 10,
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
