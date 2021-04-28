@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AppContainer from './AppContainer'
 import * as Location from 'expo-location'
-import { Alert, AppState, AppStateStatus, AsyncStorage, SafeAreaView, StyleSheet } from 'react-native'
+import { Alert, AppState, AppStateStatus, SafeAreaView, StyleSheet } from 'react-native'
 import { LocationContext } from './LocationContext'
 import Background from './src/components/Background'
 import * as Analytics from 'expo-firebase-analytics'
@@ -11,6 +11,7 @@ import { Autocomplete } from 'react-native-dropdown-autocomplete'
 import { getLocationByName } from './src/services'
 import * as Sentry from 'sentry-expo'
 import Constants from 'expo-constants'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 Sentry.init({
   dsn: 'https://af51d092fe394c5b832520eb8e494f93@o512763.ingest.sentry.io/5613608',
@@ -65,16 +66,19 @@ export default function App() {
     locationRegion: string
     locationName: string
   }> {
-    try {
-      const locationObject = await AsyncStorage.getItem('location')
-      if (locationObject !== null) {
-        console.log('retrieved location', locationObject)
-        return JSON.parse(locationObject)
+    return new Promise((resolve, reject) => {
+      try {
+        AsyncStorage.getItem('location', (e, locationObject) => {
+          if (locationObject !== null) {
+            console.log('retrieved location', locationObject)
+            resolve(JSON.parse(locationObject))
+          }
+          resolve(null)
+        })
+      } catch (error) {
+        return resolve(null)
       }
-    } catch (error) {
-      return null
-    }
-    return null
+    })
   }
 
   useEffect(() => {
@@ -93,7 +97,6 @@ export default function App() {
     const storedLocationObject = await retrieveStoredLocation()
     if (storedLocationObject) {
       setLocationData(storedLocationObject)
-      console.log('set setLocationData from cache ', JSON.stringify(storedLocationObject))
     }
     const providerStatus = await Location.getProviderStatusAsync()
     let status

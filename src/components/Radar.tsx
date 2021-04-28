@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight, Slider }
 import HTMLParser from 'fast-html-parser'
 import { LocationContext } from '../../LocationContext'
 
-const width = Dimensions.get('window').width //full width
+const width = Dimensions.get('window').width - 20 //full width
 export function Radar(props: { latestUpdate: Date }) {
   const [images, setImages] = useState([])
   const [index, setIndex] = useState(0)
@@ -92,7 +92,7 @@ export function Radar(props: { latestUpdate: Date }) {
                   top: 0,
                 }}
               >
-                <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={0} />
+                <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={100} />
               </TouchableHighlight>
             ))}
 
@@ -133,6 +133,10 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'flex-start',
     justifyContent: 'center',
+    position: 'relative',
+    borderRadius: 30,
+    margin: 10,
+    overflow: 'hidden',
   },
   smallText: {
     color: '#fff',
