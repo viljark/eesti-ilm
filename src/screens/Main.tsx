@@ -14,13 +14,10 @@ import ArrowUp from '../icons/ArrowUp'
 import Constants from 'expo-constants'
 import * as WebBrowser from 'expo-web-browser'
 import Feels from 'feels'
-
-function addZeroBefore(n) {
-  return (n < 10 ? '0' : '') + n
-}
+import useAsyncStorage from '../utils/useAsyncStorage'
 
 export default function Main(props) {
-  const [allObservations, setAllObservations] = useState<Observations>(undefined)
+  const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
   const [observations, setObservations] = useState<Observations>(undefined)
   const [errorMessage, setErrormessage] = useState(undefined)
   const [closestStation, setClosestStation] = useState<Station>(undefined)
@@ -187,7 +184,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     alignSelf: 'stretch',
-    height: height,
+    marginBottom: 10,
   },
   ilmateenistus: {
     position: 'absolute',

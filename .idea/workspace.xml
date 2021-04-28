@@ -20,12 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="add analytics, prepare version 5">
+      <change afterPath="$PROJECT_DIR$/src/utils/useAsyncStorage.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AppContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/AppContainer.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Background.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Background.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Main.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -132,6 +132,7 @@
       <workItem from="1598475095151" duration="5402000" />
       <workItem from="1607170821404" duration="2515000" />
       <workItem from="1611856040108" duration="36057000" />
+      <workItem from="1619557123332" duration="269000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -300,11 +301,12 @@
     </state>
     <state width="1899" height="277" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1611912312124" />
     <state width="1899" height="331" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1611998612597" />
-    <state width="498" height="446" key="SwitcherDM" timestamp="1611954060734">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state width="664" height="601" key="SwitcherDM" timestamp="1619557367996">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1611912284436" />
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1611954060734" />
+    <state width="664" height="601" key="SwitcherDM/2560.202.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1619557367996" />
     <state x="2717" y="142" key="VCS.ChangeListViewerDialog" timestamp="1611919076772">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>

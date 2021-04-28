@@ -1,56 +1,82 @@
 import { Warning } from '../services'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { monthNames } from '../utils/dateUtil'
 import * as WebBrowser from 'expo-web-browser'
+import * as Location from 'expo-location'
+import Background from './Background'
+import Constants from 'expo-constants'
+import { blockBackground, commonStyles } from '../utils/styles'
 
-export function Alert({ alert }: { alert: Warning }) {
+const width = Dimensions.get('window').width //full width
+const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
+
+export function Alert({ alert, location }: { alert: Warning; location: Location.LocationObject }) {
   return (
     <>
       {alert && (
         <TouchableOpacity
           style={{
             display: 'flex',
-            flexDirection: 'column',
             marginTop: 10,
-            padding: 3,
-            borderRadius: 5,
-            backgroundColor: 'rgba(0,0,0, .1)',
-            borderColor: 'rgba(0,0,0, .3)',
-            borderWidth: 0.5,
+            borderRadius: 15,
+            backgroundColor: 'rgba(0,0,0, .5)',
+            overflow: 'hidden',
+            ...commonStyles.blockShadow,
           }}
           onPress={async () => {
             await WebBrowser.openBrowserAsync('https://www.ilmateenistus.ee/ilm/prognoosid/hoiatused/')
           }}
         >
-          <Text
+          <View
             style={{
-              fontSize: 13,
-              color: '#fff',
-              fontFamily: 'Inter_700Bold',
+              position: 'absolute',
+              left: 0,
+              bottom: -200,
+              transform: [
+                {
+                  rotate: `${180}deg`,
+                },
+              ],
+              height: height,
+              width: width,
+              zIndex: -1,
             }}
           >
+            <Background location={location}>
+              <Text></Text>
+            </Background>
+          </View>
+          <View style={{ display: 'flex', flexDirection: 'column', padding: 10, backgroundColor: blockBackground }}>
             <Text
               style={{
-                color: 'red',
-                fontSize: 15,
+                fontSize: 13,
+                color: '#fff',
                 fontFamily: 'Inter_700Bold',
               }}
             >
-              ⚠{' '}
+              <Text
+                style={{
+                  color: 'red',
+                  fontSize: 15,
+                  fontFamily: 'Inter_700Bold',
+                }}
+              >
+                ⚠{' '}
+              </Text>
+              Hoiatus: {new Date(alert.timestamp * 1000).getDate()} {monthNames[new Date(alert.timestamp * 1000).getMonth()]}
             </Text>
-            Hoiatus: {new Date(alert.timestamp * 1000).getDate()} {monthNames[new Date(alert.timestamp * 1000).getMonth()]}
-          </Text>
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: 12,
-              paddingLeft: 18,
-              fontFamily: 'Inter_300Light',
-            }}
-          >
-            {alert.content_est}
-          </Text>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 12,
+                paddingLeft: 18,
+                fontFamily: 'Inter_200ExtraLight',
+              }}
+            >
+              {alert.content_est}
+            </Text>
+          </View>
         </TouchableOpacity>
       )}
     </>

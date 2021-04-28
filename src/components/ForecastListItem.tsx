@@ -3,12 +3,12 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Time } from '../services'
 import { PhenomenonIcon } from './PhenomenonIcon'
 import { formatHours } from '../utils/formatters'
-import { Location } from 'expo'
+import * as Location from 'expo-location'
 import { RaindropOutline } from '../icons/RaindropOutline'
 import { Raindrop } from '../icons/Raindrop'
 import ArrowUp from '../icons/ArrowUp'
-
-const width = Dimensions.get('window').width //full width
+import Background from './Background'
+import Constants from 'expo-constants'
 
 export function ForecastListItem({ time, location }: { latestUpdate: Date; time: Time; location: Location.LocationObject }) {
   const date = new Date(time['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`)
@@ -16,7 +16,6 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
 
   return (
     <View style={styles.item}>
-      {/*<Text style={{ ...styles.text, ...styles.day }}>{getDay(date)}</Text>*/}
       <View style={styles.itemContainer}>
         <View style={styles.time}>
           <Text style={{ ...styles.text, ...styles.hours }}>{formatHours(date)}</Text>
@@ -161,16 +160,18 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
 
 const styles = StyleSheet.create({
   item: {
-    padding: 3,
     flexGrow: 1,
-    borderRadius: 5,
-    backgroundColor: 'rgba(0,0,0, .1)',
-    borderColor: 'rgba(0,0,0, .3)',
-    borderWidth: 0.5,
-    marginTop: 4,
+    borderRadius: 15,
+    borderBottomWidth: 0.5,
+    borderColor: 'rgba(0,0,0, .6)',
+    marginTop: 0,
     height: 48,
+    position: 'relative',
+    overflow: 'hidden',
   },
   itemContainer: {
+    paddingVertical: 3,
+    paddingHorizontal: 17,
     flexGrow: 1,
     flexDirection: 'row',
     alignContent: 'flex-end',

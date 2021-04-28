@@ -51,20 +51,6 @@ const Background = (props: { children: React.ReactNode; location: Location.Locat
 
   return gradient ? (
     <LinearGradient style={styles.container} colors={gradient.color} start={[0.5, 0]} locations={gradient.location}>
-      {/* {!isNight && (
-        <ExpoLinearGradient
-          style={{
-            display: 'flex',
-            height: height,
-            position: 'absolute',
-            bottom: 0,
-            width,
-          }}
-          colors={['rgba(0,0,0,0)', 'rgba(3,42,78,0.2)', 'rgba(0,0,0,0.35)']}
-          start={[0, 0]}
-          locations={[1 / 100, 50 / 100, 1]}
-        ></ExpoLinearGradient>
-      )} */}
       {props.children}
       <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'} />
     </LinearGradient>

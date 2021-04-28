@@ -13,6 +13,7 @@ import UvIndex from '../icons/UvIndex'
 import Humidity from '../icons/Humidity'
 import { Forecast } from './Forecast'
 import Precipitations from '../icons/Precipitations'
+import { commonStyles } from '../utils/styles'
 
 interface CurrentWeatherProps {
   closestStation: Station
@@ -157,15 +158,7 @@ const borderColor = 'rgba(0, 0, 0, 1)'
 
 const styles = StyleSheet.create({
   box: {
-    marginTop: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
+    marginTop: 0,
     width: width - 20,
     marginLeft: 10,
     marginRight: 10,
@@ -173,6 +166,8 @@ const styles = StyleSheet.create({
     height: 355,
     overflow: 'hidden',
     backgroundColor: '#5C8BC2',
+    marginBottom: 10,
+    ...commonStyles.blockShadow,
   },
   top: {
     height: 150,
@@ -213,20 +208,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_200ExtraLight',
     marginBottom: 10,
     marginTop: -10,
-    height: 130 - 30,
+    height: 130 - 26,
     letterSpacing: -5,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
+    ...commonStyles.textShadow,
   },
   degree: {
     paddingTop: 10,
     color: '#fff',
     fontSize: 40,
     marginLeft: 0,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
+    ...commonStyles.textShadow,
   },
   phenomenonWrap: {
     flex: 1,
@@ -244,9 +235,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexBasis: '100%',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
+    ...commonStyles.textShadow,
   },
 
   bottom: {
@@ -256,15 +245,13 @@ const styles = StyleSheet.create({
   },
   realFeel: {
     fontFamily: 'Inter_200ExtraLight',
-    marginTop: 4,
+    marginTop: 0,
     color: '#fff',
     fontSize: 14,
     flex: 1,
     flexBasis: '100%',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
+    ...commonStyles.textShadow,
   },
   row: {
     height: 50,

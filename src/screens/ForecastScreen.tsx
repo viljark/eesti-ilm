@@ -8,15 +8,17 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { Alert } from '../components/Alert'
 import { ForecastGraph } from '../components/ForecastGraph'
 import { ForecastHourlyList } from '../components/ForecastHourlyList'
+import useAsyncStorage from '../utils/useAsyncStorage'
+import Constants from 'expo-constants'
 
 const width = Dimensions.get('window').width //full width
-const height = Dimensions.get('window').height - 121 //full height
+const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50 + 50) //full height
 
 export default function ForecastScreen() {
   const [query, setQuery] = useState(undefined)
   const [data, setData] = useState([])
 
-  const [coordinates, setCoordinates] = useState('')
+  const [coordinates, setCoordinates] = useAsyncStorage<string>('coordinates')
   const { location, locationName, locationRegion } = useContext<{
     location: Location.LocationObject
     locationName: string
@@ -24,7 +26,7 @@ export default function ForecastScreen() {
   }>(LocationContext)
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date())
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true)
-  const [detailedForecast, setDetailedForecast] = useState<Time[]>(undefined)
+  const [detailedForecast, setDetailedForecast] = useAsyncStorage<Time[]>('detailedForecast')
   const [warning, setWarning] = useState<Warning>(null)
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
 
@@ -118,6 +120,7 @@ export default function ForecastScreen() {
 
   const graphRef = useRef(null)
   const graphWidth = width * 4.5
+
   return (
     <ScrollView
       style={styles.scrollContainer}
@@ -134,7 +137,7 @@ export default function ForecastScreen() {
     >
       <View style={styles.container}>
         <View style={styles.forecastHourlyListWrapper}>
-          <Alert alert={warning} />
+          <Alert alert={warning} location={location} />
           <ForecastHourlyList graphWidth={graphWidth} graphRef={graphRef} detailedForecast={detailedForecast} latestUpdate={latestUpdate} location={location} />
         </View>
 
