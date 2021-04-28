@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight, Slider } from 'react-native'
+import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight, Slider, ActivityIndicator } from 'react-native'
 import HTMLParser from 'fast-html-parser'
 import { LocationContext } from '../../LocationContext'
 
@@ -81,7 +81,8 @@ export function Radar(props: { latestUpdate: Date }) {
     <View style={styles.container}>
       {images.length > 0 && (
         <>
-          <View style={{ width: width, height: width }}>
+          <View style={{ width: width, height: width, position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator style={{ zIndex: 0 }} size="small" color="#fff" />
             {images.map((image, i) => (
               <TouchableHighlight
                 key={i}
@@ -95,7 +96,6 @@ export function Radar(props: { latestUpdate: Date }) {
                 <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={100} />
               </TouchableHighlight>
             ))}
-
             <Slider
               value={index}
               maximumValue={images.length - 1}
