@@ -24,3 +24,23 @@ export function formatHours(date: Date) {
   }
   return String(hours)
 }
+
+export function getFormattedTime(timestamp: number) {
+  if (!timestamp) {
+    return ''
+  }
+  const date = new Date(timestamp)
+  return addZeroBefore(date.getHours()) + ':' + addZeroBefore(date.getMinutes())
+}
+
+export function getFormattedDateTime(timestamp: number) {
+  if (!timestamp) {
+    return ''
+  }
+  const date = new Date(timestamp)
+  return `${date.getDate()}. ${monthNames[date.getMonth()]}, ${getFormattedTime(timestamp)}`
+}
+
+function addZeroBefore(n: number) {
+  return (n < 10 ? '0' : '') + n
+}

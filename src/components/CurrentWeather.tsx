@@ -14,6 +14,7 @@ import Humidity from '../icons/Humidity'
 import { Forecast } from './Forecast'
 import Precipitations from '../icons/Precipitations'
 import { commonStyles } from '../utils/styles'
+import { getFormattedDateTime } from '../utils/formatters'
 
 interface CurrentWeatherProps {
   closestStation: Station
@@ -26,15 +27,12 @@ interface CurrentWeatherProps {
   waterStationName: string
   uv: string
   humidity: string
-  latestUpdate: Date
   precipitations: string
+  latestUpdate: Date
+  observationsReceivedAt: number
 }
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
-
-function addZeroBefore(n) {
-  return (n < 10 ? '0' : '') + n
-}
 
 export function CurrentWeather({
   closestStation,
@@ -49,6 +47,7 @@ export function CurrentWeather({
   humidity,
   latestUpdate,
   precipitations,
+  observationsReceivedAt,
 }: CurrentWeatherProps) {
   const { location, locationName } = useContext(LocationContext)
 
@@ -75,7 +74,15 @@ export function CurrentWeather({
             <Text style={styles.realFeel}>Tajutav {realFeel || '-'}°</Text>
           </View>
           <View style={styles.phenomenonWrap}>
-            <PhenomenonIcon style={{ opacity: 1 }} width={110} height={110} phenomenon={phenomenon} latitude={location?.coords.latitude} longitude={location?.coords.longitude} />
+            <PhenomenonIcon
+              style={{ opacity: 1 }}
+              width={110}
+              height={110}
+              phenomenon={phenomenon}
+              latitude={location?.coords.latitude}
+              longitude={location?.coords.longitude}
+              date={observationsReceivedAt ? new Date(observationsReceivedAt) : new Date()}
+            />
 
             <Text style={styles.phenomenon}>{getPhenomenonText(phenomenon) || '-'}</Text>
           </View>
@@ -141,7 +148,7 @@ export function CurrentWeather({
           </View>
           <View style={styles.rowNarrow}>
             <Text style={styles.stationText}>
-              {closestStation?.name}, {latestUpdate && addZeroBefore(latestUpdate.getHours()) + ':' + addZeroBefore(latestUpdate.getMinutes())}
+              {closestStation?.name} - {observationsReceivedAt && getFormattedDateTime(observationsReceivedAt)}
             </Text>
           </View>
         </View>

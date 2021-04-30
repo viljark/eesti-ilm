@@ -97,6 +97,7 @@ export default function Main(props) {
   async function fetchObservations() {
     setIsRefreshing(true)
     const response = await getObservations()
+
     setIsRefreshing(false)
     setAllObservations(response.observations)
   }
@@ -109,7 +110,8 @@ export default function Main(props) {
   const getPrecipitations = () => closestStationWithObservationField(observations?.station, 'precipitations')
   const getUVIndex = () => closestStationWithObservationField(observations?.station, 'uvindex')
 
-  const phenomenon = observations ? getPhenomenonText(getPhenomenonStation().phenomenon) : ''
+  const observationsReceivedAt = Number(allObservations?.$?.timestamp) * 1000 || null
+
   return (
     <View style={{ flex: 1 }}>
       <Text
@@ -143,7 +145,9 @@ export default function Main(props) {
               <CurrentWeather
                 closestStation={closestStation}
                 realFeel={realFeel}
-                phenomenon={closestObservationField(observations?.station, 'phenomenon') as string}
+                latestUpdate={latestUpdate}
+                observationsReceivedAt={observationsReceivedAt}
+                phenomenon={getPhenomenonStation()?.phenomenon}
                 windSpeed={getWindSpeedStation()?.windspeed}
                 windSpeedMax={getWindSpeedMax()?.windspeedmax}
                 windDirection={Number(getWindSpeedStation()?.winddirection)}
@@ -151,7 +155,6 @@ export default function Main(props) {
                 waterTemperature={getWaterTempStation()?.watertemperature}
                 uv={getUVIndex()?.uvindex}
                 humidity={getHumidity()?.relativehumidity}
-                latestUpdate={latestUpdate}
                 precipitations={getPrecipitations()?.precipitations}
               />
             </View>
