@@ -39,12 +39,12 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
           <Text
             style={{
               ...styles.text,
-              fontSize: 10,
+              fontSize: 18,
               fontFamily: 'Inter_200ExtraLight',
-              marginTop: 3,
+              marginTop: -3,
             }}
           >
-            ℃
+            °
           </Text>
         </View>
         <View
