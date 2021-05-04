@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, RefreshControl, Dimensions, AppStateStatus, AppState } from 'react-native'
-import { getDetailedForecast, getLocationByName, getWarnings, Time, Warning } from '../services'
+import { getDetailedForecast, getLocationByName, getWarningForLocation, Time, Warning } from '../services'
 import _ from 'lodash'
 import { LocationContext } from '../../LocationContext'
 import * as Location from 'expo-location'
@@ -47,23 +47,8 @@ export default function ForecastScreen() {
   }
 
   async function fetchWarnings() {
-    if (!locationRegion) return
-    const warningsResponse = await getWarnings()
-    let warning = warningsResponse?.warnings?.warning
-    let locationWarning
-    if (warning) {
-      if (Array.isArray(warning)) {
-        locationWarning = warning.find((w) => {
-          return w.area_eng.includes(locationRegion) || w.area_est.includes(locationRegion)
-        })
-      } else {
-        if (warning.area_eng.includes(locationRegion) || warning.area_est.includes(locationRegion)) {
-          locationWarning = warning
-        }
-      }
-
-      setWarning(locationWarning)
-    }
+    const warning = await getWarningForLocation(locationRegion)
+    setWarning(warning)
   }
 
   async function getForecast(coordinates) {

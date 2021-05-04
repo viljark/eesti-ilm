@@ -12,6 +12,7 @@ import { getLocationByName } from './src/services'
 import * as Sentry from 'sentry-expo'
 import Constants from 'expo-constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { retrieveStoredLocation, storeLocationData } from './src/utils/locationAsyncStorage'
 
 Sentry.init({
   dsn: 'https://af51d092fe394c5b832520eb8e494f93@o512763.ingest.sentry.io/5613608',
@@ -49,35 +50,6 @@ export default function App() {
         getLocationAsync()
       }
       return nextAppState
-    })
-  }
-
-  async function storeLocationData(locationDataArgs: { location: Location.LocationObject; locationName: string; locationRegion: string }) {
-    try {
-      await AsyncStorage.setItem('location', JSON.stringify(locationDataArgs))
-      console.log('saved location', JSON.stringify(locationDataArgs))
-    } catch (error) {
-      // Error saving data
-    }
-  }
-
-  async function retrieveStoredLocation(): Promise<{
-    location: Location.LocationObject
-    locationRegion: string
-    locationName: string
-  }> {
-    return new Promise((resolve, reject) => {
-      try {
-        AsyncStorage.getItem('location', (e, locationObject) => {
-          if (locationObject !== null) {
-            console.log('retrieved location', locationObject)
-            resolve(JSON.parse(locationObject))
-          }
-          resolve(null)
-        })
-      } catch (error) {
-        return resolve(null)
-      }
     })
   }
 

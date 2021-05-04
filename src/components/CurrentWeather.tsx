@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Dimensions, TouchableWithoutFeedback } from 'react-native'
 import Constants from 'expo-constants'
 import { Station } from '../services'
@@ -14,8 +14,11 @@ import Humidity from '../icons/Humidity'
 import { Forecast } from './Forecast'
 import Precipitations from '../icons/Precipitations'
 import { commonStyles } from '../utils/styles'
-import { getFormattedDateTime } from '../utils/formatters'
-
+import { formatHours, getFormattedDateTime, getFormattedTime } from '../utils/formatters'
+import * as Notifications from 'expo-notifications'
+import Sunrise from '../icons/Sunrise'
+import Sunset from '../icons/Sunset'
+import { getTimes, GetTimesResult } from 'suncalc'
 interface CurrentWeatherProps {
   closestStation: Station
   realFeel: number | null
@@ -52,6 +55,7 @@ export function CurrentWeather({
   const { location, locationName } = useContext(LocationContext)
 
   const [showOtherMeta, setShowOtherMeta] = useState<boolean>(false)
+  const [sunTimes, setSunTimes] = useState<GetTimesResult>(null)
 
   const metaIconProps = {
     width: 25,
@@ -59,6 +63,12 @@ export function CurrentWeather({
     fill: '#fff',
     style: { marginRight: 10 },
   }
+
+  useEffect(() => {
+    const sunTimes = location ? getTimes(new Date(), location.coords.latitude, location.coords.longitude) : null
+    setSunTimes(sunTimes)
+  }, [location, latestUpdate])
+
   return (
     <View style={styles.box}>
       <View style={styles.background}>
@@ -143,6 +153,16 @@ export function CurrentWeather({
               <Text style={styles.metaText}>{humidity}%</Text>
             </View>
           </View>
+          <View style={styles.row}>
+            <View style={styles.cellLeft}>
+              <Sunrise {...metaIconProps} />
+              <Text style={styles.metaText}>{sunTimes ? getFormattedTime(sunTimes.sunrise.getTime()) : '-'}</Text>
+            </View>
+            <View style={styles.cellRight}>
+              <Sunset {...metaIconProps} />
+              <Text style={styles.metaText}>{sunTimes ? getFormattedTime(sunTimes.sunset.getTime()) : '-'}</Text>
+            </View>
+          </View>
           <View style={styles.rowForecast}>
             <Forecast latestUpdate={latestUpdate} />
           </View>
@@ -170,7 +190,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 30,
-    height: 355,
+    height: 405,
     overflow: 'hidden',
     backgroundColor: '#5C8BC2',
     marginBottom: 10,
@@ -191,7 +211,7 @@ const styles = StyleSheet.create({
   background: {
     position: 'absolute',
     left: 0,
-    top: -height + 355,
+    top: -height + 405,
     transform: [
       {
         rotate: `${180}deg`,

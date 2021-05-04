@@ -42,6 +42,26 @@ export async function getWarnings(): Promise<WarningsResponse> {
   return xmlResponseToJson(iconv.decode(new Buffer(response.data), 'UTF-8'))
 }
 
+export async function getWarningForLocation(locationRegion: string | undefined): Promise<Warning | undefined> {
+  if (!locationRegion) return
+  const warningsResponse = await getWarnings()
+  let warning = warningsResponse?.warnings?.warning
+  let locationWarning
+  if (warning) {
+    if (Array.isArray(warning)) {
+      locationWarning = warning.find((w) => {
+        return w.area_eng.includes(locationRegion) || w.area_est.includes(locationRegion)
+      })
+    } else {
+      if (warning.area_eng.includes(locationRegion) || warning.area_est.includes(locationRegion)) {
+        locationWarning = warning
+      }
+    }
+
+    return locationWarning
+  }
+}
+
 function xmlResponseToJson(response: string): Promise<any> {
   return new Promise((resolve, reject) => {
     parseString(response, { explicitArray: false }, function (err, result) {
