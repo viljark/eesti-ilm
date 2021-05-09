@@ -79,8 +79,12 @@ export function CurrentWeather({
       <View style={styles.top}>
         <View style={styles.topMainContentWrap}>
           <View style={styles.temperatureWrap}>
-            <Text style={styles.temperature}>{formatToSingleDigit(closestStation?.airtemperature)}</Text>
-            <Text style={styles.degree}>°</Text>
+            <Text allowFontScaling={false} style={styles.temperature}>
+              {formatToSingleDigit(closestStation?.airtemperature)}
+            </Text>
+            <Text allowFontScaling={false} style={styles.degree}>
+              °
+            </Text>
             <Text style={styles.realFeel}>Tajutav {realFeel || '-'}°</Text>
           </View>
           <View style={styles.phenomenonWrap}>
@@ -108,12 +112,17 @@ export function CurrentWeather({
           <View style={styles.row}>
             <View style={styles.cellLeft}>
               <Wind {...metaIconProps} />
-              <Text style={styles.metaText}>
+              <Text allowFontScaling={false} style={styles.metaText}>
                 {formatToSingleDigit(windSpeed)}
-                <Text style={styles.metaTextSmall}> </Text>-<Text style={styles.metaTextSmall}> </Text>
+                <Text allowFontScaling={false} style={styles.metaTextSmall}>
+                  {' '}
+                </Text>
+                -<Text style={styles.metaTextSmall}> </Text>
                 {formatToSingleDigit(windSpeedMax)}
               </Text>
-              <Text style={styles.metaTextSmall}>m/s</Text>
+              <Text allowFontScaling={false} style={styles.metaTextSmall}>
+                m/s
+              </Text>
               <View
                 style={{
                   margin: 8,
@@ -131,43 +140,59 @@ export function CurrentWeather({
             </View>
             <View style={styles.cellRight}>
               <Water {...metaIconProps} />
-              <Text style={styles.metaText}>{formatToSingleDigit(waterTemperature)}°</Text>
-              <Text style={styles.metaTextSmall}>{waterStationName || ''}</Text>
+              <Text allowFontScaling={false} style={styles.metaText}>
+                {formatToSingleDigit(waterTemperature)}°
+              </Text>
+              <Text allowFontScaling={false} style={styles.metaTextSmall}>
+                {waterStationName || ''}
+              </Text>
             </View>
           </View>
           <View style={styles.row}>
             {!showOtherMeta ? (
               <View style={styles.cellLeft}>
                 <Precipitations {...metaIconProps} />
-                <Text style={styles.metaText}>{precipitations}</Text>
-                <Text style={styles.metaTextSmall}>mm/tunnis</Text>
+                <Text allowFontScaling={false} style={styles.metaText}>
+                  {precipitations}
+                </Text>
+                <Text allowFontScaling={false} style={styles.metaTextSmall}>
+                  mm/tunnis
+                </Text>
               </View>
             ) : (
               <View style={styles.cellLeft}>
                 <UvIndex {...metaIconProps} />
-                <Text style={styles.metaText}>{uv}</Text>
+                <Text allowFontScaling={false} style={styles.metaText}>
+                  {uv}
+                </Text>
               </View>
             )}
             <View style={styles.cellRight}>
               <Humidity {...metaIconProps} />
-              <Text style={styles.metaText}>{humidity}%</Text>
+              <Text allowFontScaling={false} style={styles.metaText}>
+                {humidity}%
+              </Text>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.cellLeft}>
               <Sunrise {...metaIconProps} />
-              <Text style={styles.metaText}>{sunTimes ? getFormattedTime(sunTimes.sunrise.getTime()) : '-'}</Text>
+              <Text allowFontScaling={false} style={styles.metaText}>
+                {sunTimes ? getFormattedTime(sunTimes.sunrise.getTime()) : '-'}
+              </Text>
             </View>
             <View style={styles.cellRight}>
               <Sunset {...metaIconProps} />
-              <Text style={styles.metaText}>{sunTimes ? getFormattedTime(sunTimes.sunset.getTime()) : '-'}</Text>
+              <Text allowFontScaling={false} style={styles.metaText}>
+                {sunTimes ? getFormattedTime(sunTimes.sunset.getTime()) : '-'}
+              </Text>
             </View>
           </View>
           <View style={styles.rowForecast}>
             <Forecast latestUpdate={latestUpdate} />
           </View>
           <View style={styles.rowNarrow}>
-            <Text style={styles.stationText}>
+            <Text allowFontScaling={false} style={styles.stationText}>
               {closestStation?.name} - {observationsReceivedAt && getFormattedDateTime(observationsReceivedAt)}
             </Text>
           </View>
