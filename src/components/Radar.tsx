@@ -21,8 +21,8 @@ export function Radar(props: { latestUpdate: Date }) {
             date: new Date(Number(i.attributes['data-datetime']) * 1000).toLocaleString(),
           }
         })
-
-        setImages(images)
+        // reverse the image order so that latest radar images load first
+        setImages(images.reverse())
         setIndex(images.length - 1)
       })
   }, [props.latestUpdate])
@@ -75,8 +75,8 @@ export function Radar(props: { latestUpdate: Date }) {
     x = myLocation.x
     y = myLocation.y
   }
-
-  const date = images?.[index]?.date?.split(' ').reverse()[1]?.split(':').slice(0, 2).join(':')
+  // account for the reverse image order by taking using reverse index
+  const date = images?.[images.length - 1 - index]?.date?.split(' ').reverse()[1]?.split(':').slice(0, 2).join(':')
   return (
     <View style={styles.container}>
       {images.length > 0 && (
@@ -87,7 +87,8 @@ export function Radar(props: { latestUpdate: Date }) {
               <TouchableHighlight
                 key={i}
                 style={{
-                  opacity: i === index ? 1 : 0,
+                  // account for the reverse image order by taking using reverse index
+                  opacity: images.length - 1 - i === index ? 1 : 0,
                   position: 'absolute',
                   left: 0,
                   top: 0,
