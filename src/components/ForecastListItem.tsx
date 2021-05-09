@@ -18,8 +18,12 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
     <View style={styles.item}>
       <View style={styles.itemContainer}>
         <View style={styles.time}>
-          <Text style={{ ...styles.text, ...styles.hours }}>{formatHours(date)}</Text>
-          <Text style={{ ...styles.text, ...styles.minutes }}>00</Text>
+          <Text allowFontScaling={false} style={{ ...styles.text, ...styles.hours }}>
+            {formatHours(date)}
+          </Text>
+          <Text allowFontScaling={false} style={{ ...styles.text, ...styles.minutes }}>
+            00
+          </Text>
         </View>
         <View
           style={{
@@ -29,6 +33,7 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
           }}
         >
           <Text
+            allowFontScaling={false}
             style={{
               ...styles.text,
               ...styles.temperature,
@@ -37,6 +42,7 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
             {Math.round(Number(time.temperature['@attributes'].value))}
           </Text>
           <Text
+            allowFontScaling={false}
             style={{
               ...styles.text,
               fontSize: 18,

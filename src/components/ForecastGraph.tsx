@@ -239,7 +239,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                         fontFamily: 'Inter_300Light',
                       }}
                     >
-                      ℃
+                      °
                     </Text>
                   </View>
                 )

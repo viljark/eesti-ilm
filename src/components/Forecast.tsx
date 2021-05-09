@@ -46,7 +46,7 @@ export function Forecast(props: { latestUpdate: Date }) {
               }}
             />
             <Text style={styles.smallText}>
-              {f[activeForecast].tempmin} - {f[activeForecast].tempmax}°C
+              {f[activeForecast].tempmin} - {f[activeForecast].tempmax}°
             </Text>
           </View>
         ))}
