@@ -10,3 +10,5 @@ web-build/
 web-report/
 .idea
 .idea/**/*
+.env
+google-services.json

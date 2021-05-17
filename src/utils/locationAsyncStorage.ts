@@ -1,12 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Constants from 'expo-constants'
 import * as Location from 'expo-location'
+import { getFirestore } from './firebase'
 
 export async function storeLocationData(locationDataArgs: { location: Location.LocationObject; locationName: string; locationRegion: string }) {
   try {
     await AsyncStorage.setItem('location', JSON.stringify(locationDataArgs))
+    getFirestore().collection('users').doc(Constants.deviceId).set({ locationRegion: locationDataArgs.locationRegion, updatedAt: new Date() }, { merge: true })
     console.log('saved location', JSON.stringify(locationDataArgs))
   } catch (error) {
     // Error saving data
+    console.error(error)
   }
 }
 

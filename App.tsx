@@ -1,10 +1,10 @@
+import 'react-native-gesture-handler'
 import React, { useEffect, useState } from 'react'
 import AppContainer from './AppContainer'
 import * as Location from 'expo-location'
-import { Alert, AppState, AppStateStatus, SafeAreaView, StyleSheet } from 'react-native'
+import { Alert, AppState, AppStateStatus, SafeAreaView, StyleSheet, View } from 'react-native'
 import { LocationContext } from './LocationContext'
 import Background from './src/components/Background'
-import * as Analytics from 'expo-firebase-analytics'
 import { useFonts, Inter_700Bold, Inter_300Light, Inter_200ExtraLight } from '@expo-google-fonts/inter'
 
 import { Autocomplete } from 'react-native-dropdown-autocomplete'
@@ -13,7 +13,10 @@ import * as Sentry from 'sentry-expo'
 import Constants from 'expo-constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { retrieveStoredLocation, storeLocationData } from './src/utils/locationAsyncStorage'
-
+import { registerForPushNotificationsAsync } from './src/utils/registerNotifications'
+import { NavigationState, Route } from '@react-navigation/native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import Pin from './src/icons/Pin'
 Sentry.init({
   dsn: 'https://af51d092fe394c5b832520eb8e494f93@o512763.ingest.sentry.io/5613608',
   enableInExpoDevelopment: true,
@@ -54,6 +57,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    registerForPushNotificationsAsync()
     loadPermissionStatus()
   }, [])
 
@@ -121,15 +125,6 @@ export default function App() {
     }
   }
 
-  // Get the current screen from the navigation state
-  function getActiveRouteName(navigationState) {
-    if (!navigationState) return null
-    const route = navigationState.routes[navigationState.index]
-    // Parse the nested navigators
-    if (route.routes) return getActiveRouteName(route)
-    return route.routeName
-  }
-
   async function getData(query) {
     console.log('getData', query)
     if (!query) {
@@ -155,72 +150,62 @@ export default function App() {
     <LocationContext.Provider value={{ location, locationName, locationRegion }}>
       <Background location={location}>
         <SafeAreaView style={styles.autocompleteContainer}>
-          <Autocomplete
-            key={placeholder.join(', ')}
-            inputStyle={styles.input}
-            resetOnSelect={true}
-            handleSelectItem={(item) => {
-              const label = item.label.trim()
+          {fontsLoaded && (
+            <>
+              <Pin width={20} height={20} fill="#fff" style={styles.pin} />
+              <Autocomplete
+                key={placeholder.join(', ')}
+                inputStyle={styles.input}
+                resetOnSelect={true}
+                handleSelectItem={(item) => {
+                  const label = item.label.trim()
 
-              const location = {
-                coords: {
-                  latitude: Number(item.koordinaat.split(';')[0]),
-                  longitude: Number(item.koordinaat.split(';')[1]),
-                  accuracy: null,
-                  altitude: null,
-                  altitudeAccuracy: null,
-                  heading: null,
-                  speed: null,
-                },
-                timestamp: new Date().getTime(),
-              }
-              const locationName = label.split(', ')[0]
-              const locationRegion = label.split(', ')[1]
-              setLocationData({
-                location,
-                locationName,
-                locationRegion,
-              })
-              storeLocationData({
-                location,
-                locationName,
-                locationRegion,
-              })
-            }}
-            separatorStyle={{
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            }}
-            placeholder={placeholder.join(', ')}
-            placeholderColor={'rgba(0, 0, 0, 1)'}
-            fetchData={getData}
-            valueExtractor={(item) => item.label?.trim()}
-            scrollStyle={styles.scrollStyle}
-            highLightColor={'#1ce'}
-            noDataText={'Ei leidnud asukohta'}
-            noDataTextStyle={{
-              paddingVertical: 10,
-            }}
-            containerStyle={styles.containerStyle}
-            pickerStyle={styles.pickerStyle}
-            listFooterStyle={styles.listFooterStyle}
-          />
+                  const location = {
+                    coords: {
+                      latitude: Number(item.koordinaat.split(';')[0]),
+                      longitude: Number(item.koordinaat.split(';')[1]),
+                      accuracy: null,
+                      altitude: null,
+                      altitudeAccuracy: null,
+                      heading: null,
+                      speed: null,
+                    },
+                    timestamp: new Date().getTime(),
+                  }
+                  const locationName = label.split(', ')[0]
+                  const locationRegion = label.split(', ').reverse()[0]
+                  setLocationData({
+                    location,
+                    locationName,
+                    locationRegion,
+                  })
+                  storeLocationData({
+                    location,
+                    locationName,
+                    locationRegion,
+                  })
+                }}
+                separatorStyle={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                }}
+                placeholder={placeholder.join(', ')}
+                placeholderColor={'#fff'}
+                fetchData={getData}
+                valueExtractor={(item) => item.label?.trim()}
+                scrollStyle={styles.scrollStyle}
+                highLightColor={'#1ce'}
+                noDataText={'Ei leidnud asukohta'}
+                noDataTextStyle={{
+                  paddingVertical: 10,
+                }}
+                containerStyle={styles.containerStyle}
+                pickerStyle={styles.pickerStyle}
+                listFooterStyle={styles.listFooterStyle}
+              />
+            </>
+          )}
         </SafeAreaView>
-        {fontsLoaded && (
-          <AppContainer
-            onNavigationStateChange={(prevState, currentState) => {
-              const currentScreen = getActiveRouteName(currentState)
-              const prevScreen = getActiveRouteName(prevState)
-              if (prevScreen !== currentScreen) {
-                try {
-                  Analytics.setCurrentScreen(currentScreen)
-                } catch (e) {
-                  console.warn('analytics error', e)
-                }
-                // Update Firebase with the name of your screen
-              }
-            }}
-          />
-        )}
+        <View style={{ paddingTop: 60 + Constants.statusBarHeight, flex: 1, backgroundColor: 'transparent' }}>{fontsLoaded && <AppContainer />}</View>
       </Background>
     </LocationContext.Provider>
   )
@@ -228,36 +213,36 @@ export default function App() {
 
 const styles = StyleSheet.create({
   autocompleteContainer: {
-    marginTop: 0,
-    paddingTop: 0,
+    paddingTop: Constants.statusBarHeight + 10,
     width: '100%',
     paddingHorizontal: 8,
     flex: 1,
     flexGrow: 1,
     left: 0,
     position: 'absolute',
-    top: Constants.statusBarHeight + 3,
+    top: 0,
     zIndex: 2,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  pin: {
+    position: 'absolute',
+    left: 10,
+    top: Constants.statusBarHeight + 25,
+    opacity: 0.9,
   },
   input: {
-    color: 'black',
+    color: '#fff',
     width: '100%',
     borderColor: 'white',
-    paddingLeft: 10,
+    borderWidth: 0,
+    paddingLeft: 30,
     paddingRight: 5,
     paddingTop: 5,
     paddingBottom: 5,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    borderRadius: 3,
-    fontSize: 14,
+    backgroundColor: 'rgba(255,255,255,0)',
+    borderRadius: 0,
+    fontSize: 18,
+    fontFamily: 'Inter_200ExtraLight',
   },
   scrollStyle: {
     marginBottom: 0,
@@ -272,6 +257,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     borderWidth: 0,
     marginBottom: 0,
+    backgroundColor: 'transparent',
   },
   pickerStyle: {
     top: 10,

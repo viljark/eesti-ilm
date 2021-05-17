@@ -44,7 +44,7 @@ const Background = (props: { children: React.ReactNode; location: Location.Locat
           nightIndex = Math.floor((now - sunset) / nightStep)
         }
         setIsNight(true)
-        setGradient(gradientsNight[nightIndex])
+        setGradient(gradientsNight[3])
       }
     }
   }, [props.location])
