@@ -9,6 +9,7 @@ import { LocationObject } from 'expo-location'
 import Constants from 'expo-constants'
 import Background from './Background'
 import { blockBackground, commonStyles } from '../utils/styles'
+import { useFocusEffect } from '@react-navigation/native'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height

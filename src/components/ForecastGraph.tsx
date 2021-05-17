@@ -12,6 +12,7 @@ import _ from 'lodash'
 import Background from './Background'
 import Constants from 'expo-constants'
 import { commonStyles } from '../utils/styles'
+import { useFocusEffect } from '@react-navigation/native'
 
 interface ForecastGraphProps {
   detailedForecast: Time[]

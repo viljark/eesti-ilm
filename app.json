@@ -29,10 +29,13 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "package": "ee.viljark.eestiilm",
-      "versionCode": 11,
+      "versionCode": 12,
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
+    },
+    "notification": {
+      "icon": "./assets/icon-notification.png"
     },
     "description": "An Expo/React Native app for Estonian weather Created using www.ilmateenistus.ee API details: https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/ Icons made by Freepik from www.flaticon.com is licensed by CC 3.0 BY",
     "githubUrl": "https://github.com/viljark/eesti-ilm",

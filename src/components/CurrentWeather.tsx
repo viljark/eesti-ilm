@@ -143,7 +143,7 @@ export function CurrentWeather({
               <Text allowFontScaling={false} style={styles.metaText}>
                 {formatToSingleDigit(waterTemperature)}°
               </Text>
-              <Text allowFontScaling={false} style={styles.metaTextSmall}>
+              <Text allowFontScaling={false} style={styles.metaTextExtraSmall}>
                 {waterStationName || ''}
               </Text>
             </View>
@@ -355,6 +355,14 @@ const styles = StyleSheet.create({
     marginRight: 8,
     paddingTop: 10,
     fontSize: 12,
+    color: '#fff',
+    fontFamily: 'Inter_200ExtraLight',
+  },
+  metaTextExtraSmall: {
+    marginLeft: 4,
+    marginRight: 8,
+    paddingTop: 10,
+    fontSize: 10,
     color: '#fff',
     fontFamily: 'Inter_200ExtraLight',
   },

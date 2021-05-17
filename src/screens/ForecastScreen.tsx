@@ -12,7 +12,7 @@ import useAsyncStorage from '../utils/useAsyncStorage'
 import Constants from 'expo-constants'
 
 const width = Dimensions.get('window').width //full width
-const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50 + 50) //full height
+const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50 + 72) //full height
 
 export default function ForecastScreen() {
   const [query, setQuery] = useState(undefined)
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
     height,
+    paddingTop: 10,
   },
   container: {
     flex: 1,

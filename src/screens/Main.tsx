@@ -113,7 +113,7 @@ export default function Main(props) {
   const observationsReceivedAt = Number(allObservations?.$?.timestamp) * 1000 || null
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <Text
         style={styles.ilmateenistus}
         onPress={async () => {
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   container: {
-    marginTop: 10,
+    marginTop: 20,
     flex: 1,
     alignItems: 'center',
     alignSelf: 'stretch',
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   ilmateenistus: {
     position: 'absolute',
     bottom: 2,
-    right: 5,
+    right: 10,
     color: '#fff',
     fontSize: 10,
     textShadowColor: 'rgba(0, 0, 0, 0.3)',

@@ -64,7 +64,7 @@ export function Alert({ alert, location }: { alert: Warning; location: Location.
               >
                 ⚠{' '}
               </Text>
-              Hoiatus: {new Date(alert.timestamp * 1000).getDate()} {monthNames[new Date(alert.timestamp * 1000).getMonth()]}
+              Hoiatus
             </Text>
             <Text
               style={{

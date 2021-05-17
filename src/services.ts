@@ -1,7 +1,6 @@
 import axios from 'axios'
 import iconv from 'iconv-lite'
 import { Buffer } from 'buffer'
-
 const parseString = require('react-native-xml2js').parseString
 
 const RESPONSE_CHARSET = 'ISO-8859-15'
