@@ -1,4 +1,5 @@
 import Constants from 'expo-constants'
+import * as Application from 'expo-application'
 import * as Notifications from 'expo-notifications'
 import { Platform } from 'react-native'
 import { getFirestore } from './firebase'
@@ -22,8 +23,11 @@ export const registerForPushNotificationsAsync = async () => {
         const storedLocationObject = await retrieveStoredLocation()
         getFirestore()
           .collection('users')
-          .doc(Constants.deviceId)
-          .set({ pushToken: token, id: Constants.deviceId, updatedAt: new Date(), locationRegion: storedLocationObject?.locationRegion || '' }, { merge: true })
+          .doc(Application.androidId)
+          .set(
+            { pushToken: token, id: Application.androidId, deviceName: Constants.deviceName, updatedAt: new Date(), locationRegion: storedLocationObject?.locationRegion || '' },
+            { merge: true }
+          )
         console.log('token', token)
       } else {
         console.error('no token')

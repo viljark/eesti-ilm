@@ -33,21 +33,27 @@ function MainScreens() {
       gestureHandlerProps={{}}
       tabBarOptions={{
         activeTintColor: '#fff',
-        contentContainerStyle: {
-          backgroundColor: 'rgba(0,0,0,0.3)',
-        },
+        contentContainerStyle: {},
         showLabel: true,
         labelStyle: {
-          textTransform: 'none',
-          fontSize: 16,
-          fontFamily: 'Inter_300Light',
+          textTransform: 'lowercase',
+          fontSize: 18,
+          fontFamily: 'Inter_200ExtraLight',
+        },
+        tabStyle: {},
+        indicatorContainerStyle: {
+          backgroundColor: 'rgba(25, 40, 59, 0.6)',
+          opacity: 1,
         },
         indicatorStyle: {
-          backgroundColor: '#fff',
-          opacity: 0.3,
+          backgroundColor: 'transparent',
+          borderTopColor: 'rgba(255, 255, 255, 1)',
+          borderTopWidth: 0.5,
+          opacity: 1,
+          height: '100%',
+          top: 0,
         },
         style: {
-          paddingTop: 0,
           width,
           backgroundColor: 'transparent',
         },

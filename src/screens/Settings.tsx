@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, RefreshControl, Dimensions, AppStateStatus, Text, ToastAndroid, ActivityIndicator } from 'react-native'
 import _ from 'lodash'
-import { LocationContext } from '../../LocationContext'
-import * as Location from 'expo-location'
 import { ScrollView, Switch, TouchableNativeFeedback } from 'react-native-gesture-handler'
-import useAsyncStorage from '../utils/useAsyncStorage'
+import * as Application from 'expo-application'
 import Constants from 'expo-constants'
 import { getFirestore } from '../utils/firebase'
 
@@ -16,11 +14,11 @@ export default function SettingsScreen() {
     ;(async () => {
       try {
         setIsLoading(true)
-        const userSnapshot = await getFirestore().collection('users').doc(Constants.deviceId).get()
+        const userSnapshot = await getFirestore().collection('users').doc(Application.androidId).get()
         const user = userSnapshot.data()
 
-        if (!user?.isWarningNotificationEnabled) {
-          getFirestore().collection('users').doc(Constants.deviceId).set({ isWarningNotificationEnabled: true }, { merge: true })
+        if (typeof !user?.isWarningNotificationEnabled !== 'boolean') {
+          getFirestore().collection('users').doc(Application.androidId).set({ isWarningNotificationEnabled: true }, { merge: true })
           setIsWarningNotificationEnabled(true)
         } else {
           setIsWarningNotificationEnabled(user?.isWarningNotificationEnabled || false)
@@ -35,7 +33,7 @@ export default function SettingsScreen() {
   async function toggleIsWarningNotificationEnabled(value: boolean) {
     setIsWarningNotificationEnabled(value)
     ToastAndroid.show(value ? 'Teavitused sees' : 'Teavitused väljas', ToastAndroid.SHORT)
-    await getFirestore().collection('users').doc(Constants.deviceId).set({ isWarningNotificationEnabled: value }, { merge: true })
+    await getFirestore().collection('users').doc(Application.androidId).set({ isWarningNotificationEnabled: value }, { merge: true })
   }
 
   return (
@@ -65,14 +63,11 @@ export default function SettingsScreen() {
       <View style={{ ...styles.itemWrapper }}>
         <TouchableNativeFeedback style={styles.item}>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={styles.text}>Ilmainfo ning hoiatused: Riigi Ilmateenistus - www.ilmateenistus.ee</Text>
-          </View>
-        </TouchableNativeFeedback>
-      </View>
-      <View style={{ ...styles.itemWrapper }}>
-        <TouchableNativeFeedback style={styles.item}>
-          <View style={{ flexDirection: 'column' }}>
             <Text style={styles.text}>Arendaja kontakt: viljark+ilm@gmail.com</Text>
+            <Text style={styles.text}></Text>
+            <Text style={styles.smallText}>Ilmainfo ning hoiatused: Riigi Ilmateenistus - www.ilmateenistus.ee</Text>
+            <Text style={styles.smallText}>Icons made by fjstudio from www.flaticon.com</Text>
+            <Text style={styles.smallText}>Icons made by Freepik from www.flaticon.com is licensed by CC 3.0</Text>
           </View>
         </TouchableNativeFeedback>
       </View>
@@ -113,5 +108,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_200ExtraLight',
     color: '#fff',
     fontSize: 12,
+  },
+  smallText: {
+    fontFamily: 'Inter_200ExtraLight',
+    color: '#fff',
+    fontSize: 10,
   },
 })
