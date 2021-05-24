@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, RefreshControl, Dimensions, AppStateStatus, AppState } from 'react-native'
+import { View, StyleSheet, RefreshControl, Dimensions, AppStateStatus, AppState, Animated } from 'react-native'
 import { getDetailedForecast, getLocationByName, getWarningForLocation, Time, Warning } from '../services'
 import _ from 'lodash'
 import { LocationContext } from '../../LocationContext'
@@ -103,7 +103,7 @@ export default function ForecastScreen() {
 
   const minTemp = detailedForecast && _.min(detailedForecast.map((f) => Number(f.temperature['@attributes'].value)))
 
-  const graphRef = useRef(null)
+  const graphRef = React.useRef(new Animated.ValueXY({ x: 0, y: 0 }))
   const graphWidth = width * 4.5
 
   return (

@@ -48,10 +48,8 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
         onScroll={(e) => {
           const scrollAmount = (graphWidth / e.nativeEvent.contentSize.height) * e.nativeEvent.contentOffset.y
           if (graphRef.current !== null) {
-            graphRef.current.scrollTo({
-              y: 0,
-              x: scrollAmount,
-            })
+            graphRef.current.x.setOffset(0)
+            graphRef.current.x.setValue(-scrollAmount)
           }
         }}
         style={styles.scrollView}

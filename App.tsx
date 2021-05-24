@@ -17,6 +17,9 @@ import { registerForPushNotificationsAsync } from './src/utils/registerNotificat
 import { NavigationState, Route } from '@react-navigation/native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Pin from './src/icons/Pin'
+import { LogBox } from 'react-native'
+
+LogBox.ignoreAllLogs()
 Sentry.init({
   dsn: 'https://af51d092fe394c5b832520eb8e494f93@o512763.ingest.sentry.io/5613608',
   enableInExpoDevelopment: true,
@@ -102,7 +105,7 @@ export default function App() {
             },
           },
           locationName: 'Tartu',
-          locationRegion: 'Tartumaa',
+          locationRegion: 'Tartu maakond',
         }
         setLocationData(defaultLocationData)
         storeLocationData(defaultLocationData)
