@@ -2,31 +2,45 @@ import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight, Slider, ActivityIndicator } from 'react-native'
 import HTMLParser from 'fast-html-parser'
 import { LocationContext } from '../../LocationContext'
+import { dayNames, getFormattedDateTime } from '../utils/formatters'
 import useAsyncStorage from '../utils/useAsyncStorage'
 
 const width = Dimensions.get('window').width - 20 //full width
-export function Radar(props: { latestUpdate: Date }) {
-  const [images, setImages] = useAsyncStorage<{ src: string; date: string }[]>('radarImages')
+export function ForecastRadar(props: { latestUpdate: Date }) {
+  const [images, setImages] = useAsyncStorage<{ src: string; date: Date }[]>('forecastImages')
   const [index, setIndex] = useState(0)
   const { location, locationName } = useContext(LocationContext)
 
   useEffect(() => {
-    fetch('https://www.ilmateenistus.ee/ilm/ilmavaatlused/radaripildid/komposiitpilt/')
-      .then((r) => r.text())
-      .then((r) => {
-        const root = HTMLParser.parse(r)
-        const imageElements = root.querySelectorAll('.radar-image')
-        const images = imageElements.map((i) => {
-          return {
-            src: i.attributes.src,
-            date: new Date(Number(i.attributes['data-datetime']) * 1000).toLocaleString(),
-          }
+    try {
+      fetch('https://m.ilmateenistus.ee/m/mudelprognoos/sademed/')
+        .then((r) => r.text())
+        .then((r) => {
+          const root = HTMLParser.parse(r)
+          const imageElements = root.querySelectorAll('.radar-map .slider')
+          const images = imageElements
+            .map((i) => {
+              const dateTime = i.attributes.src.match(/sadu_([\s\S]*?).\png/s)[1]
+              const [datePart, timePart] = dateTime.split('_')
+              const [hourPart, hoursAddedPart] = timePart.split('+')
+              const date = new Date()
+              date.setFullYear(Number(datePart.slice(0, 4)), Number(datePart.slice(4, 6)) - 1, Number(datePart.slice(6, 8)))
+              date.setHours(Number(hourPart) + new Date().getTimezoneOffset() / -60)
+              date.setMinutes(0)
+              date.setTime(date.getTime() + Number(hoursAddedPart) * 1000 * 60 * 60)
+              return {
+                src: i.attributes.src,
+                date: date,
+              }
+            })
+            .filter((image) => image.date.getTime() > new Date().getTime())
+          setImages(images)
+          setIndex(0)
+          // preFetchImages()
         })
-        // reverse the image order so that latest radar images load first
-        setImages(images.reverse())
-        setIndex(images.length - 1)
-        // preFetchImages()
-      })
+    } catch (e) {
+      console.error(e)
+    }
   }, [props.latestUpdate])
 
   // const preFetchImages = async () => {
@@ -34,10 +48,6 @@ export function Radar(props: { latestUpdate: Date }) {
   //     await Image.prefetch(image.src)
   //   }
   // }
-
-  useEffect(() => {
-    setIndex(images?.length ? images.length - 1 : 0)
-  }, [images])
 
   const changeFrame = (amount: number) => {
     if (index + amount >= images.length) {
@@ -88,7 +98,8 @@ export function Radar(props: { latestUpdate: Date }) {
     y = myLocation.y
   }
   // account for the reverse image order by taking using reverse index
-  const date = images?.[images.length - 1 - index]?.date?.split(' ').reverse()[1]?.split(':').slice(0, 2).join(':')
+  const date = images?.[index]?.date
+  const dateString = dayNames[date?.getDay() || 0].slice(0, 1) + ' ' + getFormattedDateTime(date?.getTime())
   return (
     <View style={styles.container}>
       {images?.length > 0 && (
@@ -100,37 +111,37 @@ export function Radar(props: { latestUpdate: Date }) {
                 key={i}
                 style={{
                   // account for the reverse image order by taking using reverse index
-                  opacity: images.length - 1 - i === index ? 1 : 0,
+                  opacity: i === index ? 1 : 0,
                   position: 'absolute',
                   left: 0,
                   top: 0,
                 }}
               >
-                <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={100} />
+                <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={300} />
               </TouchableHighlight>
             ))}
-            <Image source={require('../assets/legend_radar.png')} style={{ position: 'absolute', bottom: 0, width: '100%', height: 45 }} fadeDuration={100} />
+            <Image source={require('../assets/legend.png')} style={{ position: 'absolute', bottom: 0, width: '100%', height: 60 }} fadeDuration={100} />
             <Slider
               value={index}
               maximumValue={images.length - 1}
               step={1}
-              minimumTrackTintColor={'#fff'}
-              maximumTrackTintColor={'#fff'}
-              thumbTintColor={'#fff'}
+              minimumTrackTintColor={'#000'}
+              maximumTrackTintColor={'#000'}
+              thumbTintColor={'#000'}
               style={styles.progress}
               onValueChange={handleSliderMove}
             />
 
-            <Text style={styles.smallText}>{date}</Text>
-            <View style={{ ...styles.marker, left: x, top: y }}></View>
+            <Text style={styles.smallText}>{dateString}</Text>
+            {/* <View style={{ ...styles.marker, left: x, top: y }}></View> */}
           </View>
           <Slider
             value={index}
             maximumValue={images.length - 1}
             step={1}
-            minimumTrackTintColor={'#fff'}
-            maximumTrackTintColor={'#fff'}
-            thumbTintColor={'#fff'}
+            minimumTrackTintColor={'#000'}
+            maximumTrackTintColor={'#000'}
+            thumbTintColor={'#000'}
             style={styles.slider}
             onValueChange={handleSliderMove}
           />
@@ -157,9 +168,8 @@ const styles = StyleSheet.create({
     height: width,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-
   smallText: {
-    color: '#fff',
+    color: '#000',
     opacity: 1,
     fontSize: 22,
     textTransform: 'uppercase',

@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     height: 405,
     overflow: 'hidden',
     backgroundColor: '#5C8BC2',
-    marginBottom: 10,
+    marginBottom: 20,
     ...commonStyles.blockShadow,
   },
   top: {

@@ -8,7 +8,14 @@ export default <T>(key: string): [T, (data: T) => T, () => void] => {
     try {
       AsyncStorage.getItem(key, (e, data) => {
         if (data !== null) {
-          setStorageItem(JSON.parse(data) as T)
+          setStorageItem(
+            JSON.parse(data, function (name, value) {
+              if (typeof value === 'string' && /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\dZ$/.test(value)) {
+                return new Date(value)
+              }
+              return value
+            }) as T
+          )
         } else {
           setStorageItem(null)
         }

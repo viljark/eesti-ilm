@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, RefreshControl, Dimensions, AppStateStatus, Text, ToastAndroid, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, StyleSheet, Text, ToastAndroid, ActivityIndicator } from 'react-native'
 import _ from 'lodash'
 import { ScrollView, Switch, TouchableNativeFeedback } from 'react-native-gesture-handler'
 import * as Application from 'expo-application'
@@ -17,7 +17,7 @@ export default function SettingsScreen() {
         const userSnapshot = await getFirestore().collection('users').doc(Application.androidId).get()
         const user = userSnapshot.data()
 
-        if (typeof !user?.isWarningNotificationEnabled !== 'boolean') {
+        if (typeof user?.isWarningNotificationEnabled !== 'boolean') {
           getFirestore().collection('users').doc(Application.androidId).set({ isWarningNotificationEnabled: true }, { merge: true })
           setIsWarningNotificationEnabled(true)
         } else {

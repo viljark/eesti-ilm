@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native'
 import { getObservations, Observations, Station } from '../services'
 import { closestObservationField, closestStationWithObservationField, getDistance } from '../utils/distance'
 import { ErrorMessage } from '../components/ErrorMessage'
@@ -15,11 +15,14 @@ import Constants from 'expo-constants'
 import * as WebBrowser from 'expo-web-browser'
 import Feels from 'feels'
 import useAsyncStorage from '../utils/useAsyncStorage'
+import { ForecastRadar } from '../components/ForecastRadar'
+import { TabButton } from '../components/TabButton'
 
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
   const [observations, setObservations] = useState<Observations>(undefined)
   const [errorMessage, setErrormessage] = useState(undefined)
+  const [activeTab, setActiveTab] = useState('live')
   const [closestStation, setClosestStation] = useState<Station>(undefined)
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date())
@@ -164,10 +167,13 @@ export default function Main(props) {
           style={{
             ...styles.container,
             marginTop: -10,
-            height: width,
           }}
         >
-          <Radar latestUpdate={latestUpdate} />
+          <View style={{ display: 'flex', flex: 1, width: width - 20, overflow: 'hidden', borderTopLeftRadius: 30, borderTopRightRadius: 30, flexDirection: 'row' }}>
+            <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademete radar" />
+            <TabButton onPress={() => setActiveTab('forecast')} isActive={activeTab === 'forecast'} text="Sademete mudelprognoos" />
+          </View>
+          {activeTab === 'live' ? <Radar latestUpdate={latestUpdate} /> : <ForecastRadar latestUpdate={latestUpdate} />}
         </View>
       </ScrollView>
     </View>

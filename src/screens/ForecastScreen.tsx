@@ -26,7 +26,7 @@ export default function ForecastScreen() {
   }>(LocationContext)
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date())
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true)
-  const [detailedForecast, setDetailedForecast] = useAsyncStorage<Time[]>('detailedForecast')
+  const [detailedForecast, setDetailedForecast] = useState<Time[]>() //useAsyncStorage<Time[]>('detailedForecast')
   const [warning, setWarning] = useState<Warning>(null)
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
 
