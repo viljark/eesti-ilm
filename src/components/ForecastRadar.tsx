@@ -93,7 +93,7 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
   let y = 0
 
   if (location?.coords?.latitude && location?.coords?.longitude) {
-    const myLocation = convertGeoToPixel(location.coords.latitude, location.coords.longitude, width, width, 20.353331, 29.773211, 56.485432)
+    const myLocation = convertGeoToPixel(location.coords.latitude, location.coords.longitude, width, width, 19.6617, 30.03533, 56.05117)
     x = myLocation.x
     y = myLocation.y
   }
@@ -133,7 +133,7 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
             />
 
             <Text style={styles.smallText}>{dateString}</Text>
-            {/* <View style={{ ...styles.marker, left: x, top: y }}></View> */}
+            <View style={{ ...styles.marker, left: x, top: y }}></View>
           </View>
           <Slider
             value={index}

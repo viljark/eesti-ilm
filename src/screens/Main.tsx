@@ -17,6 +17,7 @@ import Feels from 'feels'
 import useAsyncStorage from '../utils/useAsyncStorage'
 import { ForecastRadar } from '../components/ForecastRadar'
 import { TabButton } from '../components/TabButton'
+import Background from '../components/Background'
 
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
@@ -169,9 +170,25 @@ export default function Main(props) {
             marginTop: -10,
           }}
         >
-          <View style={{ display: 'flex', flex: 1, width: width - 20, overflow: 'hidden', borderTopLeftRadius: 30, borderTopRightRadius: 30, flexDirection: 'row' }}>
-            <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademete radar" />
-            <TabButton onPress={() => setActiveTab('forecast')} isActive={activeTab === 'forecast'} text="Sademete mudelprognoos" />
+          <View
+            style={{
+              position: 'relative',
+              display: 'flex',
+              flex: 1,
+              width: width - 20,
+              overflow: 'hidden',
+              borderTopLeftRadius: 30,
+              borderTopRightRadius: 30,
+              flexDirection: 'row',
+            }}
+          >
+            <View style={styles.background}>
+              <Background location={location}>
+                <Text></Text>
+              </Background>
+            </View>
+            <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademed hetkel" style={[{ borderColor: '#000', borderRightWidth: 0.5 }]} />
+            <TabButton onPress={() => setActiveTab('forecast')} isActive={activeTab === 'forecast'} text="Sademete prognoos" />
           </View>
           {activeTab === 'live' ? <Radar latestUpdate={latestUpdate} /> : <ForecastRadar latestUpdate={latestUpdate} />}
         </View>
@@ -194,6 +211,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'stretch',
     marginBottom: 10,
+  },
+  background: {
+    position: 'absolute',
+    left: 0,
+    top: -height + 160,
+    transform: [
+      {
+        rotate: `${180}deg`,
+      },
+    ],
+    height: height,
+    width: width,
   },
   ilmateenistus: {
     position: 'absolute',

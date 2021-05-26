@@ -15,7 +15,7 @@ const Background = (props: { children: React.ReactNode; location: Location.Locat
   }>()
   const [isNight, setIsNight] = useState(false)
   useEffect(() => {
-    setGradient(gradientsDay[Math.floor(Math.random() * gradientsDay.length)])
+    setGradient(gradientsNight[3])
   }, [])
 
   let sunLight

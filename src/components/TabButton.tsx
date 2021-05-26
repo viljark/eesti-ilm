@@ -1,11 +1,13 @@
 import React from 'react'
 import { TouchableNativeFeedback, View, Text, StyleSheet } from 'react-native'
 
-export function TabButton({ text, isActive, onPress }: any) {
+export function TabButton({ text, isActive, onPress, style }: any) {
   return (
     <TouchableNativeFeedback onPress={onPress}>
-      <View style={[styles.container, isActive ? styles.activeContainer : {}]}>
-        <Text style={styles.text}>{text}</Text>
+      <View style={[styles.container, isActive ? styles.activeContainer : {}, style]}>
+        <Text allowFontScaling={false} style={[styles.text, isActive ? styles.activeText : {}]}>
+          {text}
+        </Text>
       </View>
     </TouchableNativeFeedback>
   )
@@ -27,5 +29,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 12,
     fontFamily: 'Inter_200ExtraLight',
+    opacity: 0.9,
   },
+  activeText: { opacity: 1 },
 })

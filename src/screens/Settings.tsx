@@ -66,6 +66,7 @@ export default function SettingsScreen() {
             <Text style={styles.text}>Arendaja kontakt: viljark+ilm@gmail.com</Text>
             <Text style={styles.text}></Text>
             <Text style={styles.smallText}>Ilmainfo ning hoiatused: Riigi Ilmateenistus - www.ilmateenistus.ee</Text>
+            <Text style={styles.text}></Text>
             <Text style={styles.smallText}>Icons made by fjstudio from www.flaticon.com</Text>
             <Text style={styles.smallText}>Icons made by Freepik from www.flaticon.com is licensed by CC 3.0</Text>
           </View>

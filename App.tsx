@@ -14,8 +14,6 @@ import Constants from 'expo-constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { retrieveStoredLocation, storeLocationData } from './src/utils/locationAsyncStorage'
 import { registerForPushNotificationsAsync } from './src/utils/registerNotifications'
-import { NavigationState, Route } from '@react-navigation/native'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Pin from './src/icons/Pin'
 import { LogBox } from 'react-native'
 
