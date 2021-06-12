@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text, ToastAndroid, ActivityIndicator } from 'react-native'
 import _ from 'lodash'
 import { ScrollView, Switch, TouchableNativeFeedback } from 'react-native-gesture-handler'
 import * as Application from 'expo-application'
-import Constants from 'expo-constants'
 import { getFirestore } from '../utils/firebase'
+import { LocationContext } from '../../LocationContext'
 
 export default function SettingsScreen() {
   const [isWarningNotificationEnabled, setIsWarningNotificationEnabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
+  const { isHighPerformance, setIsHighPerformance } = useContext(LocationContext)
   useEffect(() => {
     ;(async () => {
       try {
@@ -58,6 +58,24 @@ export default function SettingsScreen() {
               style={{ marginLeft: 'auto' }}
             />
           )}
+        </TouchableNativeFeedback>
+      </View>
+      <View style={styles.itemWrapper}>
+        <TouchableNativeFeedback
+          style={styles.item}
+          onPress={() => {
+            setIsHighPerformance(!isHighPerformance)
+          }}
+        >
+          <Text style={styles.switchText}>Jõudluse optimeerimine, kasutada kui rakendus ei ole sujuv (radaripildid laetakse siis ühe kaupa)</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#50eb75' }}
+            thumbColor={isHighPerformance ? '#f4f3f4' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={setIsHighPerformance}
+            value={!!isHighPerformance}
+            style={{ marginLeft: 'auto' }}
+          />
         </TouchableNativeFeedback>
       </View>
       <View style={{ ...styles.itemWrapper }}>

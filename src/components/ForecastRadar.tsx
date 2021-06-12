@@ -9,7 +9,7 @@ const width = Dimensions.get('window').width - 20 //full width
 export function ForecastRadar(props: { latestUpdate: Date }) {
   const [images, setImages] = useAsyncStorage<{ src: string; date: Date }[]>('forecastImages')
   const [index, setIndex] = useState(0)
-  const { location, locationName } = useContext(LocationContext)
+  const { location, isHighPerformance } = useContext(LocationContext)
 
   useEffect(() => {
     try {
@@ -48,19 +48,6 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
   //     await Image.prefetch(image.src)
   //   }
   // }
-
-  const changeFrame = (amount: number) => {
-    if (index + amount >= images.length) {
-      setIndex(0)
-      return
-    }
-
-    if (index + amount < 0) {
-      setIndex(images.length - 1)
-      return
-    }
-    setIndex((index) => index + amount)
-  }
 
   const handleSliderMove = (e) => {
     setIndex(e)
@@ -106,20 +93,33 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
         <>
           <View style={{ width: width, height: width, position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator style={{ zIndex: 0 }} size="small" color="#fff" />
-            {images.map((image, i) => (
-              <TouchableHighlight
-                key={i}
+            {isHighPerformance ? (
+              <View
                 style={{
-                  // account for the reverse image order by taking using reverse index
-                  opacity: i === index ? 1 : 0,
                   position: 'absolute',
                   left: 0,
                   top: 0,
                 }}
               >
-                <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={300} />
-              </TouchableHighlight>
-            ))}
+                <Image source={{ uri: images[index].src }} style={{ width: width, height: width }} fadeDuration={100} />
+              </View>
+            ) : (
+              images.map((image, i) => (
+                <TouchableHighlight
+                  key={i}
+                  style={{
+                    // account for the reverse image order by taking using reverse index
+                    opacity: i === index ? 1 : 0,
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                  }}
+                >
+                  <Image source={{ uri: images[i].src }} style={{ width: width, height: width }} fadeDuration={300} />
+                </TouchableHighlight>
+              ))
+            )}
+
             <Image source={require('../assets/legend.png')} style={{ position: 'absolute', bottom: 0, width: '100%', height: 60 }} fadeDuration={100} />
             <Slider
               value={index}

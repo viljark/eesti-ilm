@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export default <T>(key: string): [T, (data: T) => T, () => void] => {
-  const [storageItem, setStorageItem] = useState<T>(null)
+export default <T>(key: string, defaultValue?: T): [T, (data: T) => T, () => void] => {
+  const [storageItem, setStorageItem] = useState<T>(defaultValue ?? null)
 
   async function getStorageItem() {
     try {
@@ -17,11 +17,11 @@ export default <T>(key: string): [T, (data: T) => T, () => void] => {
             }) as T
           )
         } else {
-          setStorageItem(null)
+          setStorageItem(defaultValue)
         }
       })
     } catch (error) {
-      setStorageItem(null)
+      setStorageItem(defaultValue ?? null)
     }
   }
 

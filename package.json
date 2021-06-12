@@ -4,9 +4,9 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "build:android": "expo build:android -t app-bundle --release-channel v2.0.5",
-    "build:android:apk": "expo build:android -t apk --release-channel v2.0.5",
-    "publish": "expo publish --release-channel v2.0.5",
+    "build:android": "expo build:android -t app-bundle --release-channel v2.0.6",
+    "build:android:apk": "expo build:android -t apk --release-channel v2.0.6",
+    "publish": "expo publish --release-channel v2.0.6",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"

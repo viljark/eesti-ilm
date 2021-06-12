@@ -16,6 +16,7 @@ import { retrieveStoredLocation, storeLocationData } from './src/utils/locationA
 import { registerForPushNotificationsAsync } from './src/utils/registerNotifications'
 import Pin from './src/icons/Pin'
 import { LogBox } from 'react-native'
+import useAsyncStorage from './src/utils/useAsyncStorage'
 
 LogBox.ignoreAllLogs()
 Sentry.init({
@@ -35,6 +36,7 @@ export default function App() {
     locationName: '',
   })
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
+  const [isHighPerformance, setIsHighPerformance] = useAsyncStorage<boolean>('isHighPerformance', true)
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange)
@@ -148,7 +150,7 @@ export default function App() {
   console.log('locationData:', JSON.stringify(locationData))
 
   return (
-    <LocationContext.Provider value={{ location, locationName, locationRegion }}>
+    <LocationContext.Provider value={{ location, locationName, locationRegion, isHighPerformance, setIsHighPerformance }}>
       <Background location={location}>
         <SafeAreaView style={styles.autocompleteContainer}>
           {fontsLoaded && (
