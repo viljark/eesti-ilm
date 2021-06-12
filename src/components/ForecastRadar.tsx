@@ -36,18 +36,22 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
             .filter((image) => image.date.getTime() > new Date().getTime())
           setImages(images)
           setIndex(0)
-          // preFetchImages()
+          if (isHighPerformance) {
+            preFetchImages()
+          }
         })
     } catch (e) {
       console.error(e)
     }
   }, [props.latestUpdate])
 
-  // const preFetchImages = async () => {
-  //   for (const image of images) {
-  //     await Image.prefetch(image.src)
-  //   }
-  // }
+  const preFetchImages = async () => {
+    for (const image of images) {
+      try {
+        await Image.prefetch(image.src)
+      } catch (e) {}
+    }
+  }
 
   const handleSliderMove = (e) => {
     setIndex(e)

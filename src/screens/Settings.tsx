@@ -67,7 +67,12 @@ export default function SettingsScreen() {
             setIsHighPerformance(!isHighPerformance)
           }}
         >
-          <Text style={styles.switchText}>Jõudluse optimeerimine, kasutada kui rakendus ei ole sujuv (radaripildid laetakse siis ühe kaupa)</Text>
+          <View style={{ flexDirection: 'column', width: '85%' }}>
+            <Text style={styles.switchText}>Äpp-i kiiruse optimeerimine</Text>
+            <Text style={styles.text}></Text>
+            <Text style={[styles.smallText]}>Kasutada kui rakendus ei ole sujuv vanemate või aeglasemate telefonidega. </Text>
+            <Text style={[styles.smallText]}>Põhjustab radari piltide vilkumist, sest pilte laetakse ühekaupa.</Text>
+          </View>
           <Switch
             trackColor={{ false: '#767577', true: '#50eb75' }}
             thumbColor={isHighPerformance ? '#f4f3f4' : '#f4f3f4'}

@@ -25,15 +25,19 @@ export function Radar(props: { latestUpdate: Date }) {
         // reverse the image order so that latest radar images load first
         setImages(images.reverse())
         setIndex(images.length - 1)
-        // preFetchImages()
+        if (isHighPerformance) {
+          preFetchImages()
+        }
       })
   }, [props.latestUpdate])
 
-  // const preFetchImages = async () => {
-  //   for (const image of images) {
-  //     await Image.prefetch(image.src)
-  //   }
-  // }
+  const preFetchImages = async () => {
+    for (const image of images) {
+      try {
+        await Image.prefetch(image.src)
+      } catch (e) {}
+    }
+  }
 
   useEffect(() => {
     setIndex(images?.length ? images.length - 1 : 0)
@@ -135,6 +139,9 @@ export function Radar(props: { latestUpdate: Date }) {
             />
 
             <Text style={styles.smallText}>{date} </Text>
+            <Text allowFontScaling={false} style={styles.mmh}>
+              mm/tunnis
+            </Text>
             <View style={{ ...styles.marker, left: x, top: y }}></View>
           </View>
           <Slider
@@ -180,6 +187,13 @@ const styles = StyleSheet.create({
     left: 14,
     fontFamily: 'monospace',
     top: 20,
+  },
+  mmh: {
+    position: 'absolute',
+    bottom: 17,
+    left: '50%',
+    marginLeft: -15,
+    fontSize: 7,
   },
   progress: {
     position: 'absolute',
