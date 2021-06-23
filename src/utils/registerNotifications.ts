@@ -43,7 +43,7 @@ export const registerForPushNotificationsAsync = async () => {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
+      vibrationPattern: [0, 0, 0, 100],
       lightColor: '#FF231F7C',
     })
   }
