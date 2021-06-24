@@ -48,9 +48,16 @@ export async function getWarningForLocation(locationRegion: string | undefined):
   let locationWarning
   if (warning) {
     if (Array.isArray(warning)) {
+      const warnings = warning.filter((w) => {
+        return w.area_eng.includes(locationRegion) || w.area_est.includes(locationRegion)
+      })
       locationWarning = warning.find((w) => {
         return w.area_eng.includes(locationRegion) || w.area_est.includes(locationRegion)
       })
+      locationWarning.content_est = warnings
+        .map((w) => w.content_est)
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .join('\n')
     } else {
       if (warning.area_eng.includes(locationRegion) || warning.area_est.includes(locationRegion)) {
         locationWarning = warning
