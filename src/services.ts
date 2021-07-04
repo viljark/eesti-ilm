@@ -57,7 +57,8 @@ export async function getWarningForLocation(locationRegion: string | undefined):
       locationWarning.content_est = warnings
         .map((w) => w.content_est)
         .filter((v, i, a) => a.indexOf(v) === i)
-        .join('\n')
+        .reverse()
+        .join('\n\n')
     } else {
       if (warning.area_eng.includes(locationRegion) || warning.area_est.includes(locationRegion)) {
         locationWarning = warning

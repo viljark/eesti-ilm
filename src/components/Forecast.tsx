@@ -3,20 +3,24 @@ import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View
 import { ForecastResponse, getForecast } from '../services'
 import { PhenomenonIcon } from './PhenomenonIcon'
 import { getDayName } from '../utils/formatters'
+import useAsyncStorage from '../utils/useAsyncStorage'
 
 const width = Dimensions.get('window').width //full width
 
 export function Forecast(props: { latestUpdate: Date }) {
-  const [forecast, setForecast] = useState<ForecastResponse>()
+  const [forecast, setForecast] = useAsyncStorage<ForecastResponse>('forecast')
+  const [forecastUpdated, setForecastUpdated] = useAsyncStorage<Date>('forecastUpdated', null)
   const [activeForecast, setActiveForecast] = useState<string>('day')
-
   useEffect(() => {
-    loadForecast()
-  }, [props.latestUpdate])
+    if (!forecastUpdated || (forecastUpdated && new Date().getTime() - forecastUpdated.getTime() > 1000 * 60 * 30)) {
+      loadForecast()
+    }
+  }, [props.latestUpdate, forecastUpdated])
 
   async function loadForecast() {
     const response = await getForecast()
     setForecast(response)
+    setForecastUpdated(new Date())
   }
 
   const handleClick = () => {

@@ -8,7 +8,7 @@ export async function storeLocationData(locationDataArgs: { location: Location.L
   try {
     await AsyncStorage.setItem('location', JSON.stringify(locationDataArgs))
     getFirestore().collection('users').doc(Application.androidId).set({ locationRegion: locationDataArgs.locationRegion, updatedAt: new Date() }, { merge: true })
-    console.log('saved location', JSON.stringify(locationDataArgs))
+    // console.log('saved location', JSON.stringify(locationDataArgs))
   } catch (error) {
     // Error saving data
     console.error(error)
@@ -24,7 +24,7 @@ export async function retrieveStoredLocation(): Promise<{
     try {
       AsyncStorage.getItem('location', (e, locationObject) => {
         if (locationObject !== null) {
-          console.log('retrieved location', locationObject)
+          // console.log('retrieved location', locationObject)
           resolve(JSON.parse(locationObject))
         }
         resolve(null)

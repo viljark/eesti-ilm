@@ -17,6 +17,12 @@ import { registerForPushNotificationsAsync } from './src/utils/registerNotificat
 import Pin from './src/icons/Pin'
 import { LogBox } from 'react-native'
 import useAsyncStorage from './src/utils/useAsyncStorage'
+import axios from 'axios'
+
+// axios.interceptors.request.use((request) => {
+//   console.log('Starting Request', JSON.stringify(request.url, null, 2))
+//   return request
+// })
 
 LogBox.ignoreAllLogs()
 Sentry.init({
@@ -66,7 +72,6 @@ export default function App() {
 
   async function loadPermissionStatus() {
     const { status, canAskAgain } = await Location.getForegroundPermissionsAsync()
-    console.log('canAskAgain', canAskAgain)
     if (status !== 'granted' && canAskAgain) {
       await Location.requestForegroundPermissionsAsync()
     }
@@ -79,7 +84,6 @@ export default function App() {
     }
     const providerStatus = await Location.getProviderStatusAsync()
     let status
-    console.log('providerStatus.locationServicesEnabled', providerStatus.locationServicesEnabled)
     if (providerStatus.locationServicesEnabled) {
       const locationPermissionResult = await Location.getForegroundPermissionsAsync()
       status = locationPermissionResult.status
@@ -87,10 +91,8 @@ export default function App() {
       status = 'location-services-disabled'
     }
 
-    console.log('permission', status)
     if (status !== 'granted') {
       if (!storedLocationObject?.location) {
-        console.log('writing default location')
         const defaultLocationData = {
           location: {
             timestamp: new Date().getTime(),
@@ -129,7 +131,6 @@ export default function App() {
   }
 
   async function getData(query) {
-    console.log('getData', query)
     if (!query) {
       return Promise.resolve([])
     }
@@ -146,8 +147,8 @@ export default function App() {
     placeholder.push(locationRegion)
   }
 
-  console.log('placeholder:', JSON.stringify(placeholder))
-  console.log('locationData:', JSON.stringify(locationData))
+  // console.log('placeholder:', JSON.stringify(placeholder))
+  // console.log('locationData:', JSON.stringify(locationData))
 
   return (
     <LocationContext.Provider value={{ location, locationName, locationRegion, isHighPerformance, setIsHighPerformance }}>

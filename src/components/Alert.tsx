@@ -1,12 +1,11 @@
 import { Warning } from '../services'
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { monthNames } from '../utils/dateUtil'
-import * as WebBrowser from 'expo-web-browser'
 import * as Location from 'expo-location'
 import Background from './Background'
 import Constants from 'expo-constants'
 import { blockBackground, commonStyles } from '../utils/styles'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
@@ -24,9 +23,9 @@ export function Alert({ alert, location }: { alert: Warning; location: Location.
             overflow: 'hidden',
             ...commonStyles.blockShadow,
           }}
-          onPress={async () => {
-            await WebBrowser.openBrowserAsync('https://www.ilmateenistus.ee/ilm/prognoosid/hoiatused/')
-          }}
+          // onPress={async () => {
+          //   await WebBrowser.openBrowserAsync('https://www.ilmateenistus.ee/ilm/prognoosid/hoiatused/')
+          // }}
         >
           <View
             style={{
@@ -47,7 +46,8 @@ export function Alert({ alert, location }: { alert: Warning; location: Location.
               <Text></Text>
             </Background>
           </View>
-          <View style={{ display: 'flex', flexDirection: 'column', padding: 10, backgroundColor: blockBackground }}>
+          {/* <ScrollView scrollEnabled showsVerticalScrollIndicator style={{ maxHeight: 190, overflow: 'scroll' }}> */}
+          <View style={{ display: 'flex', flexDirection: 'column', padding: 10, backgroundColor: blockBackground, flexShrink: 0 }}>
             <Text
               style={{
                 fontSize: 13,

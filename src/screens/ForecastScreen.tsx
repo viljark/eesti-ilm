@@ -19,11 +19,12 @@ export default function ForecastScreen() {
   const [data, setData] = useState([])
 
   const [coordinates, setCoordinates] = useAsyncStorage<string>('coordinates')
-  const { location, locationName, locationRegion } = useContext<{
-    location: Location.LocationObject
-    locationName: string
-    locationRegion: string
-  }>(LocationContext)
+  const { location, locationName, locationRegion } =
+    useContext<{
+      location: Location.LocationObject
+      locationName: string
+      locationRegion: string
+    }>(LocationContext)
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date())
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true)
   const [detailedForecast, setDetailedForecast] = useState<Time[]>() //useAsyncStorage<Time[]>('detailedForecast')
@@ -134,7 +135,7 @@ export default function ForecastScreen() {
           location={location}
           style={{
             zIndex: 10,
-            height: '35%',
+            height: '30%',
           }}
         />
       </View>

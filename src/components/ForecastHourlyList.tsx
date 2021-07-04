@@ -57,7 +57,7 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
         {detailedForecast &&
           detailedForecast.map((time, index) => [
             (getUserLocalDate(time['@attributes'].from).getHours() === 0 || index === 0) && (
-              <View style={styles.dayNameWrapper}>
+              <View style={styles.dayNameWrapper} key={time['@attributes'].from + index}>
                 <Text style={styles.dayName}>
                   {getDayName(time['@attributes'].from)}, {getDate(time['@attributes'].from)}
                 </Text>

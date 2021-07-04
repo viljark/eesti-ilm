@@ -22,8 +22,9 @@ export function Radar(props: { latestUpdate: Date }) {
             date: new Date(Number(i.attributes['data-datetime']) * 1000).toLocaleString(),
           }
         })
+
         // reverse the image order so that latest radar images load first
-        setImages(images.reverse())
+        setImages(images.reverse().slice(0, 18))
         setIndex(images.length - 1)
         if (isHighPerformance) {
           preFetchImages()
