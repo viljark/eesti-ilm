@@ -32,6 +32,7 @@ function MainScreens() {
       }}
       gestureHandlerProps={{}}
       tabBarOptions={{
+        allowFontScaling: false,
         activeTintColor: '#fff',
         contentContainerStyle: {},
         showLabel: true,
