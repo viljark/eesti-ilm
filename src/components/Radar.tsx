@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, Image, Dimensions, TouchableHighlight, Slider, 
 import HTMLParser from 'fast-html-parser'
 import { LocationContext } from '../../LocationContext'
 import useAsyncStorage from '../utils/useAsyncStorage'
+import { getFormattedTime } from '../utils/formatters'
 
 const width = Dimensions.get('window').width - 20 //full width
 export function Radar(props: { latestUpdate: Date }) {
-  const [images, setImages] = useAsyncStorage<{ src: string; date: string }[]>('radarImages')
+  const [images, setImages] = useAsyncStorage<{ src: string; time: string }[]>('radarImages')
   const [index, setIndex] = useState(0)
   const { location, isHighPerformance, setIsHighPerformance } = useContext(LocationContext)
 
@@ -17,9 +18,10 @@ export function Radar(props: { latestUpdate: Date }) {
         const root = HTMLParser.parse(r)
         const imageElements = root.querySelectorAll('.radar-image')
         const images = imageElements.map((i) => {
+          const time = getFormattedTime(Number(i.attributes['data-datetime']) * 1000)
           return {
             src: i.attributes.src,
-            date: new Date(Number(i.attributes['data-datetime']) * 1000).toLocaleString(),
+            time: time,
           }
         })
 
@@ -93,7 +95,7 @@ export function Radar(props: { latestUpdate: Date }) {
     y = myLocation.y
   }
   // account for the reverse image order by taking using reverse index
-  const date = images?.[images.length - 1 - index]?.date?.split(' ').reverse()[1]?.split(':').slice(0, 2).join(':')
+  const time = images?.[images.length - 1 - index]?.time
   return (
     <View style={styles.container}>
       {images?.length > 0 && (
@@ -139,7 +141,7 @@ export function Radar(props: { latestUpdate: Date }) {
               onValueChange={handleSliderMove}
             />
 
-            <Text style={styles.smallText}>{date} </Text>
+            <Text style={styles.smallText}>{time} </Text>
             <Text allowFontScaling={false} style={styles.mmh}>
               mm/tunnis
             </Text>

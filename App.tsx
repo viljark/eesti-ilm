@@ -113,7 +113,16 @@ export default function App() {
         storeLocationData(defaultLocationData)
       }
     } else {
-      const location = await Location.getCurrentPositionAsync({})
+      let location = await Location.getCurrentPositionAsync({})
+		location.coords = {
+			longitude: Number(location.coords.longitude.toFixed(2)),
+			latitude: Number(location.coords.latitude.toFixed(2)),
+			accuracy: null,
+			heading: null,
+			speed: null,
+			altitudeAccuracy: null,
+			altitude: null
+		}
       const geoLocation = await Location.reverseGeocodeAsync({
         longitude: location.coords.longitude,
         latitude: location.coords.latitude,

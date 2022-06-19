@@ -4,13 +4,12 @@
     "slug": "eesti-ilm",
     "privacy": "public",
     "platforms": [
-      "ios",
-      "android",
-      "web"
+      "android"
     ],
-    "version": "2.0.6",
+    "version": "2.0.8",
+    "runtimeVersion": "2.0.8",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon-bg.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
@@ -25,11 +24,17 @@
     "ios": {
       "supportsTablet": false
     },
+    "jsEngine": "hermes",
     "android": {
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "package": "ee.viljark.eestiilm",
-      "versionCode": 14,
+      "versionCode": 16,
+      "adaptiveIcon": {
+        "backgroundImage": "./assets/bg.png",
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#56a7cd"
+      },
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
