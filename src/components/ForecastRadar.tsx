@@ -20,19 +20,23 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
           const imageElements = root.querySelectorAll('.radar-map .slider')
           const images = imageElements
             .map((i) => {
-              const dateTime = i.attributes.src.match(/sadu_([\s\S]*?).\png/s)[1]
-              const [datePart, timePart] = dateTime.split('_')
-              const [hourPart, hoursAddedPart] = timePart.split('+')
-              const date = new Date()
-              date.setFullYear(Number(datePart.slice(0, 4)), Number(datePart.slice(4, 6)) - 1, Number(datePart.slice(6, 8)))
-              date.setHours(Number(hourPart) + new Date().getTimezoneOffset() / -60)
-              date.setMinutes(0)
-              date.setTime(date.getTime() + Number(hoursAddedPart) * 1000 * 60 * 60)
-              return {
-                src: i.attributes.src,
-                date: date,
+              const dateTime = i.attributes?.src?.match(/sadu_([\s\S]*?).\png/s)?.[1]
+              if (dateTime) {
+                const [datePart, timePart] = dateTime.split('_')
+                const [hourPart, hoursAddedPart] = timePart.split('+')
+                const date = new Date()
+                date.setFullYear(Number(datePart.slice(0, 4)), Number(datePart.slice(4, 6)) - 1, Number(datePart.slice(6, 8)))
+                date.setHours(Number(hourPart) + new Date().getTimezoneOffset() / -60)
+                date.setMinutes(0)
+                date.setTime(date.getTime() + Number(hoursAddedPart) * 1000 * 60 * 60)
+                return {
+                  src: i.attributes.src,
+                  date: date,
+                }
               }
+              return
             })
+            .filter(Boolean)
             .filter((image) => image.date.getTime() > new Date().getTime())
           setImages(images)
           setIndex(0)
@@ -41,7 +45,7 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
           }
         })
     } catch (e) {
-      console.error(e)
+      console.error('Failed to load forecast radar images', e)
     }
   }, [props.latestUpdate])
 
@@ -112,7 +116,7 @@ export function ForecastRadar(props: { latestUpdate: Date }) {
                 <TouchableHighlight
                   key={i}
                   style={{
-                    // account for the reverse image order by taking using reverse index
+                    // account for the reverse image order by using reverse index
                     opacity: i === index ? 1 : 0,
                     position: 'absolute',
                     left: 0,

@@ -19,19 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="add analytics, prepare version 5">
-      <change afterPath="$PROJECT_DIR$/assets/bg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/icon-bg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/eas.json" afterDir="false" />
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="improve error handling and fix warning parsing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/splash.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/babel.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/babel.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Radar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Radar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Alert.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Alert.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ForecastRadar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ForecastRadar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +79,7 @@
       <recent name="C:\Users\Viljar\workspace\eesti-ilm\src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.eas:build:production">
+  <component name="RunManager" selected="npm.eas:build:preview:apk">
     <configuration name="build:android" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -139,8 +132,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.eas:build:production" />
         <item itemvalue="npm.eas:build:preview:apk" />
+        <item itemvalue="npm.eas:build:production" />
         <item itemvalue="npm.publish:preview" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.build:android" />
@@ -175,6 +168,8 @@
       <workItem from="1619557123332" duration="269000" />
       <workItem from="1647074280288" duration="18249000" />
       <workItem from="1647116333084" duration="152000" />
+      <workItem from="1655624222949" duration="3554000" />
+      <workItem from="1656143587877" duration="1595000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -266,7 +261,14 @@
       <option name="presentableId" value="LOCAL−00015" />
       <updated>1611912235482</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="add eas build, hermes, some bugfixes">
+      <created>1655624380438</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1655624380438</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TodoView">
@@ -308,7 +310,9 @@
     <MESSAGE value="add analytics, prepare version 5" />
     <MESSAGE value="fix some bugs" />
     <MESSAGE value="add support for no gps, add general place search, bugfixes, load new data on focus, upgrade Expo SDK to 40" />
-    <option name="LAST_COMMIT_MESSAGE" value="add support for no gps, add general place search, bugfixes, load new data on focus, upgrade Expo SDK to 40" />
+    <MESSAGE value="add eas build, hermes, some bugfixes" />
+    <MESSAGE value="improve error handling and fix warning parsing" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve error handling and fix warning parsing" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
