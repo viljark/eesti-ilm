@@ -127,7 +127,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                     height: '100%',
                   }}
                 >
-                  {detailedForecast[i] && !!detailedForecast[i].phenomen['@attributes'].en && (
+                  {detailedForecast[i] && !!detailedForecast[i].phenomen['@attributes'].en && i % 2 === 0 && (
                     <PhenomenonIcon
                       latitude={location.coords.latitude}
                       longitude={location.coords.longitude}
@@ -135,7 +135,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       width={30}
                       height={30}
                       style={{
-                        marginLeft: 0,
+                        marginLeft: -2,
                         position: 'absolute',
                         bottom: 30,
                       }}

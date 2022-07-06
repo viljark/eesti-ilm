@@ -3,14 +3,10 @@ import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, Style
 import { getObservations, Observations, Station } from '../services'
 import { closestObservationField, closestStationWithObservationField, getDistance } from '../utils/distance'
 import { ErrorMessage } from '../components/ErrorMessage'
-import { getPhenomenonText } from '../utils/phenomenonUtil'
-import { PhenomenonIcon } from '../components/PhenomenonIcon'
 import { Radar } from '../components/Radar'
 import { CurrentWeather } from '../components/CurrentWeather'
-import { Forecast } from '../components/Forecast'
 import { LocationContext } from '../../LocationContext'
 import * as Analytics from 'expo-firebase-analytics'
-import ArrowUp from '../icons/ArrowUp'
 import Constants from 'expo-constants'
 import * as WebBrowser from 'expo-web-browser'
 import Feels from 'feels'
@@ -22,7 +18,7 @@ import Background from '../components/Background'
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
   const [observations, setObservations] = useState<Observations>(undefined)
-  const [errorMessage, setErrormessage] = useState(undefined)
+  const [errorMessage, setErrormessage] = useState(null)
   const [activeTab, setActiveTab] = useState('live')
   const [closestStation, setClosestStation] = useState<Station>(undefined)
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
@@ -188,7 +184,7 @@ export default function Main(props) {
               </Background>
             </View>
             <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademed hetkel" style={[{ borderColor: '#000', borderRightWidth: 0.5 }]} />
-            <TabButton onPress={() => setActiveTab('forecast')} isActive={activeTab === 'forecast'} text="Sademete prognoos" />
+            {/*<TabButton onPress={() => setActiveTab('forecast')} isActive={activeTab === 'forecast'} text="Sademete prognoos" />*/}
           </View>
           {activeTab === 'live' ? <Radar latestUpdate={latestUpdate} /> : <ForecastRadar latestUpdate={latestUpdate} />}
         </View>

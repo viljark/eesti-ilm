@@ -15,9 +15,6 @@ const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50 + 72) //full height
 
 export default function ForecastScreen() {
-  const [query, setQuery] = useState(undefined)
-  const [data, setData] = useState([])
-
   const [coordinates, setCoordinates] = useAsyncStorage<string>('coordinates')
   const { location, locationName, locationRegion } =
     useContext<{
@@ -30,15 +27,6 @@ export default function ForecastScreen() {
   const [detailedForecast, setDetailedForecast] = useState<Time[]>() //useAsyncStorage<Time[]>('detailedForecast')
   const [warning, setWarning] = useState<Warning>(null)
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
-
-  async function getData(query) {
-    if (!query) {
-      setData([])
-      return
-    }
-    const response = await getLocationByName(query)
-    setData(response || [])
-  }
 
   async function getInitialData(query) {
     if (!query) return
@@ -62,19 +50,11 @@ export default function ForecastScreen() {
   const debounceGetData = useRef<Function>()
 
   useEffect(() => {
-    debounceGetData.current = _.debounce(getData, 500)
-  }, [])
-
-  useEffect(() => {
     if (!coordinates) {
       return
     }
     getForecast(coordinates)
   }, [coordinates, latestUpdate])
-
-  useEffect(() => {
-    debounceGetData.current(query)
-  }, [query])
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange)

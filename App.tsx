@@ -77,6 +77,7 @@ export default function App() {
     }
     getLocationAsync()
   }
+
   async function getLocationAsync() {
     const storedLocationObject = await retrieveStoredLocation()
     if (storedLocationObject) {
@@ -114,15 +115,15 @@ export default function App() {
       }
     } else {
       let location = await Location.getCurrentPositionAsync({})
-		location.coords = {
-			longitude: Number(location.coords.longitude.toFixed(2)),
-			latitude: Number(location.coords.latitude.toFixed(2)),
-			accuracy: null,
-			heading: null,
-			speed: null,
-			altitudeAccuracy: null,
-			altitude: null
-		}
+      location.coords = {
+        longitude: Number(location.coords.longitude.toFixed(2)),
+        latitude: Number(location.coords.latitude.toFixed(2)),
+        accuracy: null,
+        heading: null,
+        speed: null,
+        altitudeAccuracy: null,
+        altitude: null,
+      }
       const geoLocation = await Location.reverseGeocodeAsync({
         longitude: location.coords.longitude,
         latitude: location.coords.latitude,
@@ -171,12 +172,10 @@ export default function App() {
                 inputStyle={styles.input}
                 resetOnSelect={true}
                 handleSelectItem={(item) => {
-                  const label = item.label.trim()
-
                   const location = {
                     coords: {
-                      latitude: Number(item.koordinaat.split(';')[0]),
-                      longitude: Number(item.koordinaat.split(';')[1]),
+                      latitude: Number(item.coordinates.split(';')[0]),
+                      longitude: Number(item.coordinates.split(';')[1]),
                       accuracy: null,
                       altitude: null,
                       altitudeAccuracy: null,
@@ -185,8 +184,8 @@ export default function App() {
                     },
                     timestamp: new Date().getTime(),
                   }
-                  const locationName = label.split(', ')[0]
-                  const locationRegion = label.split(', ').reverse()[0]
+                  const locationName = item.settlement.trim()
+                  const locationRegion = item.county
                   setLocationData({
                     location,
                     locationName,
@@ -204,7 +203,7 @@ export default function App() {
                 placeholder={placeholder.join(', ')}
                 placeholderColor={'#fff'}
                 fetchData={getData}
-                valueExtractor={(item) => item.label?.trim()}
+                valueExtractor={(item) => [item.settlement?.trim(), item.county?.trim()].join(', ')}
                 scrollStyle={styles.scrollStyle}
                 highLightColor={'#1ce'}
                 noDataText={'Ei leidnud asukohta'}
@@ -218,7 +217,15 @@ export default function App() {
             </>
           )}
         </SafeAreaView>
-        <View style={{ paddingTop: 60 + Constants.statusBarHeight, flex: 1, backgroundColor: 'transparent' }}>{fontsLoaded && <AppContainer />}</View>
+        <View
+          style={{
+            paddingTop: 60 + Constants.statusBarHeight,
+            flex: 1,
+            backgroundColor: 'transparent',
+          }}
+        >
+          {fontsLoaded && <AppContainer />}
+        </View>
       </Background>
     </LocationContext.Provider>
   )

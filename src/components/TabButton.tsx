@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 12,
-    fontFamily: 'Inter_200ExtraLight',
+    fontSize: 14,
+    fontFamily: 'Inter_300Light',
     opacity: 0.9,
   },
   activeText: { opacity: 1 },

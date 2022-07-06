@@ -12,7 +12,7 @@ export function Radar(props: { latestUpdate: Date }) {
   const { location, isHighPerformance, setIsHighPerformance } = useContext(LocationContext)
 
   useEffect(() => {
-    fetch('https://www.ilmateenistus.ee/ilm/ilmavaatlused/radaripildid/komposiitpilt/')
+    fetch('https://vana.ilmateenistus.ee/ilm/ilmavaatlused/radaripildid/komposiitpilt/')
       .then((r) => r.text())
       .then((r) => {
         const root = HTMLParser.parse(r)

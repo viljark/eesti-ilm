@@ -3,7 +3,7 @@ import iconv from 'iconv-lite'
 import { Buffer } from 'buffer'
 const parseString = require('react-native-xml2js').parseString
 
-const RESPONSE_CHARSET = 'ISO-8859-15'
+const RESPONSE_CHARSET = 'UTF-8'
 
 export async function getObservations(): Promise<ObservationsResponse> {
   const response = await axios({
@@ -86,16 +86,16 @@ function xmlResponseToJson(response: string): Promise<any> {
 }
 
 export async function getLocationByName(name: string): Promise<any> {
-  const response = await axios.get('https://m.ilmateenistus.ee/wp-content/themes/emhi2013/async/locationAutocomplete.php?mobile=true', {
+  const response = await axios.get('https://www.ilmateenistus.ee/wp-json/emhi/locationAutocomplete', {
     params: {
-      autocomplete: name,
+      location: name,
     },
   })
-  return response.data
+  return response.data?.data || []
 }
 
 export async function getDetailedForecast(coordinates: string): Promise<DetailedForecastResponse> {
-  const response = await axios.get('https://www.ilmateenistus.ee/wp-content/themes/emhi2013/meteogram.php', {
+  const response = await axios.get('https://www.ilmateenistus.ee/wp-content/themes/ilm2020/meteogram.php/?coordinates=', {
     params: {
       coordinates,
     },
