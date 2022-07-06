@@ -6,8 +6,8 @@
     "platforms": [
       "android"
     ],
-    "version": "2.0.9",
-    "runtimeVersion": "2.0.9",
+    "version": "2.1.1",
+    "runtimeVersion": "2.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon-bg.png",
     "splash": {
@@ -29,7 +29,7 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "package": "ee.viljark.eestiilm",
-      "versionCode": 17,
+      "versionCode": 19,
       "adaptiveIcon": {
         "backgroundImage": "./assets/bg.png",
         "foregroundImage": "./assets/icon.png",

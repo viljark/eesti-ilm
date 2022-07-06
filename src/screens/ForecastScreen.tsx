@@ -31,7 +31,7 @@ export default function ForecastScreen() {
   async function getInitialData(query) {
     if (!query) return
     const result = await getLocationByName(query)
-    const coords = result && result.length && result[0].koordinaat
+    const coords = result && result.length && result[0].coordinates
     setCoordinates(coords)
   }
 

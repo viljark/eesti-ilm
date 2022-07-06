@@ -95,7 +95,7 @@ export async function getLocationByName(name: string): Promise<any> {
 }
 
 export async function getDetailedForecast(coordinates: string): Promise<DetailedForecastResponse> {
-  const response = await axios.get('https://www.ilmateenistus.ee/wp-content/themes/ilm2020/meteogram.php/?coordinates=', {
+  const response = await axios.get('https://www.ilmateenistus.ee/wp-content/themes/ilm2020/meteogram.php', {
     params: {
       coordinates,
     },

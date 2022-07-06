@@ -19,18 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="">
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="adjust to new ilmateenistus web page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ErrorMessage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ErrorMessage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ForecastGraph.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ForecastGraph.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Radar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Radar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/TabButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TabButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Main.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +78,7 @@
       <recent name="C:\Users\Viljar\workspace\eesti-ilm\src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.eas:build:production">
+  <component name="RunManager" selected="npm.eas:build:development">
     <configuration name="eas:build:development" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -138,11 +131,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.eas:build:development" />
         <item itemvalue="npm.eas:build:production" />
         <item itemvalue="npm.publish:production" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.publish:preview" />
-        <item itemvalue="npm.eas:build:development" />
       </list>
     </recent_temporary>
   </component>
@@ -177,7 +170,7 @@
       <workItem from="1655624222949" duration="3554000" />
       <workItem from="1656143587877" duration="2659000" />
       <workItem from="1656588293824" duration="6029000" />
-      <workItem from="1657051838946" duration="5377000" />
+      <workItem from="1657051838946" duration="8899000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -283,7 +276,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656145206640</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="adjust to new ilmateenistus web page">
+      <created>1657117411089</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1657117411089</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TodoView">
@@ -327,7 +327,8 @@
     <MESSAGE value="add support for no gps, add general place search, bugfixes, load new data on focus, upgrade Expo SDK to 40" />
     <MESSAGE value="add eas build, hermes, some bugfixes" />
     <MESSAGE value="improve error handling and fix warning parsing" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve error handling and fix warning parsing" />
+    <MESSAGE value="adjust to new ilmateenistus web page" />
+    <option name="LAST_COMMIT_MESSAGE" value="adjust to new ilmateenistus web page" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
