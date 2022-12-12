@@ -19,11 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="adjust to new ilmateenistus web page">
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="fix forecast loading">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForecastScreen.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/formatters.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/formatters.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/useAsyncStorage.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/useAsyncStorage.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,22 +53,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="editor.config.ad.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/assets" />
-    <property name="nodejs_interpreter_path" value="node" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="prettierjs.PrettierConfiguration.Package" value="$PROJECT_DIR$/node_modules/prettier" />
-    <property name="settings.editor.selected.configurable" value="settings.javascript.prettier" />
-    <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/viljark/workspace/eesti-ilm/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/assets" />
@@ -170,7 +163,19 @@
       <workItem from="1655624222949" duration="3554000" />
       <workItem from="1656143587877" duration="2659000" />
       <workItem from="1656588293824" duration="6029000" />
-      <workItem from="1657051838946" duration="8899000" />
+      <workItem from="1657051838946" duration="10090000" />
+      <workItem from="1659336362688" duration="266000" />
+      <workItem from="1659336680834" duration="67000" />
+      <workItem from="1661027663182" duration="2163000" />
+      <workItem from="1661251103955" duration="1296000" />
+      <workItem from="1661290663073" duration="4948000" />
+      <workItem from="1661807692473" duration="1105000" />
+      <workItem from="1661887504058" duration="608000" />
+      <workItem from="1662474624327" duration="1253000" />
+      <workItem from="1662640673525" duration="17000" />
+      <workItem from="1663531653453" duration="715000" />
+      <workItem from="1666943534422" duration="430000" />
+      <workItem from="1668974899527" duration="598000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -283,7 +288,14 @@
       <option name="project" value="LOCAL" />
       <updated>1657117411089</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="fix forecast loading">
+      <created>1657140695556</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1657140695556</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView">
@@ -328,7 +340,8 @@
     <MESSAGE value="add eas build, hermes, some bugfixes" />
     <MESSAGE value="improve error handling and fix warning parsing" />
     <MESSAGE value="adjust to new ilmateenistus web page" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjust to new ilmateenistus web page" />
+    <MESSAGE value="fix forecast loading" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix forecast loading" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
