@@ -16,6 +16,7 @@ import ThunderStorm from '../icons/ThunderStorm'
 import Hail from '../icons/Hail'
 import { Dimensions, StyleProp, StyleSheetProperties, ViewStyle } from 'react-native'
 import _ from 'lodash'
+import SnowStorm from "../icons/SnowStorm"
 
 // mapping https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/
 const clear = ['Clear']
@@ -23,10 +24,11 @@ const fewClouds = ['Few clouds', 'Variable clouds']
 const overcast = ['Cloudy with clear spells', 'Overcast', 'Cloudy']
 
 const snow = ['Light snow shower', 'Moderate snow shower', 'Heavy snow shower', 'Light snowfall', 'Moderate snowfall', 'Heavy snowfall', 'Blowing snow', 'Drifting snow']
+const snowStorm = ['Snowstorm']
 const lightRain = ['Light shower', 'Light rain']
 const strongRain = ['Moderate shower', 'Heavy shower', 'Moderate rain', 'Heavy rain']
 const sleet = ['Light sleet', 'Moderate sleet']
-const glaze = ['Glaze']
+const glaze = ['Glaze', 'Risk of glaze']
 const fog = ['Mist', 'Fog']
 const thunder = ['Thunder']
 const thunderStorm = ['Thunderstorm']
@@ -67,6 +69,7 @@ export const PhenomenonIcon: FunctionComponent<PhenomenonIconProps> = (props: Ph
       {fewClouds.includes(props.phenomenon) && (isDay ? <VariableCloudsDay {...iconProps} /> : <VariableCloudsNight {...iconProps} />)}
       {overcast.includes(props.phenomenon) && <Overcast {...iconProps} />}
       {snow.includes(props.phenomenon) && <Snow {...iconProps} />}
+      {snowStorm.includes(props.phenomenon) && <SnowStorm {...iconProps} />}
       {lightRain.includes(props.phenomenon) && <LightRain {...iconProps} />}
       {strongRain.includes(props.phenomenon) && <StrongRain {...iconProps} />}
       {sleet.includes(props.phenomenon) && <Sleet {...iconProps} />}

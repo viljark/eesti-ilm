@@ -19,11 +19,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="fix forecast loading">
+    <list default="true" id="d7929efc-4f47-4e49-92ec-db67a188d7f7" name="Default Changelist" comment="add snow storm icon, migrate to expo sdk 45">
+      <change afterPath="$PROJECT_DIR$/src/icons/SnowStorm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/AppContainer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/formatters.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/formatters.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/useAsyncStorage.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/useAsyncStorage.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PhenomenonIcon.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PhenomenonIcon.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Main.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +74,7 @@
       <recent name="C:\Users\Viljar\workspace\eesti-ilm\src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.eas:build:development">
+  <component name="RunManager" selected="npm.eas:build:production">
     <configuration name="eas:build:development" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -82,21 +85,21 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="eas:build:production" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="eas:build:preview:apk" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
-        <script value="eas:build:production" />
+        <script value="eas:build:preview:apk" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="publish:preview" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="eas:build:production" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
-        <script value="publish:preview" />
+        <script value="eas:build:production" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -124,11 +127,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.eas:build:development" />
         <item itemvalue="npm.eas:build:production" />
+        <item itemvalue="npm.eas:build:preview:apk" />
+        <item itemvalue="npm.eas:build:development" />
         <item itemvalue="npm.publish:production" />
         <item itemvalue="npm.start" />
-        <item itemvalue="npm.publish:preview" />
       </list>
     </recent_temporary>
   </component>
@@ -176,6 +179,7 @@
       <workItem from="1663531653453" duration="715000" />
       <workItem from="1666943534422" duration="430000" />
       <workItem from="1668974899527" duration="598000" />
+      <workItem from="1672175778423" duration="714000" />
     </task>
     <task id="LOCAL−00001" summary="improve radar UX, add more info about current weather, fix high resolution forecast temperatures">
       <created>1592687622308</created>
@@ -341,7 +345,8 @@
     <MESSAGE value="improve error handling and fix warning parsing" />
     <MESSAGE value="adjust to new ilmateenistus web page" />
     <MESSAGE value="fix forecast loading" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix forecast loading" />
+    <MESSAGE value="add snow storm icon, migrate to expo sdk 45" />
+    <option name="LAST_COMMIT_MESSAGE" value="add snow storm icon, migrate to expo sdk 45" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

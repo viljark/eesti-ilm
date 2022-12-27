@@ -78,7 +78,7 @@ export default function App() {
           // @ts-ignore
           const currentRoute = navigationRef?.current?.getCurrentRoute()
           if (currentRoute?.name) {
-            Analytics.setCurrentScreen(currentRoute?.name)
+            Analytics.logEvent('screen_view', {name: currentRoute?.name})
           }
         }
       }}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native'
+import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { getObservations, Observations, Station } from '../services'
-import { closestObservationField, closestStationWithObservationField, getDistance } from '../utils/distance'
+import { closestStationWithObservationField, getDistance } from '../utils/distance'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { Radar } from '../components/Radar'
 import { CurrentWeather } from '../components/CurrentWeather'
@@ -72,7 +72,7 @@ export default function Main(props) {
 
   useEffect(() => {
     try {
-      Analytics.setCurrentScreen('Main')
+		Analytics.logEvent('screen_view', {name: 'Main'})
     } catch (e) {
       console.warn('analytics error', e)
     }
