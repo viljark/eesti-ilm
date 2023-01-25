@@ -3,7 +3,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "releaseChannel": "development",
+      "channel": "development",
       "env": {
         "GOOGLE_SERVICES_FILE": "true"
       }
@@ -13,13 +13,13 @@
       "android": {
         "buildType": "apk"
       },
-      "releaseChannel": "preview",
+      "channel": "preview",
       "env": {
         "GOOGLE_SERVICES_FILE": "true"
       }
     },
     "production": {
-      "releaseChannel": "production",
+      "channel": "production",
       "env": {
         "GOOGLE_SERVICES_FILE": "true"
       }

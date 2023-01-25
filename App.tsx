@@ -1,24 +1,22 @@
 import 'react-native-gesture-handler'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import AppContainer from './AppContainer'
 import * as Location from 'expo-location'
-import { Alert, AppState, AppStateStatus, SafeAreaView, StyleSheet, View } from 'react-native'
+import { AppState, AppStateStatus, Keyboard, SafeAreaView, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { LocationContext } from './LocationContext'
 import Background from './src/components/Background'
 import { useFonts, Inter_700Bold, Inter_300Light, Inter_200ExtraLight } from '@expo-google-fonts/inter'
+import _ from 'lodash'
 
-import { Autocomplete } from 'react-native-dropdown-autocomplete'
 import { getLocationByName } from './src/services'
 import * as Sentry from 'sentry-expo'
 import Constants from 'expo-constants'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { retrieveStoredLocation, storeLocationData } from './src/utils/locationAsyncStorage'
 import { registerForPushNotificationsAsync } from './src/utils/registerNotifications'
 import Pin from './src/icons/Pin'
 import { LogBox } from 'react-native'
 import useAsyncStorage from './src/utils/useAsyncStorage'
-import axios from 'axios'
-
+import Autocomplete from 'react-native-autocomplete-input'
 // axios.interceptors.request.use((request) => {
 //   console.log('Starting Request', JSON.stringify(request.url, null, 2))
 //   return request
@@ -41,13 +39,14 @@ export default function App() {
     locationRegion: '',
     locationName: '',
   })
+  const [autocompleteData, setAutocompleteData] = useState([])
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
   const [isHighPerformance, setIsHighPerformance] = useAsyncStorage<boolean>('isHighPerformance', true)
 
   useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange)
+    const subscription = AppState.addEventListener('change', handleAppStateChange)
     return () => {
-      AppState.removeEventListener('change', handleAppStateChange)
+      subscription.remove()
     }
   }, [])
   let [fontsLoaded] = useFonts({
@@ -147,6 +146,13 @@ export default function App() {
     return await getLocationByName(query)
   }
 
+  const loadData = useCallback(async (query) => {
+    const data = await getData(query)
+    setAutocompleteData(data)
+  }, [])
+
+  const loadDataDebounced = useMemo(() => _.debounce(loadData, 300), [loadData])
+
   const { location, locationName, locationRegion } = locationData
 
   const placeholder = []
@@ -157,62 +163,68 @@ export default function App() {
     placeholder.push(locationRegion)
   }
 
-  // console.log('placeholder:', JSON.stringify(placeholder))
-  // console.log('locationData:', JSON.stringify(locationData))
-
+  const renderListItem = useCallback(
+    ({ item, index }) => (
+      <TouchableOpacity
+        onPress={() => {
+          setAutocompleteData([])
+          const location = {
+            coords: {
+              latitude: Number(item.coordinates.split(';')[0]),
+              longitude: Number(item.coordinates.split(';')[1]),
+              accuracy: null,
+              altitude: null,
+              altitudeAccuracy: null,
+              heading: null,
+              speed: null,
+            },
+            timestamp: new Date().getTime(),
+          }
+          const locationName = item.settlement.trim()
+          const locationRegion = item.county
+          setLocationData({
+            location,
+            locationName,
+            locationRegion,
+          })
+          storeLocationData({
+            location,
+            locationName,
+            locationRegion,
+          })
+        }}
+        key={index}
+        style={styles.listItem}
+      >
+        <Text style={styles.resultText}>{[item.settlement?.trim(), item.county?.trim()].join(', ')}</Text>
+      </TouchableOpacity>
+    ),
+    [setAutocompleteData, setLocationData]
+  )
   return (
-    <LocationContext.Provider value={{ location, locationName, locationRegion, isHighPerformance, setIsHighPerformance }}>
+    <LocationContext.Provider value={{ location, locationName, locationRegion }}>
       <Background location={location}>
         <SafeAreaView style={styles.autocompleteContainer}>
           {fontsLoaded && (
             <>
               <Pin width={20} height={20} fill="#fff" style={styles.pin} />
               <Autocomplete
+                renderItem={() => null}
+                data={autocompleteData}
+                onChangeText={loadDataDebounced}
+                listContainerStyle={{ borderRadius: 10, overflow: 'hidden', maxHeight: '50%', backgroundColor: '#fff' }}
+                flatListProps={{
+                  keyboardShouldPersistTaps: 'always',
+                  keyExtractor: (_, idx) => String(idx),
+                  renderItem: renderListItem,
+                }}
                 key={placeholder.join(', ')}
-                inputStyle={styles.input}
-                resetOnSelect={true}
-                handleSelectItem={(item) => {
-                  const location = {
-                    coords: {
-                      latitude: Number(item.coordinates.split(';')[0]),
-                      longitude: Number(item.coordinates.split(';')[1]),
-                      accuracy: null,
-                      altitude: null,
-                      altitudeAccuracy: null,
-                      heading: null,
-                      speed: null,
-                    },
-                    timestamp: new Date().getTime(),
-                  }
-                  const locationName = item.settlement.trim()
-                  const locationRegion = item.county
-                  setLocationData({
-                    location,
-                    locationName,
-                    locationRegion,
-                  })
-                  storeLocationData({
-                    location,
-                    locationName,
-                    locationRegion,
-                  })
-                }}
-                separatorStyle={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                }}
+                style={styles.input}
                 placeholder={placeholder.join(', ')}
-                placeholderColor={'#fff'}
-                fetchData={getData}
-                valueExtractor={(item) => [item.settlement?.trim(), item.county?.trim()].join(', ')}
-                scrollStyle={styles.scrollStyle}
-                highLightColor={'#1ce'}
-                noDataText={'Ei leidnud asukohta'}
-                noDataTextStyle={{
-                  paddingVertical: 10,
-                }}
+                placeholderTextColor={'#fff'}
+                selectionColor="#fff"
                 containerStyle={styles.containerStyle}
-                pickerStyle={styles.pickerStyle}
-                listFooterStyle={styles.listFooterStyle}
+                inputContainerStyle={styles.inputContainer}
               />
             </>
           )}
@@ -258,15 +270,16 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 5,
     paddingTop: 5,
-    paddingBottom: 5,
+    paddingBottom: 11,
     backgroundColor: 'rgba(255,255,255,0)',
     borderRadius: 0,
     fontSize: 18,
     fontFamily: 'Inter_200ExtraLight',
   },
-  scrollStyle: {
-    marginBottom: 0,
+  inputContainer: {
     borderWidth: 0,
+    marginBottom: 0,
+    marginTop: 6,
   },
   containerStyle: {
     marginLeft: 0,
@@ -279,16 +292,13 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: 'transparent',
   },
-  pickerStyle: {
-    top: 10,
-    marginLeft: 0,
-    left: 1,
-    borderWidth: 0,
-    paddingBottom: 0,
-    marginBottom: 0,
+  resultText: {
+    fontFamily: 'Inter_300Light',
   },
-  listFooterStyle: {
-    height: 0,
-    display: 'none',
+  listItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderTopColor: '#f1f1f1',
+    borderTopWidth: 1,
   },
 })

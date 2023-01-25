@@ -3,7 +3,6 @@ import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, Style
 import { getObservations, Observations, Station } from '../services'
 import { closestStationWithObservationField, getDistance } from '../utils/distance'
 import { ErrorMessage } from '../components/ErrorMessage'
-import { Radar } from '../components/Radar'
 import { CurrentWeather } from '../components/CurrentWeather'
 import { LocationContext } from '../../LocationContext'
 import * as Analytics from 'expo-firebase-analytics'
@@ -11,9 +10,9 @@ import Constants from 'expo-constants'
 import * as WebBrowser from 'expo-web-browser'
 import Feels from 'feels'
 import useAsyncStorage from '../utils/useAsyncStorage'
-import { ForecastRadar } from '../components/ForecastRadar'
 import { TabButton } from '../components/TabButton'
 import Background from '../components/Background'
+import PrecipitationRadar from '../components/PrecipitationRadar'
 
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
@@ -72,7 +71,7 @@ export default function Main(props) {
 
   useEffect(() => {
     try {
-		Analytics.logEvent('screen_view', {name: 'Main'})
+      Analytics.logEvent('screen_view', { name: 'Main' })
     } catch (e) {
       console.warn('analytics error', e)
     }
@@ -184,9 +183,8 @@ export default function Main(props) {
               </Background>
             </View>
             <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademed hetkel" style={[{ borderColor: '#000', borderRightWidth: 0.5 }]} />
-            {/*<TabButton onPress={() => setActiveTab('forecast')} isActive={activeTab === 'forecast'} text="Sademete prognoos" />*/}
           </View>
-          {activeTab === 'live' ? <Radar latestUpdate={latestUpdate} /> : <ForecastRadar latestUpdate={latestUpdate} />}
+          {activeTab === 'live' ? <PrecipitationRadar latestUpdate={latestUpdate} /> : null}
         </View>
       </ScrollView>
     </View>

@@ -6,7 +6,7 @@
     "platforms": [
       "android"
     ],
-    "version": "2.1.2",
+    "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon-bg.png",
     "splash": {
@@ -15,7 +15,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/ed6360c0-8c0c-11e9-9d21-bb29f9d51c79"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -25,10 +26,11 @@
     },
     "jsEngine": "hermes",
     "android": {
-      "googleServicesFile": "./google-services.json",
+	  "playStoreUrl": "https://play.google.com/store/apps/details?id=ee.viljark.eestiilm",
+	  "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "package": "ee.viljark.eestiilm",
-      "versionCode": 20,
+      "versionCode": 22,
       "adaptiveIcon": {
         "backgroundImage": "./assets/bg.png",
         "foregroundImage": "./assets/icon.png",
@@ -36,8 +38,13 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION"
-      ]
-    },
+      ],
+	  "config": {
+		"googleMaps": {
+		  "apiKey": "AIzaSyCu9o1cl7evIQ9imM9AmJTeoft5EnAitTQ"
+		}
+	  }
+	},
     "notification": {
       "icon": "./assets/icon-notification.png"
     },
@@ -62,6 +69,9 @@
       "eas": {
         "projectId": "ed6360c0-8c0c-11e9-9d21-bb29f9d51c79"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

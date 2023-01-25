@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, StyleSheet, Text, ToastAndroid, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, Text, ToastAndroid, ActivityIndicator, Linking } from 'react-native'
 import _ from 'lodash'
 import { ScrollView, Switch, TouchableNativeFeedback } from 'react-native-gesture-handler'
 import * as Application from 'expo-application'
 import { getFirestore } from '../utils/firebase'
 import { LocationContext } from '../../LocationContext'
+import * as StoreReview from 'expo-store-review'
 
 export default function SettingsScreen() {
   const [isWarningNotificationEnabled, setIsWarningNotificationEnabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { isHighPerformance, setIsHighPerformance } = useContext(LocationContext)
   useEffect(() => {
     ;(async () => {
       try {
@@ -37,7 +37,7 @@ export default function SettingsScreen() {
   }
 
   return (
-    <ScrollView style={styles.scrollContainer} keyboardShouldPersistTaps="always">
+    <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="always">
       <View style={styles.itemWrapper}>
         <TouchableNativeFeedback
           style={styles.item}
@@ -60,31 +60,13 @@ export default function SettingsScreen() {
           )}
         </TouchableNativeFeedback>
       </View>
-      <View style={styles.itemWrapper}>
+      <View style={{ ...styles.itemWrapper }}>
         <TouchableNativeFeedback
           style={styles.item}
           onPress={() => {
-            setIsHighPerformance(!isHighPerformance)
+            Linking.openURL('mailto:viljark+ilm@gmail.com')
           }}
         >
-          <View style={{ flexDirection: 'column', width: '85%' }}>
-            <Text style={styles.switchText}>Äpp-i kiiruse optimeerimine</Text>
-            <Text style={styles.text}></Text>
-            <Text style={[styles.smallText]}>Kasutada kui rakendus ei ole sujuv vanemate või aeglasemate telefonidega. </Text>
-            <Text style={[styles.smallText]}>Põhjustab radari piltide vilkumist, sest pilte laetakse ühekaupa.</Text>
-          </View>
-          <Switch
-            trackColor={{ false: '#767577', true: '#50eb75' }}
-            thumbColor={isHighPerformance ? '#f4f3f4' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={setIsHighPerformance}
-            value={!!isHighPerformance}
-            style={{ marginLeft: 'auto' }}
-          />
-        </TouchableNativeFeedback>
-      </View>
-      <View style={{ ...styles.itemWrapper }}>
-        <TouchableNativeFeedback style={styles.item}>
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.text}>Arendaja kontakt: viljark+ilm@gmail.com</Text>
             <Text style={styles.text}></Text>
@@ -92,6 +74,29 @@ export default function SettingsScreen() {
             <Text style={styles.text}></Text>
             <Text style={styles.smallText}>Icons made by fjstudio from www.flaticon.com</Text>
             <Text style={styles.smallText}>Icons made by Freepik from www.flaticon.com is licensed by CC 3.0</Text>
+          </View>
+        </TouchableNativeFeedback>
+      </View>
+      <View style={{ ...styles.itemWrapper, borderRadius: 20, alignSelf: 'center', marginTop: 'auto' }}>
+        <TouchableNativeFeedback
+          style={styles.itemButton}
+          onPress={async () => {
+            try {
+              // await Linking.openURL('https://play.google.com/store/apps/details?id=ee.viljark.eestiilm&showAllReviews=true')
+              const hasAction = await StoreReview.hasAction()
+              if (hasAction) {
+                const res = await StoreReview.requestReview()
+              } else {
+                await Linking.openURL('https://play.google.com/store/apps/details?id=ee.viljark.eestiilm')
+              }
+            } catch (e) {
+              console.error(e)
+              await Linking.openURL('https://play.google.com/store/apps/details?id=ee.viljark.eestiilm&showAllReviews=true')
+            }
+          }}
+        >
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={styles.buttonText}>☆ Hinda äppi ja jäta tagasisidet ☆</Text>
           </View>
         </TouchableNativeFeedback>
       </View>
@@ -122,6 +127,16 @@ const styles = StyleSheet.create({
     padding: 10,
     overflow: 'hidden',
   },
+  itemButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '100%',
+    padding: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+  },
   switchText: {
     fontFamily: 'Inter_200ExtraLight',
     color: '#fff',
@@ -132,6 +147,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_200ExtraLight',
     color: '#fff',
     fontSize: 12,
+  },
+  buttonText: {
+    fontFamily: 'Inter_300Light',
+    color: '#ffffff',
+    fontSize: 14,
   },
   smallText: {
     fontFamily: 'Inter_200ExtraLight',
