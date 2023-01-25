@@ -20,7 +20,7 @@ const tileCacheDir = FileSystem.cacheDirectory + 'mapbox/'
 export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Date }): JSX.Element {
   const sliderSteps = 18
   const originalSteps = 36
-  const [startDate, setStartDate] = useState(roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * sliderSteps)
+  const [startDate, setStartDate] = useState(roundDownTo10Minutes(new Date()) - (5 * 60 * 1000 * originalSteps))
   const { location } = useContext(LocationContext)
   const [assets, assetLoadingError] = useAssets([require('../assets/pin2.png')])
   const [sliderIndex, setSliderIndex] = useState(sliderSteps)
@@ -42,7 +42,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
         const root = HTMLParser.parse(r)
         const slider = root.querySelector('#radar-slider')
         let start = slider.attributes['data-start']
-        start = start ? Number(start) * 1000 : roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * sliderSteps
+        start = start ? Number(start) * 1000 : roundDownTo10Minutes(new Date()) - (5 * 60 * 1000 * originalSteps)
 
         setStartDate(start)
       })
@@ -54,7 +54,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
     },
     [latestUpdate]
   )
-
+	console.log('startDate', startDate)
   const timestamps = useMemo(() => {
     const dates = []
     for (let i = 1; i <= sliderSteps; i++) {
