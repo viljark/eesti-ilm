@@ -8,8 +8,9 @@
     "eas:build:development": "eas build --profile development",
     "eas:build:preview:apk": "eas build --profile preview",
     "eas:build:production": "eas build --profile production",
-	"eas:update:preview": "eas update --channel preview",
-	"eas:update:production": "eas update --channel production",
+    "eas:build:production:apk": "eas build --profile productionApk",
+    "eas:update:preview": "eas update --channel preview",
+    "eas:update:production": "eas update --channel production",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"
@@ -17,6 +18,7 @@
   "dependencies": {
     "@babel/preset-typescript": "^7.16.7",
     "@expo-google-fonts/inter": "^0.1.0",
+    "@expo/config": "^7.0.0",
     "@expo/webpack-config": "^0.17.0",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/masked-view": "0.1.10",

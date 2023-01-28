@@ -9,7 +9,7 @@ import { useAssets } from 'expo-asset'
 import Slider from '@react-native-community/slider'
 import { getFormattedTime } from '../utils/formatters'
 import HTMLParser from 'fast-html-parser'
-import Constants from 'expo-constants'
+import Svg, { Circle } from 'react-native-svg'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -20,13 +20,14 @@ const tileCacheDir = FileSystem.cacheDirectory + 'mapbox/'
 export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Date }): JSX.Element {
   const sliderSteps = 18
   const originalSteps = 36
-  const [startDate, setStartDate] = useState(roundDownTo10Minutes(new Date()) - (5 * 60 * 1000 * originalSteps))
+  const [startDate, setStartDate] = useState(roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps)
   const { location } = useContext(LocationContext)
   const [assets, assetLoadingError] = useAssets([require('../assets/pin2.png')])
   const [sliderIndex, setSliderIndex] = useState(sliderSteps)
 
   // TODO
   const thunderUrl = `https://www.ilmateenistus.ee/gsavalik/geoserver/keskkonnainfo/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=keskkonnainfo%3Apikne&STYLES=pikne_yld&CQL_FILTER=loomise_aeg%20between%20%272023-01-20%2022%3A24%3A59%27%20and%20%272023-01-20%2022%3A30%3A00%27&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}`
+
   const mapBox = `https://api.mapbox.com/styles/v1/viljark/cldc4wv26000d01nmjyljtssb/tiles/512/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_TOKEN}`
   const maaamet = 'https://tiles.maaamet.ee/tm/tms/1.0.0/hallkaart@GMC/{z}/{x}/{y}.jpg&ASUTUS=MAAAMET&KESKKOND=EXAMPLES'
 
@@ -42,7 +43,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
         const root = HTMLParser.parse(r)
         const slider = root.querySelector('#radar-slider')
         let start = slider.attributes['data-start']
-        start = start ? Number(start) * 1000 : roundDownTo10Minutes(new Date()) - (5 * 60 * 1000 * originalSteps)
+        start = start ? Number(start) * 1000 : roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps
 
         setStartDate(start)
       })
@@ -54,7 +55,6 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
     },
     [latestUpdate]
   )
-	console.log('startDate', startDate)
   const timestamps = useMemo(() => {
     const dates = []
     for (let i = 1; i <= sliderSteps; i++) {
@@ -121,23 +121,20 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
         {radarTileUrlsReversed.map((url, i) => {
           return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
         })}
-        {location && assets && <Marker tappable={false} coordinate={location.coords} zIndex={1} image={assets[0]} />}
+        {location && assets && (
+          <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
+            <View style={{ width: 3, height: 3 }}>
+              <Svg width="100%" height="100%" viewBox="0 0 10 10">
+                <Circle cx={5} cy={5} r={5} fill="red" />
+              </Svg>
+            </View>
+          </Marker>
+        )}
       </MapView>
     </View>
   )
 }
-const script = `
-(function() {
-document.getElementById("header").style.display = "none"
-document.querySelector('.page-content-wrapper').style.setProperty('padding', 0, 'important')
-document.querySelector('h2').remove()
-document.querySelector('.layer-filter-buttons').remove()
-document.querySelector('#app>.wrapper').style.setProperty('margin', 0, 'important')
-document.querySelector('#app>.wrapper').style.setProperty('width', '100%', 'important')
-window.dispatchEvent(new Event('resize'));
 
-})()
-`
 const styles = StyleSheet.create({
   container: {
     width: width,

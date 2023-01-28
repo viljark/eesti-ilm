@@ -23,7 +23,16 @@
       "env": {
         "GOOGLE_SERVICES_FILE": "true"
       }
-    }
+    },
+	"productionApk": {
+	  "channel": "production",
+	  "android": {
+		"buildType": "apk"
+	  },
+	  "env": {
+		"GOOGLE_SERVICES_FILE": "true"
+	  }
+	}
   },
   "cli": {
     "version": ">= 0.47.0"
