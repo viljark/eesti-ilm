@@ -1,11 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text, ToastAndroid, ActivityIndicator, Linking } from 'react-native'
-import _ from 'lodash'
 import { ScrollView, Switch, TouchableNativeFeedback } from 'react-native-gesture-handler'
 import * as Application from 'expo-application'
 import { getFirestore } from '../utils/firebase'
-import { LocationContext } from '../../LocationContext'
-import * as StoreReview from 'expo-store-review'
 
 export default function SettingsScreen() {
   const [isWarningNotificationEnabled, setIsWarningNotificationEnabled] = useState(false)
@@ -77,28 +74,29 @@ export default function SettingsScreen() {
           </View>
         </TouchableNativeFeedback>
       </View>
-      <View style={{ ...styles.itemWrapper, borderRadius: 20, alignSelf: 'center', marginTop: 'auto' }}>
-        <TouchableNativeFeedback
-          style={styles.itemButton}
-          onPress={async () => {
-            try {
-              // await Linking.openURL('https://play.google.com/store/apps/details?id=ee.viljark.eestiilm&showAllReviews=true')
-              const hasAction = await StoreReview.hasAction()
-              if (hasAction) {
-                const res = await StoreReview.requestReview()
-              } else {
-                await Linking.openURL('https://play.google.com/store/apps/details?id=ee.viljark.eestiilm')
-              }
-            } catch (e) {
-              console.error(e)
+      <View style={styles.bottomButtons}>
+        <View style={{ ...styles.buttonsWrapper, alignSelf: 'center', marginTop: 'auto' }}>
+          <TouchableNativeFeedback
+            style={styles.itemButton}
+            onPress={async () => {
               await Linking.openURL('https://play.google.com/store/apps/details?id=ee.viljark.eestiilm&showAllReviews=true')
-            }
-          }}
-        >
-          <View style={{ flexDirection: 'column' }}>
-            <Text style={styles.buttonText}>☆ Hinda äppi ja jäta tagasisidet ☆</Text>
-          </View>
-        </TouchableNativeFeedback>
+            }}
+          >
+            <Text style={styles.buttonText}>🌟 Jäta tagasisidet</Text>
+          </TouchableNativeFeedback>
+        </View>
+        <View style={{ ...styles.buttonsWrapper }}>
+          <TouchableNativeFeedback
+            style={styles.itemButton}
+            onPress={async () => {
+              await Linking.openURL('https://play.google.com/store/apps/developer?id=Viljar+K%C3%A4rgenberg')
+            }}
+          >
+            <View style={{ flexDirection: 'column' }}>
+              <Text style={styles.buttonText}>⚡️ Minu teised äppid</Text>
+            </View>
+          </TouchableNativeFeedback>
+        </View>
       </View>
     </ScrollView>
   )
@@ -127,8 +125,17 @@ const styles = StyleSheet.create({
     padding: 10,
     overflow: 'hidden',
   },
+  bottomButtons: {
+    alignSelf: 'center',
+    marginTop: 'auto',
+  },
+  buttonsWrapper: {
+    overflow: 'hidden',
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    marginBottom: 10,
+  },
   itemButton: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
@@ -136,6 +143,7 @@ const styles = StyleSheet.create({
     padding: 10,
     overflow: 'hidden',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   switchText: {
     fontFamily: 'Inter_200ExtraLight',

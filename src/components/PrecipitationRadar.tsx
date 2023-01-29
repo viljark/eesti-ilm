@@ -10,6 +10,7 @@ import Slider from '@react-native-community/slider'
 import { getFormattedTime } from '../utils/formatters'
 import HTMLParser from 'fast-html-parser'
 import Svg, { Circle } from 'react-native-svg'
+import { RadarColors } from './RadarColors'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -28,6 +29,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
   // TODO
   const thunderUrl = `https://www.ilmateenistus.ee/gsavalik/geoserver/keskkonnainfo/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=keskkonnainfo%3Apikne&STYLES=pikne_yld&CQL_FILTER=loomise_aeg%20between%20%272023-01-20%2022%3A24%3A59%27%20and%20%272023-01-20%2022%3A30%3A00%27&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}`
 
+  const borders = `https://www.ilmateenistus.ee/gsavalik/geoserver/baasandmed/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=baasandmed%3Aehak_maakond&STYLES=piirid_tume&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}`
   const mapBox = `https://api.mapbox.com/styles/v1/viljark/cldc4wv26000d01nmjyljtssb/tiles/512/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_TOKEN}`
   const maaamet = 'https://tiles.maaamet.ee/tm/tms/1.0.0/hallkaart@GMC/{z}/{x}/{y}.jpg&ASUTUS=MAAAMET&KESKKOND=EXAMPLES'
 
@@ -70,82 +72,91 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
 
   return (
     <View style={styles.container}>
-      <Text style={styles.smallText}>{getFormattedTime(timestamps[radarTileUrlsReversed.length - sliderIndex])} </Text>
-      <Slider
-        value={sliderIndex}
-        minimumValue={1}
-        maximumValue={sliderSteps}
-        step={1}
-        minimumTrackTintColor="#555"
-        maximumTrackTintColor="#555"
-        thumbTintColor="#555"
-        style={styles.progress}
-      />
-      <Slider
-        value={sliderIndex}
-        minimumValue={1}
-        maximumValue={sliderSteps}
-        step={1}
-        minimumTrackTintColor="#555"
-        maximumTrackTintColor="#555"
-        thumbTintColor="#555"
-        style={styles.slider}
-        onValueChange={setSliderIndex}
-      />
-      <MapView
-        pitchEnabled={false}
-        zoomEnabled={true}
-        zoomControlEnabled={false}
-        scrollEnabled={false}
-        provider={null}
-        mapType={MAP_TYPES.NONE}
-        style={styles.map}
-        rotateEnabled={false}
-        minZoomLevel={6}
-        moveOnMarkerPress={false}
-        initialRegion={{
-          latitude: 58.6488358,
-          longitude: 25.2302703,
-          latitudeDelta: 4.6,
-          longitudeDelta: 2.5,
-        }}
-        mapPadding={{
-          top: 0,
-          right: 0,
-          bottom: width,
-          left: 0,
-        }}
-      >
-        <UrlTile shouldReplaceMapContent={true} urlTemplate={tiles} maximumZ={19} flipY={flip} tileCacheMaxAge={30 * 24 * 60 * 60} tileCachePath={tileCacheDir} />
+      <View style={styles.mapContainer}>
+        <Text style={styles.smallText}>{getFormattedTime(timestamps[radarTileUrlsReversed.length - sliderIndex])} </Text>
+        <Slider
+          value={sliderIndex}
+          minimumValue={1}
+          maximumValue={sliderSteps}
+          step={1}
+          minimumTrackTintColor="#555"
+          maximumTrackTintColor="#555"
+          thumbTintColor="#555"
+          style={styles.progress}
+        />
+        <Slider
+          value={sliderIndex}
+          minimumValue={1}
+          maximumValue={sliderSteps}
+          step={1}
+          minimumTrackTintColor="#555"
+          maximumTrackTintColor="#555"
+          thumbTintColor="#555"
+          style={styles.slider}
+          onValueChange={setSliderIndex}
+        />
+        <MapView
+          pitchEnabled={false}
+          zoomEnabled={true}
+          zoomControlEnabled={false}
+          scrollEnabled={false}
+          provider={null}
+          mapType={MAP_TYPES.NONE}
+          style={styles.map}
+          rotateEnabled={false}
+          minZoomLevel={6}
+          moveOnMarkerPress={false}
+          initialRegion={{
+            latitude: 58.6488358,
+            longitude: 25.2302703,
+            latitudeDelta: 4.6,
+            longitudeDelta: 2.5,
+          }}
+          mapPadding={{
+            top: 0,
+            right: 0,
+            bottom: width,
+            left: 0,
+          }}
+        >
+          <UrlTile shouldReplaceMapContent={true} urlTemplate={tiles} maximumZ={19} flipY={flip} tileCacheMaxAge={30 * 24 * 60 * 60} tileCachePath={tileCacheDir} />
 
-        {radarTileUrlsReversed.map((url, i) => {
-          return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
-        })}
-        {location && assets && (
-          <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
-            <View style={{ width: 3, height: 3 }}>
-              <Svg width="100%" height="100%" viewBox="0 0 10 10">
-                <Circle cx={5} cy={5} r={5} fill="red" />
-              </Svg>
-            </View>
-          </Marker>
-        )}
-      </MapView>
+          {radarTileUrlsReversed.map((url, i) => {
+            return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
+          })}
+          <WMSTile style={{ opacity: 0.4, zIndex: 1 }} urlTemplate={borders} />
+          {location && assets && (
+            <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
+              <View style={{ width: 3, height: 3 }}>
+                <Svg width="100%" height="100%" viewBox="0 0 10 10">
+                  <Circle cx={5} cy={5} r={5} fill="red" />
+                </Svg>
+              </View>
+            </Marker>
+          )}
+        </MapView>
+      </View>
+
+      <RadarColors />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: width,
-    height: width,
-    overflow: 'hidden',
-    marginBottom: 6,
-    borderWidth: 2,
-    borderTopWidth: 0,
     borderColor: 'rgba(0,0,0,0.5)',
     borderBottomRightRadius: 30,
     borderBottomLeftRadius: 30,
+    borderWidth: 2,
+    borderTopWidth: 0,
+    overflow: 'hidden',
+    marginBottom: 6,
+  },
+  mapContainer: {
+    width: width - 4,
+    height: width,
+    overflow: 'hidden',
+    marginBottom: 10,
   },
   map: {
     flex: 1,

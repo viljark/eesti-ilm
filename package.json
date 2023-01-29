@@ -10,7 +10,7 @@
     "eas:build:production": "eas build --profile production",
     "eas:build:production:apk": "eas build --profile productionApk",
     "eas:update:preview": "eas update --channel preview",
-    "eas:update:production": "eas update --channel production",
+    "eas:update:production": "eas update --branch production",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"
