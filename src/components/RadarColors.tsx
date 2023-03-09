@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 
 interface Props {}
 
@@ -22,7 +22,6 @@ export const RadarColors: React.FC<Props> = ({}: Props) => {
         marginTop: -10,
       }}
     >
-      <Text style={styles.title}>sademete määr (mm/h)</Text>
       <View style={styles.colorWrap}>
         {colors.map((color, i) => (
           <View
@@ -42,32 +41,35 @@ export const RadarColors: React.FC<Props> = ({}: Props) => {
           </View>
         ))}
       </View>
+
+      <Text style={styles.title}>sademete määr (mm/h)</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 0,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 10,
-    paddingBottom: 30,
+    paddingBottom: 5,
     flexGrow: 0,
   },
   colorWrap: {
     flexDirection: 'row',
   },
   title: {
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: 12,
     fontFamily: 'Inter_300Light',
     color: '#fff',
+    marginTop: 16,
+    paddingRight: 4,
   },
   color: {
-    height: 20,
+    height: 13,
     flexGrow: 1,
     flexShrink: 0,
     alignItems: 'center',
@@ -75,8 +77,8 @@ const styles = StyleSheet.create({
   },
   amount: {
     paddingTop: 1,
-    fontFamily: 'Inter_300Light',
-    fontSize: 12,
+    fontFamily: 'Inter_700Bold',
+    fontSize: 8,
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.7)',
     textShadowOffset: { width: 0, height: 0 },
@@ -84,11 +86,11 @@ const styles = StyleSheet.create({
   },
   description: {
     position: 'absolute',
-    bottom: -20,
-    left: 0,
+    bottom: -12,
+    left: '30%',
     flexWrap: 'nowrap',
     fontFamily: 'Inter_300Light',
-    fontSize: 12,
+    fontSize: 8,
     flexGrow: 1,
     color: '#fff',
     width: 100,
