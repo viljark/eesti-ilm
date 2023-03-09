@@ -3,10 +3,23 @@ import { View, StyleSheet, Text, ToastAndroid, ActivityIndicator, Linking } from
 import { ScrollView, Switch, TouchableNativeFeedback } from 'react-native-gesture-handler'
 import * as Application from 'expo-application'
 import { getFirestore } from '../utils/firebase'
+import useAsyncStorage from '../utils/useAsyncStorage'
+import { useBetween } from 'use-between'
 
+const useSettings = () => {
+  const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap', false)
+
+  return {
+    isDarkMap,
+    setIsDarkMap,
+  }
+}
+
+export const useSharedSettings = () => useBetween(useSettings)
 export default function SettingsScreen() {
   const [isWarningNotificationEnabled, setIsWarningNotificationEnabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const { isDarkMap, setIsDarkMap } = useSharedSettings()
   useEffect(() => {
     ;(async () => {
       try {
@@ -55,6 +68,26 @@ export default function SettingsScreen() {
               style={{ marginLeft: 'auto' }}
             />
           )}
+        </TouchableNativeFeedback>
+      </View>
+      <View style={styles.itemWrapper}>
+        <TouchableNativeFeedback
+          style={styles.item}
+          onPress={() => {
+            setIsDarkMap(!isDarkMap)
+          }}
+        >
+          <Text style={styles.switchText}>Tume sademete kaart</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#50eb75' }}
+            thumbColor={isDarkMap ? '#f4f3f4' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() => {
+              setIsDarkMap(!isDarkMap)
+            }}
+            value={isDarkMap}
+            style={{ marginLeft: 'auto' }}
+          />
         </TouchableNativeFeedback>
       </View>
       <View style={{ ...styles.itemWrapper }}>

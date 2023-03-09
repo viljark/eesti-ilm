@@ -11,12 +11,11 @@ import { getFormattedTime } from '../utils/formatters'
 import HTMLParser from 'fast-html-parser'
 import Svg, { Circle } from 'react-native-svg'
 import { RadarColors } from './RadarColors'
+import { useSharedSettings } from '../screens/Settings'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
 const width = Dimensions.get('window').width - 20 //full width
-
-const tileCacheDir = FileSystem.cacheDirectory + 'mapbox/'
 
 export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Date }): JSX.Element {
   const sliderSteps = 18
@@ -25,14 +24,16 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
   const { location } = useContext(LocationContext)
   const [assets, assetLoadingError] = useAssets([require('../assets/pin2.png')])
   const [sliderIndex, setSliderIndex] = useState(sliderSteps)
-
+  const { isDarkMap } = useSharedSettings()
+  const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
   // TODO
   const thunderUrl = `https://www.ilmateenistus.ee/gsavalik/geoserver/keskkonnainfo/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=keskkonnainfo%3Apikne&STYLES=pikne_yld&CQL_FILTER=loomise_aeg%20between%20%272023-01-20%2022%3A24%3A59%27%20and%20%272023-01-20%2022%3A30%3A00%27&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}`
 
+  const mapBoxDark = 'clf1lw9lt001k01pg6s20piqq'
+  const mapBoxWhite = 'cldc4wv26000d01nmjyljtssb'
   const borders = `https://www.ilmateenistus.ee/gsavalik/geoserver/baasandmed/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=baasandmed%3Aehak_maakond&STYLES=piirid_tume&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}`
-  const mapBox = `https://api.mapbox.com/styles/v1/viljark/cldc4wv26000d01nmjyljtssb/tiles/512/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_TOKEN}`
+  const mapBox = `https://api.mapbox.com/styles/v1/viljark/${isDarkMap ? mapBoxDark : mapBoxWhite}/tiles/512/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_TOKEN}`
   const maaamet = 'https://tiles.maaamet.ee/tm/tms/1.0.0/hallkaart@GMC/{z}/{x}/{y}.jpg&ASUTUS=MAAAMET&KESKKOND=EXAMPLES'
-
   const tiles = mapBox
 
   // @ts-ignore
@@ -70,18 +71,20 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
     return timestamps.reverse().map((timestamp) => getRadarUrl(new Date(timestamp).toISOString()))
   }, [timestamps])
 
+  const sliderColor = isDarkMap ? '#ddd' : '#555'
+
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
-        <Text style={styles.smallText}>{getFormattedTime(timestamps[radarTileUrlsReversed.length - sliderIndex])} </Text>
+        <Text style={[styles.smallText, { color: sliderColor }]}>{getFormattedTime(timestamps[radarTileUrlsReversed.length - sliderIndex])} </Text>
         <Slider
           value={sliderIndex}
           minimumValue={1}
           maximumValue={sliderSteps}
           step={1}
-          minimumTrackTintColor="#555"
-          maximumTrackTintColor="#555"
-          thumbTintColor="#555"
+          minimumTrackTintColor={sliderColor}
+          maximumTrackTintColor={sliderColor}
+          thumbTintColor={sliderColor}
           style={styles.progress}
         />
         <Slider
@@ -96,6 +99,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
           onValueChange={setSliderIndex}
         />
         <MapView
+          key={tileCacheDir}
           pitchEnabled={false}
           zoomEnabled={true}
           zoomControlEnabled={false}
