@@ -5,13 +5,13 @@ import MapView, { MAP_TYPES, Marker, UrlTile, WMSTile } from 'react-native-maps'
 import { LocationContext } from '../../LocationContext'
 import * as FileSystem from 'expo-file-system'
 
-import { useAssets } from 'expo-asset'
 import Slider from '@react-native-community/slider'
 import { getFormattedTime } from '../utils/formatters'
 import HTMLParser from 'fast-html-parser'
 import Svg, { Circle } from 'react-native-svg'
 import { RadarColors } from './RadarColors'
 import { useSharedSettings } from '../screens/Settings'
+import Animated, { FadeIn } from 'react-native-reanimated'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -22,7 +22,6 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
   const originalSteps = 36
   const [startDate, setStartDate] = useState(roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps)
   const { location } = useContext(LocationContext)
-  const [assets, assetLoadingError] = useAssets([require('../assets/pin2.png')])
   const [sliderIndex, setSliderIndex] = useState(sliderSteps)
   const { isDarkMap } = useSharedSettings()
   const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
@@ -75,7 +74,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
 
   return (
     <View style={styles.container}>
-      <View style={styles.mapContainer}>
+      <Animated.View style={styles.mapContainer} entering={FadeIn.duration(500).delay(700)}>
         <Text style={[styles.smallText, { color: sliderColor }]}>{getFormattedTime(timestamps[radarTileUrlsReversed.length - sliderIndex])} </Text>
         <Slider
           value={sliderIndex}
@@ -98,48 +97,50 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
           style={styles.slider}
           onValueChange={setSliderIndex}
         />
-        <MapView
-          key={tileCacheDir}
-          pitchEnabled={false}
-          zoomEnabled={true}
-          zoomControlEnabled={false}
-          scrollEnabled={false}
-          provider={null}
-          mapType={MAP_TYPES.NONE}
-          style={styles.map}
-          rotateEnabled={false}
-          minZoomLevel={6}
-          moveOnMarkerPress={false}
-          initialRegion={{
-            latitude: 58.6488358,
-            longitude: 25.2302703,
-            latitudeDelta: 4.6,
-            longitudeDelta: 2.5,
-          }}
-          mapPadding={{
-            top: 0,
-            right: 0,
-            bottom: width,
-            left: 0,
-          }}
-        >
-          <UrlTile shouldReplaceMapContent={true} urlTemplate={tiles} maximumZ={19} flipY={flip} tileCacheMaxAge={30 * 24 * 60 * 60} tileCachePath={tileCacheDir} />
+        {isDarkMap === null ? null : (
+          <MapView
+            key={tileCacheDir}
+            pitchEnabled={true}
+            zoomEnabled={false}
+            zoomControlEnabled={false}
+            scrollEnabled={false}
+            provider={null}
+            mapType={MAP_TYPES.NONE}
+            style={styles.map}
+            rotateEnabled={false}
+            minZoomLevel={6}
+            moveOnMarkerPress={false}
+            initialRegion={{
+              latitude: 58.6488358,
+              longitude: 25.2302703,
+              latitudeDelta: 4.6,
+              longitudeDelta: 2.5,
+            }}
+            mapPadding={{
+              top: 0,
+              right: 0,
+              bottom: width,
+              left: 0,
+            }}
+          >
+            <UrlTile shouldReplaceMapContent={true} urlTemplate={tiles} maximumZ={19} flipY={flip} tileCacheMaxAge={30 * 24 * 60 * 60} tileCachePath={tileCacheDir} />
 
-          {radarTileUrlsReversed.map((url, i) => {
-            return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
-          })}
-          <WMSTile style={{ opacity: 0.4, zIndex: 1 }} urlTemplate={borders} />
-          {location && assets && (
-            <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
-              <View style={{ width: 3, height: 3 }}>
-                <Svg width="100%" height="100%" viewBox="0 0 10 10">
-                  <Circle cx={5} cy={5} r={5} fill="red" />
-                </Svg>
-              </View>
-            </Marker>
-          )}
-        </MapView>
-      </View>
+            {radarTileUrlsReversed.map((url, i) => {
+              return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
+            })}
+            <WMSTile style={{ opacity: 0.4, zIndex: 1 }} urlTemplate={borders} />
+            {location && (
+              <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
+                <View style={{ width: 3, height: 3 }}>
+                  <Svg width="100%" height="100%" viewBox="0 0 10 10">
+                    <Circle cx={5} cy={5} r={5} fill="red" />
+                  </Svg>
+                </View>
+              </Marker>
+            )}
+          </MapView>
+        )}
+      </Animated.View>
 
       <RadarColors />
     </View>
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     overflow: 'hidden',
     marginBottom: 6,
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   mapContainer: {
     width: width - 4,

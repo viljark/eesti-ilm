@@ -7,7 +7,7 @@ import useAsyncStorage from '../utils/useAsyncStorage'
 import { useBetween } from 'use-between'
 
 const useSettings = () => {
-  const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap', false)
+  const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap')
 
   return {
     isDarkMap,
