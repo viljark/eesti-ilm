@@ -1,25 +1,46 @@
-import { Warning } from '../services'
+import { getWarningForLocation, Warning } from '../services'
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import * as Location from 'expo-location'
 import Background from './Background'
 import Constants from 'expo-constants'
 import { blockBackground, commonStyles } from '../utils/styles'
 import * as WebBrowser from 'expo-web-browser'
+import { LocationContext } from '../../LocationContext'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
 
-export function Alert({ alert, location }: { alert: Warning; location: Location.LocationObject }) {
+export function Alert({ latestUpdate }: { latestUpdate: Date }) {
+  const { location, locationName, locationRegion } =
+    useContext<{
+      location: Location.LocationObject
+      locationName: string
+      locationRegion: string
+    }>(LocationContext)
+  const [warning, setWarning] = useState<Warning>(null)
+  async function fetchWarnings() {
+    const warning = await getWarningForLocation(locationRegion)
+    console.log('warning', warning)
+    setWarning(warning)
+  }
+
+  useEffect(() => {
+    fetchWarnings()
+  }, [locationRegion, latestUpdate])
+
   return (
     <>
-      {alert && (
+      {warning && (
         <TouchableOpacity
           style={{
             display: 'flex',
-            marginTop: 10,
-            borderRadius: 15,
+            marginTop: 0,
+            marginBottom: 10,
+            borderRadius: 20,
             backgroundColor: 'rgba(0,0,0, .5)',
+            marginLeft: 10,
+            marginRight: 10,
             overflow: 'hidden',
             ...commonStyles.blockShadow,
           }}
@@ -74,7 +95,7 @@ export function Alert({ alert, location }: { alert: Warning; location: Location.
                 fontFamily: 'Inter_200ExtraLight',
               }}
             >
-              {alert.content_est}
+              {warning.content_est}
             </Text>
           </View>
         </TouchableOpacity>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { LinearGradient as ExpoLinearGradient, LinearGradient } from 'expo-linear-gradient'
-import { Dimensions, StyleSheet } from 'react-native'
+import { Dimensions, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import { getTimes } from 'suncalc'
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
@@ -8,11 +8,12 @@ import { StatusBar } from 'expo-status-bar'
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height //full height
 
-const Background = (props: { children: React.ReactNode; location: Location.LocationObject }) => {
-  const [gradient, setGradient] = useState<{
-    color: string[]
-    location: number[]
-  }>()
+const Background = (props: { children: React.ReactNode; location: Location.LocationObject; style?: StyleProp<ViewStyle> }) => {
+  const [gradient, setGradient] =
+    useState<{
+      color: string[]
+      location: number[]
+    }>()
   const [isNight, setIsNight] = useState(false)
   useEffect(() => {
     setGradient(gradientsNight[3])
@@ -50,7 +51,7 @@ const Background = (props: { children: React.ReactNode; location: Location.Locat
   }, [props.location])
 
   return gradient ? (
-    <LinearGradient style={styles.container} colors={gradient.color} start={[0.5, 0]} locations={gradient.location}>
+    <LinearGradient style={[styles.container, props.style]} colors={gradient.color} start={[0.5, 0]} locations={gradient.location}>
       {props.children}
       <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'} />
     </LinearGradient>

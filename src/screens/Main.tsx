@@ -13,6 +13,7 @@ import useAsyncStorage from '../utils/useAsyncStorage'
 import { TabButton } from '../components/TabButton'
 import Background from '../components/Background'
 import PrecipitationRadar from '../components/PrecipitationRadar'
+import { Alert } from '../components/Alert'
 
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
@@ -133,6 +134,7 @@ export default function Main(props) {
           />
         }
       >
+        <Alert latestUpdate={latestUpdate} />
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <View>
           <TouchableWithoutFeedback
@@ -198,9 +200,9 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     alignSelf: 'stretch',
+    paddingTop: 20,
   },
   container: {
-    marginTop: 20,
     flex: 1,
     alignItems: 'center',
     alignSelf: 'stretch',

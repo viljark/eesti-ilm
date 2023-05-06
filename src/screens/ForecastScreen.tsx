@@ -25,7 +25,6 @@ export default function ForecastScreen() {
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date())
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true)
   const [detailedForecast, setDetailedForecast] = useState<Time[]>() //useAsyncStorage<Time[]>('detailedForecast')
-  const [warning, setWarning] = useState<Warning>(null)
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
 
   async function getInitialData(query) {
@@ -33,11 +32,6 @@ export default function ForecastScreen() {
     const result = await getLocationByName(query)
     const coords = result && result.length && result[0].coordinates
     setCoordinates(coords)
-  }
-
-  async function fetchWarnings() {
-    const warning = await getWarningForLocation(locationRegion)
-    setWarning(warning)
   }
 
   async function getForecast(coordinates) {
@@ -78,10 +72,6 @@ export default function ForecastScreen() {
     getInitialData(locationName)
   }, [locationName, latestUpdate])
 
-  useEffect(() => {
-    fetchWarnings()
-  }, [locationRegion, latestUpdate])
-
   const minTemp = detailedForecast && _.min(detailedForecast.map((f) => Number(f.temperature['@attributes'].value)))
 
   const graphRef = React.useRef(new Animated.ValueXY({ x: 0, y: 0 }))
@@ -103,7 +93,6 @@ export default function ForecastScreen() {
     >
       <View style={styles.container}>
         <View style={styles.forecastHourlyListWrapper}>
-          <Alert alert={warning} location={location} />
           <ForecastHourlyList graphWidth={graphWidth} graphRef={graphRef} detailedForecast={detailedForecast} latestUpdate={latestUpdate} location={location} />
         </View>
 
