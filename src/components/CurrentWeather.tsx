@@ -14,11 +14,11 @@ import Humidity from '../icons/Humidity'
 import { Forecast } from './Forecast'
 import Precipitations from '../icons/Precipitations'
 import { commonStyles } from '../utils/styles'
-import { formatHours, getFormattedDateTime, getFormattedTime } from '../utils/formatters'
-import * as Notifications from 'expo-notifications'
+import { getFormattedDateTime, getFormattedTime } from '../utils/formatters'
 import Sunrise from '../icons/Sunrise'
 import Sunset from '../icons/Sunset'
 import { getTimes, GetTimesResult } from 'suncalc'
+import Barometer from '../icons/Barometer'
 interface CurrentWeatherProps {
   closestStation: Station
   realFeel: number | null
@@ -33,6 +33,7 @@ interface CurrentWeatherProps {
   precipitations: string
   latestUpdate: Date
   observationsReceivedAt: number
+  airpressure: string
 }
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
@@ -51,6 +52,7 @@ export function CurrentWeather({
   latestUpdate,
   precipitations,
   observationsReceivedAt,
+  airpressure,
 }: CurrentWeatherProps) {
   const { location, locationName } = useContext(LocationContext)
 
@@ -149,28 +151,37 @@ export function CurrentWeather({
             </View>
           </View>
           <View style={styles.row}>
-            {!showOtherMeta ? (
-              <View style={styles.cellLeft}>
-                <Precipitations {...metaIconProps} />
-                <Text allowFontScaling={false} style={styles.metaText}>
-                  {precipitations}
-                </Text>
-                <Text allowFontScaling={false} style={styles.metaTextSmall}>
-                  mm/tunnis
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.cellLeft}>
-                <UvIndex {...metaIconProps} />
-                <Text allowFontScaling={false} style={styles.metaText}>
-                  {uv}
-                </Text>
-              </View>
-            )}
+            <View style={styles.cellLeft}>
+              <Precipitations {...metaIconProps} />
+              <Text allowFontScaling={false} style={styles.metaText}>
+                {precipitations}
+              </Text>
+              <Text allowFontScaling={false} style={styles.metaTextSmall}>
+                mm/tunnis
+              </Text>
+            </View>
             <View style={styles.cellRight}>
               <Humidity {...metaIconProps} />
               <Text allowFontScaling={false} style={styles.metaText}>
                 {humidity}%
+              </Text>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.cellLeft}>
+              <UvIndex {...metaIconProps} />
+              <Text allowFontScaling={false} style={styles.metaText}>
+                {uv}
+              </Text>
+            </View>
+            <View style={styles.cellRight}>
+              <Barometer {...metaIconProps} />
+
+              <Text allowFontScaling={false} style={styles.metaText}>
+                {airpressure}
+              </Text>
+              <Text allowFontScaling={false} style={styles.metaTextSmall}>
+                hPa
               </Text>
             </View>
           </View>
@@ -215,7 +226,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 30,
-    height: 405,
+    height: 455,
     overflow: 'hidden',
     backgroundColor: '#5C8BC2',
     marginBottom: 20,
@@ -236,7 +247,7 @@ const styles = StyleSheet.create({
   background: {
     position: 'absolute',
     left: 0,
-    top: -height + 405,
+    top: -height + 455,
     transform: [
       {
         rotate: `${180}deg`,

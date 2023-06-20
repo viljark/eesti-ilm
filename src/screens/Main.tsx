@@ -109,6 +109,7 @@ export default function Main(props) {
   const getHumidity = () => closestStationWithObservationField(observations?.station, 'relativehumidity')
   const getPrecipitations = () => closestStationWithObservationField(observations?.station, 'precipitations')
   const getUVIndex = () => closestStationWithObservationField(observations?.station, 'uvindex')
+  const getAirPressure = () => closestStationWithObservationField(observations?.station, 'airpressure')
 
   const observationsReceivedAt = Number(allObservations?.$?.timestamp) * 1000 || null
 
@@ -155,6 +156,7 @@ export default function Main(props) {
                 waterStationName={getWaterTempStation()?.name}
                 waterTemperature={getWaterTempStation()?.watertemperature}
                 uv={getUVIndex()?.uvindex}
+                airpressure={getAirPressure()?.airpressure}
                 humidity={getHumidity()?.relativehumidity}
                 precipitations={getPrecipitations()?.precipitations}
               />
