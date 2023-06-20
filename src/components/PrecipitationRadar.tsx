@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderTopWidth: 0,
     overflow: 'hidden',
-    marginBottom: 6,
+    marginBottom: 28,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   mapContainer: {
