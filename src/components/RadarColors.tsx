@@ -16,7 +16,6 @@ const colors = [
   { amount: 50, color: '#ff45ff', description: 'rahe' },
 ]
 export const RadarColors: React.FC<Props> = ({}: Props) => {
-  const [assets, error] = useAssets([require('./cloud-thunder.png'), require('./cloud-ground-thunder.png')])
   return (
     <View
       style={{
@@ -43,20 +42,27 @@ export const RadarColors: React.FC<Props> = ({}: Props) => {
           </View>
         ))}
       </View>
-
       <Text style={styles.title}>sademete määr (mm/h)</Text>
-      {assets ? (
-        <View style={styles.thunderContainer}>
-          <View style={styles.thunderRow}>
-            <Image source={assets[0]} style={styles.thunderIcon} />
-            <Text style={styles.thunderText}>Pilvevälk</Text>
-          </View>
-          <View style={styles.thunderRow}>
-            <Image source={assets[1]} style={styles.thunderIcon} />
-            <Text style={styles.thunderText}>Pilv-maa välk</Text>
-          </View>
+      <View style={styles.thunderContainer}>
+        <View style={styles.thunderRow}>
+          <Image
+            source={{
+              uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWtJREFUeNpiYBgFJABGEtULALEBlH2AmpYoAHG+HgNDgBCQDeL8AOIXQHyPgeHCIwaGhUDmAiD+QK4lBRYMDP0OQAYHDgUPgHg3kHrKwBAIZF4g1ZL5AQwMCQZEBskGiA2JUF8RZUkB0IJ+AxIjbDMwyM4yMBhCPQgHTNgi15iBod6AjFTkCtQrCgwBdHFslhTYQlIRyQAUb0AHOiClQOyWyDEw+AtQkCegpgfgtUQJzRXk+AaYzO0JBRfFgJuIOKE6wLDkM56cSyy4SigJ3yShTMJVAgDBQbyWfGFgmHiBAktOQ0JiA6E4OQAsiw78IMOCG5CgakQvLHEVKwpSDAzn44CZkoNIC0Cl8hKgD75ACkqiUteDZwwMjouB9AcifbAUWDB+gRSQGIAZn+OAKW3hCWD+AlpkASoFeJAkQcF5B4h3Ah1yiIGh8BckmH5QUjMKQIsKUKVl/wYY5kBXX4TWHxtGGxhUBQABBgDMyE2335q+vQAAAABJRU5ErkJggg==',
+            }}
+            style={styles.thunderIcon}
+          />
+          <Text style={styles.thunderText}>Pilvevälk</Text>
         </View>
-      ) : null}
+        <View style={styles.thunderRow}>
+          <Image
+            source={{
+              uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAINJREFUeNpiZCAMGhwYGOpxSX4A4gsMDI5A6gAuNSxEWMLggEfuAcQSvICJgQ5g1JIRagmjKAPDfm38qRSv5AcCSRgkzyJGwBBCQICIfDQa8aOW0A6wvMJXEVApnzASU2k14Km0QPlgAYFKazTiRy2hYT4hQs2D1XiS51dEdsAJAAIMAOrpGKdU5JfXAAAAAElFTkSuQmCC',
+            }}
+            style={styles.thunderIcon}
+          />
+          <Text style={styles.thunderText}>Pilv-maa välk</Text>
+        </View>
+      </View>
     </View>
   )
 }
