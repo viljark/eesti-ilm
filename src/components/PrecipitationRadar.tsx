@@ -12,6 +12,9 @@ import Svg, { Circle } from 'react-native-svg'
 import { RadarColors } from './RadarColors'
 import { useSharedSettings } from '../screens/Settings'
 import Animated, { FadeIn } from 'react-native-reanimated'
+import format from 'date-fns/format'
+import add from 'date-fns/add'
+import differenceInMinutes from 'date-fns/differenceInMinutes'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -21,6 +24,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
   const sliderSteps = 18
   const originalSteps = 36
   const [startDate, setStartDate] = useState(roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps)
+
   const { location } = useContext(LocationContext)
   const [sliderIndex, setSliderIndex] = useState(sliderSteps)
   const { isDarkMap } = useSharedSettings()
@@ -45,9 +49,11 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
         const root = HTMLParser.parse(r)
         const slider = root.querySelector('#radar-slider')
         let start = slider.attributes['data-start']
-        start = start ? Number(start) * 1000 : roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps
-
-        setStartDate(start)
+        const startTimestamp = Number(start) * 1000
+        if (differenceInMinutes(new Date(), startTimestamp) < 15) {
+          start = start ? startTimestamp : roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps
+          setStartDate(start)
+        }
       })
   }, [latestUpdate, setStartDate, sliderSteps])
 
@@ -57,6 +63,15 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
     },
     [latestUpdate]
   )
+  const getThunderUrl = useCallback(
+    (isoDate: string) => {
+      const endTime = format(new Date(isoDate).setSeconds(0), 'yyyy-MM-dd HH:mm:SS')
+      const startTime = format(add(new Date(isoDate).setSeconds(0), { minutes: -5, seconds: -1 }), 'yyyy-MM-dd HH:mm:ss')
+      return `https://www.ilmateenistus.ee/gsavalik/geoserver/keskkonnainfo/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=keskkonnainfo%3Apikne&STYLES=pikne_yld&CQL_FILTER=loomise_aeg%20between%20%27${startTime}%27%20and%20%27${endTime}%27&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}&t=${latestUpdate.getTime()}`
+    },
+    [latestUpdate]
+  )
+
   const timestamps = useMemo(() => {
     const dates = []
     for (let i = 1; i <= sliderSteps; i++) {
@@ -68,6 +83,10 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
 
   const radarTileUrlsReversed = useMemo(() => {
     return timestamps.reverse().map((timestamp) => getRadarUrl(new Date(timestamp).toISOString()))
+  }, [timestamps])
+
+  const thunderTileUrlsReversed = useMemo(() => {
+    return timestamps.map((timestamp) => getThunderUrl(new Date(timestamp).toISOString()))
   }, [timestamps])
 
   const sliderColor = isDarkMap ? '#ddd' : '#555'
@@ -128,7 +147,10 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
             {radarTileUrlsReversed.map((url, i) => {
               return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
             })}
-            <WMSTile style={{ opacity: isDarkMap ? 0.6 : 0.4, zIndex: 1 }} urlTemplate={borders} />
+            {thunderTileUrlsReversed.map((url, i) => {
+              return <WMSTile style={{ opacity: thunderTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0, zIndex: 1 }} key={url} urlTemplate={url} />
+            })}
+            <WMSTile style={{ opacity: isDarkMap ? 0.6 : 0.4, zIndex: 2 }} urlTemplate={borders} />
             {location && (
               <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
                 <View style={{ width: 3, height: 3 }}>

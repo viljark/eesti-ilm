@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native'
+import { useAssets } from 'expo-asset'
 
 interface Props {}
 
@@ -15,6 +16,7 @@ const colors = [
   { amount: 50, color: '#ff45ff', description: 'rahe' },
 ]
 export const RadarColors: React.FC<Props> = ({}: Props) => {
+  const [assets, error] = useAssets([require('../assets/cloud_thunder.png'), require('../assets/cloud_ground_thunder.png')])
   return (
     <View
       style={{
@@ -43,6 +45,18 @@ export const RadarColors: React.FC<Props> = ({}: Props) => {
       </View>
 
       <Text style={styles.title}>sademete määr (mm/h)</Text>
+      {assets ? (
+        <View style={styles.thunderContainer}>
+          <View style={styles.thunderRow}>
+            <Image source={assets[0]} style={styles.thunderIcon} />
+            <Text style={styles.thunderText}>Pilvevälk</Text>
+          </View>
+          <View style={styles.thunderRow}>
+            <Image source={assets[1]} style={styles.thunderIcon} />
+            <Text style={styles.thunderText}>Pilv-maa välk</Text>
+          </View>
+        </View>
+      ) : null}
     </View>
   )
 }
@@ -94,5 +108,23 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     color: '#fff',
     width: 100,
+  },
+  thunderContainer: {
+    marginRight: 'auto',
+    marginLeft: 5,
+    marginTop: -15,
+  },
+  thunderRow: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
+  thunderIcon: {
+    backgroundColor: 'rgba(255, 255, 255, .9)',
+    borderRadius: 2,
+    width: 10,
+    height: 10,
+    marginRight: 4,
+  },
+  thunderText: {
+    fontFamily: 'Inter_300Light',
+    fontSize: 10,
+    color: '#fff',
   },
 })
