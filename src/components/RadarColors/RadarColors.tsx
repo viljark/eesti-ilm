@@ -16,7 +16,7 @@ const colors = [
   { amount: 50, color: '#ff45ff', description: 'rahe' },
 ]
 export const RadarColors: React.FC<Props> = ({}: Props) => {
-  const [assets, error] = useAssets([require('../assets/cloud_thunder.png'), require('../assets/cloud_ground_thunder.png')])
+  const [assets, error] = useAssets([require('./cloud-thunder.png'), require('./cloud-ground-thunder.png')])
   return (
     <View
       style={{

@@ -9,12 +9,13 @@ import Slider from '@react-native-community/slider'
 import { getFormattedTime } from '../utils/formatters'
 import HTMLParser from 'fast-html-parser'
 import Svg, { Circle } from 'react-native-svg'
-import { RadarColors } from './RadarColors'
+import { RadarColors } from './RadarColors/RadarColors'
 import { useSharedSettings } from '../screens/Settings'
 import Animated, { FadeIn } from 'react-native-reanimated'
 import format from 'date-fns/format'
 import add from 'date-fns/add'
 import differenceInMinutes from 'date-fns/differenceInMinutes'
+import { store } from '../store/store'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -41,6 +42,10 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
 
   // @ts-ignore
   const flip = tiles === maaamet
+
+  useEffect(() => {
+    setStartDate(roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps)
+  }, [latestUpdate])
 
   useEffect(() => {
     fetch('https://www.ilmateenistus.ee/ilm/ilmavaatlused/radar/#layers/precipitation')
@@ -95,6 +100,16 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
     <View style={styles.container}>
       <Animated.View style={styles.mapContainer} entering={FadeIn.duration(500).delay(700)}>
         <Text style={[styles.smallText, { color: sliderColor }]}>{getFormattedTime(timestamps[radarTileUrlsReversed.length - sliderIndex])} </Text>
+        {/*<Slider*/}
+        {/*  value={sliderIndex}*/}
+        {/*  minimumValue={1}*/}
+        {/*  maximumValue={sliderSteps}*/}
+        {/*  step={1}*/}
+        {/*  minimumTrackTintColor={sliderColor}*/}
+        {/*  maximumTrackTintColor={sliderColor}*/}
+        {/*  thumbTintColor={sliderColor}*/}
+        {/*  style={styles.progress}*/}
+        {/*/>*/}
         <Slider
           value={sliderIndex}
           minimumValue={1}
@@ -104,25 +119,25 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
           maximumTrackTintColor={sliderColor}
           thumbTintColor={sliderColor}
           style={styles.progress}
-        />
-        <Slider
-          value={sliderIndex}
-          minimumValue={1}
-          maximumValue={sliderSteps}
-          step={1}
-          minimumTrackTintColor="#555"
-          maximumTrackTintColor="#555"
-          thumbTintColor="#555"
-          style={styles.slider}
           onValueChange={setSliderIndex}
         />
         {isDarkMap === null ? null : (
           <MapView
+            onStartShouldSetResponder={() => true}
+            onMoveShouldSetResponder={() => true}
+            onResponderStart={(event) => {
+              if (event.nativeEvent.touches.length) {
+                store.isSwipeEnabled = false
+              }
+            }}
+            onResponderEnd={() => {
+              store.isSwipeEnabled = true
+            }}
             key={tileCacheDir}
-            pitchEnabled={true}
-            zoomEnabled={false}
+            pitchEnabled={false}
+            zoomEnabled={true}
             zoomControlEnabled={false}
-            scrollEnabled={false}
+            scrollEnabled={true}
             provider={null}
             mapType={MAP_TYPES.NONE}
             style={styles.map}
@@ -197,10 +212,11 @@ const styles = StyleSheet.create({
   progress: {
     zIndex: 1,
     position: 'absolute',
-    top: -10,
+    bottom: 0,
     opacity: 1,
-    height: 55,
+    height: 50,
     width: width,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   smallText: {
     zIndex: 2,
@@ -209,16 +225,15 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textTransform: 'uppercase',
     position: 'absolute',
-    left: 14,
+    bottom: 52,
+    left: 5,
     fontFamily: 'monospace',
-    top: 20,
   },
   slider: {
-    position: 'absolute',
+    // position: 'absolute',
     width: width,
-    height: width,
     zIndex: 2,
     top: 0,
-    opacity: 0,
+    // opacity: 0,
   },
 })
