@@ -199,22 +199,24 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
         >
           <ZoomOutIcon strokeWidth={1} stroke="rgba(255, 255, 255, 0.8)" width={20} height={20} />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            right: 10,
-            ...styles.zoomButton,
-          }}
-          onPress={() => {
-            ref.current.animateToRegion({
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              latitudeDelta: 0.2,
-              longitudeDelta: 0.2,
-            })
-          }}
-        >
-          <ZoomInIcon strokeWidth={1} stroke="rgba(255, 255, 255, 0.8)" width={20} height={20} />
-        </TouchableOpacity>
+        {location && (
+          <TouchableOpacity
+            style={{
+              right: 10,
+              ...styles.zoomButton,
+            }}
+            onPress={() => {
+              ref.current.animateToRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.2,
+                longitudeDelta: 0.2,
+              })
+            }}
+          >
+            <ZoomInIcon strokeWidth={1} stroke="rgba(255, 255, 255, 0.8)" width={20} height={20} />
+          </TouchableOpacity>
+        )}
       </Animated.View>
 
       <RadarColors />
