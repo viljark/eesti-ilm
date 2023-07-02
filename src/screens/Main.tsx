@@ -14,6 +14,8 @@ import { TabButton } from '../components/TabButton'
 import Background from '../components/Background'
 import PrecipitationRadar from '../components/PrecipitationRadar'
 import { Alert } from '../components/Alert'
+import { useSnapshot } from 'valtio'
+import { store } from '../store/store'
 
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
@@ -27,6 +29,7 @@ export default function Main(props) {
   const [showDataOrigin, setShowDataOrigin] = useState<boolean>(false)
   const [realFeel, setRealFeel] = useState<number>(null)
   const { location, locationName } = useContext(LocationContext)
+  const { isSwipeEnabled } = useSnapshot(store)
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange)
@@ -124,6 +127,7 @@ export default function Main(props) {
         Riigi Ilmateenistus - www.ilmateenistus.ee
       </Text>
       <ScrollView
+        scrollEnabled={isSwipeEnabled}
         style={styles.scrollContainer}
         refreshControl={
           <RefreshControl

@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { MAP_TYPES, Marker, UrlTile, WMSTile } from 'react-native-maps'
 import { LocationContext } from '../../LocationContext'
 import * as FileSystem from 'expo-file-system'
@@ -16,6 +16,9 @@ import format from 'date-fns/format'
 import add from 'date-fns/add'
 import differenceInMinutes from 'date-fns/differenceInMinutes'
 import { store } from '../store/store'
+import { useSnapshot } from 'valtio'
+import ZoomOutIcon from './ZoomOutIcon'
+import ZoomInIcon from './ZoomInIcon'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -25,11 +28,15 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
   const sliderSteps = 18
   const originalSteps = 36
   const [startDate, setStartDate] = useState(roundDownTo10Minutes(new Date()) - 5 * 60 * 1000 * originalSteps)
+  const [deltaSum, setDeltaSum] = useState(7.1)
 
   const { location } = useContext(LocationContext)
   const [sliderIndex, setSliderIndex] = useState(sliderSteps)
   const { isDarkMap } = useSharedSettings()
   const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
+
+  const { isSwipeEnabled } = useSnapshot(store)
+  const ref = useRef<MapView>()
   // TODO
   const thunderUrl = `https://www.ilmateenistus.ee/gsavalik/geoserver/keskkonnainfo/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=keskkonnainfo%3Apikne&STYLES=pikne_yld&CQL_FILTER=loomise_aeg%20between%20%272023-01-20%2022%3A24%3A59%27%20and%20%272023-01-20%2022%3A30%3A00%27&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}`
 
@@ -95,7 +102,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
   }, [timestamps])
 
   const sliderColor = isDarkMap ? '#ddd' : '#555'
-
+  console.log(isSwipeEnabled)
   return (
     <View style={styles.container}>
       <Animated.View style={styles.mapContainer} entering={FadeIn.duration(500).delay(700)}>
@@ -123,10 +130,14 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
         />
         {isDarkMap === null ? null : (
           <MapView
+            onRegionChange={(region) => {
+              setDeltaSum(region.longitudeDelta + region.latitudeDelta)
+            }}
+            ref={ref}
             onStartShouldSetResponder={() => true}
             onMoveShouldSetResponder={() => true}
             onResponderStart={(event) => {
-              if (event.nativeEvent.touches.length) {
+              if (event.nativeEvent.touches.length > 1) {
                 store.isSwipeEnabled = false
               }
             }}
@@ -137,7 +148,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
             pitchEnabled={false}
             zoomEnabled={true}
             zoomControlEnabled={false}
-            scrollEnabled={true}
+            scrollEnabled={!isSwipeEnabled}
             provider={null}
             mapType={MAP_TYPES.NONE}
             style={styles.map}
@@ -149,12 +160,6 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
               longitude: 25.2302703,
               latitudeDelta: 4.6,
               longitudeDelta: 2.5,
-            }}
-            mapPadding={{
-              top: 0,
-              right: 0,
-              bottom: width,
-              left: 0,
             }}
           >
             <UrlTile shouldReplaceMapContent={true} urlTemplate={tiles} maximumZ={19} flipY={flip} tileCacheMaxAge={30 * 24 * 60 * 60} tileCachePath={tileCacheDir} />
@@ -177,6 +182,39 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
             )}
           </MapView>
         )}
+        <TouchableOpacity
+          style={{
+            display: deltaSum < 7.1 ? 'flex' : 'none',
+            right: 60,
+            ...styles.zoomButton,
+          }}
+          onPress={() => {
+            ref.current.animateToRegion({
+              latitude: 58.6488358,
+              longitude: 25.2302703,
+              latitudeDelta: 4.6,
+              longitudeDelta: 2.5,
+            })
+          }}
+        >
+          <ZoomOutIcon strokeWidth={1} stroke="rgba(255, 255, 255, 0.8)" width={20} height={20} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            right: 10,
+            ...styles.zoomButton,
+          }}
+          onPress={() => {
+            ref.current.animateToRegion({
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              latitudeDelta: 0.2,
+              longitudeDelta: 0.2,
+            })
+          }}
+        >
+          <ZoomInIcon strokeWidth={1} stroke="rgba(255, 255, 255, 0.8)" width={20} height={20} />
+        </TouchableOpacity>
       </Animated.View>
 
       <RadarColors />
@@ -235,5 +273,16 @@ const styles = StyleSheet.create({
     zIndex: 2,
     top: 0,
     // opacity: 0,
+  },
+  zoomButton: {
+    position: 'absolute',
+    bottom: 60,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
 })
