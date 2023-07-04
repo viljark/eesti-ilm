@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image } from 'react-native'
-import { useAssets } from 'expo-asset'
 
 interface Props {}
 
@@ -26,6 +25,7 @@ export const RadarColors: React.FC<Props> = ({}: Props) => {
       <View style={styles.colorWrap}>
         {colors.map((color, i) => (
           <View
+            key={i}
             style={[
               styles.color,
               { backgroundColor: color.color },
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   thunderContainer: {
     marginRight: 'auto',
-    marginLeft: 5,
+    marginLeft: 13,
     marginTop: -15,
   },
   thunderRow: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
