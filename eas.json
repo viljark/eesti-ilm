@@ -36,5 +36,12 @@
   },
   "cli": {
     "version": ">= 0.47.0"
+  },
+  "submit": {
+	"production": {
+	  "android": {
+		"track": "production"
+	  }
+	}
   }
 }

@@ -11,6 +11,7 @@
     "eas:build:production:apk": "eas build --profile productionApk",
     "eas:update:preview": "eas update --channel preview",
     "eas:update:production": "eas update --branch production",
+	"submit": "eas submit --platform android --profile production",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject"

@@ -9,7 +9,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'eesti-ilm',
   privacy: 'public',
   platforms: ['android'],
-  version: '2.2.0',
+  version: '2.2.1',
   orientation: 'portrait',
   icon: './assets/icon-bg.png',
   splash: {
@@ -31,7 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     googleServicesFile: './google-services.json',
     useNextNotificationsApi: true,
     package: 'ee.viljark.eestiilm',
-    versionCode: 22,
+    versionCode: 23,
     adaptiveIcon: {
       backgroundImage: './assets/bg.png',
       foregroundImage: './assets/icon.png',

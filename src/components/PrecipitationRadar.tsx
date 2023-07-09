@@ -189,8 +189,8 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
             {radarTileUrlsReversed.map((url, i) => {
               return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
             })}
-            {thunderTileUrlsReversed.filter(Boolean).map((url, i) => {
-              return <WMSTile style={{ opacity: thunderTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0, zIndex: 1 }} key={url} urlTemplate={url} />
+            {thunderTileUrlsReversed.map((url, i) => {
+              return url ? <WMSTile style={{ opacity: thunderTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0, zIndex: 1 }} key={url} urlTemplate={url} /> : null
             })}
             <WMSTile style={{ opacity: isDarkMap ? 0.6 : 0.4, zIndex: 2 }} urlTemplate={borders} />
             {location && (
