@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import MapView, { MAP_TYPES, Marker, UrlTile, WMSTile } from 'react-native-maps'
 import { LocationContext } from '../../LocationContext'
 import * as FileSystem from 'expo-file-system'
@@ -20,12 +20,48 @@ import { useSnapshot } from 'valtio'
 import ZoomOutIcon from './ZoomOutIcon'
 import ZoomInIcon from './ZoomInIcon'
 import { addMinutes } from 'date-fns'
+import { Station } from '../services'
+import TemperatureIcon from './TemperatureIcon'
+import ThunderIcon from './ThunderIcon'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
 const width = Dimensions.get('window').width - 20 //full width
 
-export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Date }): JSX.Element {
+const cityNames = [
+  'Tallinn-Harku',
+  // 'Tartu-Tõravere',
+  'Tartu-Kvissental',
+  'Narva',
+  'Pärnu',
+  'Kohtla-Järve',
+  'Viljandi',
+  'Rakvere',
+  'Kuressaare linn',
+  'Võru',
+  'Valga',
+  'Haapsalu',
+  'Jõhvi',
+  'Paide',
+  'Kiviõli',
+  'Tapa',
+  'Põlva',
+  'Türi',
+  'Elva',
+  'Rapla',
+  'Saue',
+  'Põltsamaa',
+  'Kunda',
+  'Kallaste',
+  'Otepää',
+  'Mustvee',
+  'Tõrva',
+  'Kehra',
+  'Jõgeva',
+  'Heltermaa',
+]
+
+export default function PrecipitationRadar({ latestUpdate, stations }: { latestUpdate: Date; stations: Station[] }): JSX.Element {
   const sliderSteps = 30
   const originalSteps = 36
   const futureMinutes = 60
@@ -34,7 +70,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
 
   const { location } = useContext(LocationContext)
   const [sliderIndex, setSliderIndex] = useState(sliderSteps - futureMinutes / 5)
-  const { isDarkMap } = useSharedSettings()
+  const { isDarkMap, showThunder, showTemperature, setShowThunder, setShowTemperature } = useSharedSettings()
   const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
 
   const { isSwipeEnabled } = useSnapshot(store)
@@ -115,6 +151,11 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
   const sliderTimestamp = timestamps[radarTileUrlsReversed.length - sliderIndex]
   const isFuture = new Date(sliderTimestamp).getTime() > new Date().getTime()
   const futureMinutesDiff = differenceInMinutes(new Date(sliderTimestamp), new Date())
+
+  const cities = useMemo(() => {
+    return stations.filter((station) => cityNames.includes(station.name))
+  }, [stations])
+
   return (
     <View style={styles.container}>
       <Animated.View style={styles.mapContainer} entering={FadeIn.duration(500).delay(700)}>
@@ -171,7 +212,7 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
             zoomEnabled={true}
             zoomControlEnabled={false}
             scrollEnabled={!isSwipeEnabled}
-            provider={null}
+            provider={undefined}
             mapType={MAP_TYPES.NONE}
             style={styles.map}
             rotateEnabled={false}
@@ -189,9 +230,10 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
             {radarTileUrlsReversed.map((url, i) => {
               return <WMSTile style={{ opacity: radarTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0 }} key={url} urlTemplate={url} />
             })}
-            {thunderTileUrlsReversed.map((url, i) => {
-              return url ? <WMSTile style={{ opacity: thunderTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0, zIndex: 1 }} key={url} urlTemplate={url} /> : null
-            })}
+            {showThunder &&
+              thunderTileUrlsReversed.map((url, i) => {
+                return url ? <WMSTile style={{ opacity: thunderTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0, zIndex: 1 }} key={url} urlTemplate={url} /> : null
+              })}
             <WMSTile style={{ opacity: isDarkMap ? 0.6 : 0.4, zIndex: 2 }} urlTemplate={borders} />
             {location && (
               <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
@@ -202,8 +244,35 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
                 </View>
               </Marker>
             )}
+            {showTemperature && <CityMarkers cities={cities} />}
           </MapView>
         )}
+        <TouchableOpacity
+          style={{
+            ...styles.zoomButton,
+            right: 10,
+            bottom: 160,
+          }}
+          onPress={() => {
+            setShowThunder(!showThunder)
+            ToastAndroid.show('Välgulöökide kaardikiht ' + (showThunder ? 'väljas' : 'sees'), ToastAndroid.SHORT)
+          }}
+        >
+          <ThunderIcon fill={`'rgba(255, 255, 255, ${showThunder ? '0.8' : '0.2'})`} width={24} height={24} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...styles.zoomButton,
+            right: 10,
+            bottom: 110,
+          }}
+          onPress={() => {
+            setShowTemperature(!showTemperature)
+            ToastAndroid.show('Temperatuuride kaardikiht ' + (showTemperature ? 'väljas' : 'sees'), ToastAndroid.SHORT)
+          }}
+        >
+          <TemperatureIcon fill={`'rgba(255, 255, 255, ${showTemperature ? '0.8' : '0.2'})`} width={24} height={24} />
+        </TouchableOpacity>
         <TouchableOpacity
           style={{
             display: deltaSum < 7.1 ? 'flex' : 'none',
@@ -245,6 +314,40 @@ export default function PrecipitationRadar({ latestUpdate }: { latestUpdate: Dat
     </View>
   )
 }
+
+const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
+  return (
+    <>
+      {cities
+        .filter((c) => !!c.airtemperature)
+        .map((station) => (
+          <Marker
+            key={station.name}
+            tappable={false}
+            coordinate={{
+              latitude: Number(station.latitude),
+              longitude: Number(station.longitude),
+            }}
+            zIndex={1}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={{ position: 'absolute', top: 0, paddingVertical: 0, paddingHorizontal: 2, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.6)' }}>
+              <Text
+                allowFontScaling={false}
+                style={{
+                  color: 'white',
+                  fontFamily: 'Inter_300Light',
+                  fontSize: 6.5,
+                }}
+              >
+                {Math.round(+station.airtemperature)}°
+              </Text>
+            </View>
+          </Marker>
+        ))}
+    </>
+  )
+})
 
 const styles = StyleSheet.create({
   container: {

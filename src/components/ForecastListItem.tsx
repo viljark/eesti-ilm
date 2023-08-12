@@ -167,7 +167,7 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
 const styles = StyleSheet.create({
   item: {
     flexGrow: 1,
-    borderRadius: 15,
+    // borderRadius: 15,
     borderBottomWidth: 0.5,
     borderColor: 'rgba(0,0,0, .6)',
     marginTop: 0,

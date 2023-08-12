@@ -8,10 +8,16 @@ import { useBetween } from 'use-between'
 
 const useSettings = () => {
   const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap')
+  const [showThunder, setShowThunder] = useAsyncStorage<boolean>('showThunder', true)
+  const [showTemperature, setShowTemperature] = useAsyncStorage<boolean>('showTemperature', true)
 
   return {
     isDarkMap,
     setIsDarkMap,
+    showThunder,
+    setShowThunder,
+    showTemperature,
+    setShowTemperature,
   }
 }
 

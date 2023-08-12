@@ -7,7 +7,6 @@ import Settings from './src/screens/Settings'
 import { NavigationContainer, DefaultTheme, NavigationState } from '@react-navigation/native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
-import * as Analytics from 'expo-firebase-analytics'
 import { store } from './src/store/store'
 import { useSnapshot } from 'valtio'
 
@@ -33,7 +32,6 @@ function MainScreens() {
       style={{
         backgroundColor: 'transparent',
       }}
-      gestureHandlerProps={{}}
       screenOptions={{
         tabBarAllowFontScaling: false,
         tabBarActiveTintColor: '#fff',
@@ -82,7 +80,7 @@ export default function App() {
           // @ts-ignore
           const currentRoute = navigationRef?.current?.getCurrentRoute()
           if (currentRoute?.name) {
-            Analytics.logEvent('screen_view', { name: currentRoute?.name })
+            // Analytics.logEvent('screen_view', { name: currentRoute?.name })
           }
         }
       }}

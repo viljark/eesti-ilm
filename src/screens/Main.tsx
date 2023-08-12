@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AppState, AppStateStatus, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { AppState, AppStateStatus, Dimensions, RefreshControl, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { getObservations, Observations, Station } from '../services'
 import { closestStationWithObservationField, getDistance } from '../utils/distance'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { CurrentWeather } from '../components/CurrentWeather'
 import { LocationContext } from '../../LocationContext'
-import * as Analytics from 'expo-firebase-analytics'
 import Constants from 'expo-constants'
 import * as WebBrowser from 'expo-web-browser'
 import Feels from 'feels'
@@ -16,6 +15,7 @@ import PrecipitationRadar from '../components/PrecipitationRadar'
 import { Alert } from '../components/Alert'
 import { useSnapshot } from 'valtio'
 import { store } from '../store/store'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
@@ -32,9 +32,9 @@ export default function Main(props) {
   const { isSwipeEnabled } = useSnapshot(store)
 
   useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange)
+    const subscription = AppState.addEventListener('change', handleAppStateChange)
     return () => {
-      AppState.removeEventListener('change', handleAppStateChange)
+      subscription.remove()
     }
   }, [])
 
@@ -63,7 +63,6 @@ export default function Main(props) {
       })
 
       let closest: Station = closestStationWithObservationField(stationsWithDistance, 'airtemperature')
-
       setClosestStation(closest)
 
       setObservations({
@@ -75,7 +74,7 @@ export default function Main(props) {
 
   useEffect(() => {
     try {
-      Analytics.logEvent('screen_view', { name: 'Main' })
+      // Analytics.logEvent('screen_view', { name: 'Main' })
     } catch (e) {
       console.warn('analytics error', e)
     }
@@ -192,7 +191,7 @@ export default function Main(props) {
             </View>
             <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademed hetkel" style={[{ borderColor: '#000', borderRightWidth: 0.5 }]} />
           </View>
-          {activeTab === 'live' ? <PrecipitationRadar latestUpdate={latestUpdate} /> : null}
+          {activeTab === 'live' ? <PrecipitationRadar stations={observations?.station || []} latestUpdate={latestUpdate} /> : null}
         </View>
       </ScrollView>
     </View>

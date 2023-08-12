@@ -17,6 +17,7 @@ import Pin from './src/icons/Pin'
 import { LogBox } from 'react-native'
 import useAsyncStorage from './src/utils/useAsyncStorage'
 import Autocomplete from 'react-native-autocomplete-input'
+import { LocationAccuracy } from 'expo-location/src/Location.types'
 // axios.interceptors.request.use((request) => {
 //   console.log('Starting Request', JSON.stringify(request.url, null, 2))
 //   return request
@@ -78,6 +79,7 @@ export default function App() {
   }
 
   async function getLocationAsync() {
+    console.log('getLocation')
     const storedLocationObject = await retrieveStoredLocation()
     if (storedLocationObject) {
       setLocationData(storedLocationObject)
@@ -113,7 +115,7 @@ export default function App() {
         storeLocationData(defaultLocationData)
       }
     } else {
-      let location = await Location.getCurrentPositionAsync({})
+      let location = await Location.getCurrentPositionAsync({ timeInterval: 5 * 1000 * 60, accuracy: LocationAccuracy.Lowest })
       location.coords = {
         longitude: Number(location.coords.longitude.toFixed(2)),
         latitude: Number(location.coords.latitude.toFixed(2)),
@@ -212,7 +214,7 @@ export default function App() {
                 renderItem={() => null}
                 data={autocompleteData}
                 onChangeText={loadDataDebounced}
-                listContainerStyle={{ borderRadius: 10, overflow: 'hidden', maxHeight: '50%', backgroundColor: '#fff' }}
+                listContainerStyle={{ borderRadius: 10, overflow: 'hidden', maxHeight: '70%', backgroundColor: '#fff' }}
                 flatListProps={{
                   keyboardShouldPersistTaps: 'always',
                   keyExtractor: (_, idx) => String(idx),

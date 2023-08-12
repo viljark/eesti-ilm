@@ -6,15 +6,13 @@ import { getFirestore } from './firebase'
 import { retrieveStoredLocation } from './locationAsyncStorage'
 
 export const registerForPushNotificationsAsync = async () => {
-  if (Constants.isDevice) {
-    if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 0, 0, 100],
-        lightColor: '#FF231F7C',
-      })
-    }
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 0, 0, 100],
+      lightColor: '#FF231F7C',
+    })
     const { status: existingStatus } = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatus
     if (existingStatus !== 'granted') {
