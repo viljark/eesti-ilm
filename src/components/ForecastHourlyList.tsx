@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Time } from '../services'
 import { ScrollView } from 'react-native-gesture-handler'
-import { getUserLocalDate } from '../utils/dateUtil'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native'
 import { getDate, getDayName } from '../utils/formatters'
 import { ForecastListItem } from './ForecastListItem'
 import { LocationObject } from 'expo-location'
 import Constants from 'expo-constants'
 import Background from './Background'
 import { blockBackground, commonStyles } from '../utils/styles'
-import { useFocusEffect } from '@react-navigation/native'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
@@ -20,19 +18,38 @@ interface ForecastHourlyListProps {
   detailedForecast: Time[]
   latestUpdate: Date
   location: LocationObject
+  setLatestUpdate: (date: Date) => void
+  isRefreshing: boolean
 }
 
-export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, latestUpdate, location }: ForecastHourlyListProps) {
+export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, latestUpdate, location, isRefreshing, setLatestUpdate }: ForecastHourlyListProps) {
   const [stickyIndexes, setStickyIndexes] = useState<number[]>([])
 
-  useEffect(() => {
-    const indexes = []
-    detailedForecast?.forEach((time, index) => {
-      if (getUserLocalDate(time['@attributes'].from).getHours() === 0 || index === 0) {
-        indexes.push(index + indexes.length)
-      }
-    })
-    setStickyIndexes(indexes)
+  // useEffect(() => {
+  //   const indexes = []
+  //   detailedForecast?.forEach((time, index) => {
+  //     if (getUserLocalDate(time['@attributes'].from).getHours() === 0 || index === 0) {
+  //       indexes.push(index + indexes.length)
+  //     }
+  //   })
+  //   setStickyIndexes(indexes)
+  // }, [detailedForecast])
+
+  const sections = useMemo(() => {
+    const result: { title: string; data: Time[] }[] = []
+    if (detailedForecast) {
+      detailedForecast.forEach((time, index) => {
+        const title = getDayName(time['@attributes'].from) + ', ' + getDate(time['@attributes'].from)
+        const existingDay = result.find((r) => r.title === title)
+        if (existingDay) {
+          existingDay.data.push(time)
+        } else {
+          result.push({ title, data: [time] })
+        }
+      })
+    }
+
+    return result
   }, [detailedForecast])
 
   return (
@@ -43,8 +60,26 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
         </Background>
       </View>
 
-      <ScrollView
-        stickyHeaderIndices={stickyIndexes}
+      <SectionList
+        stickySectionHeadersEnabled={true}
+        overScrollMode={'never'}
+        initialNumToRender={12}
+        sections={sections}
+        keyExtractor={(item, index) => JSON.stringify(item)}
+        renderItem={({ item: time }) => <ForecastListItem key={`${time['@attributes'].from}`} time={time} location={location} />}
+        renderSectionHeader={({ section: { title } }) => (
+          <View style={styles.dayNameWrapper} key={title}>
+            <Text style={styles.dayName}>{title}</Text>
+          </View>
+        )}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={() => {
+              setLatestUpdate(new Date())
+            }}
+          />
+        }
         onScroll={(e) => {
           const scrollAmount = (graphWidth / e.nativeEvent.contentSize.height) * e.nativeEvent.contentOffset.y
           if (graphRef.current !== null) {
@@ -53,19 +88,9 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
           }
         }}
         style={styles.scrollView}
-      >
-        {detailedForecast &&
-          detailedForecast.map((time, index) => [
-            (getUserLocalDate(time['@attributes'].from).getHours() === 0 || index === 0) && (
-              <View style={styles.dayNameWrapper} key={time['@attributes'].from + index}>
-                <Text style={styles.dayName}>
-                  {getDayName(time['@attributes'].from)}, {getDate(time['@attributes'].from)}
-                </Text>
-              </View>
-            ),
-            <ForecastListItem key={`${time['@attributes'].from}`} time={time} latestUpdate={latestUpdate} location={location} />,
-          ])}
-      </ScrollView>
+      />
+
+      <ScrollView stickyHeaderIndices={stickyIndexes}>{detailedForecast && detailedForecast.map((time, index) => [,])}</ScrollView>
     </View>
   )
 }

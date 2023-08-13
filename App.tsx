@@ -18,6 +18,7 @@ import { LogBox } from 'react-native'
 import useAsyncStorage from './src/utils/useAsyncStorage'
 import Autocomplete from 'react-native-autocomplete-input'
 import { LocationAccuracy } from 'expo-location/src/Location.types'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 // axios.interceptors.request.use((request) => {
 //   console.log('Starting Request', JSON.stringify(request.url, null, 2))
 //   return request
@@ -204,44 +205,46 @@ export default function App() {
     [setAutocompleteData, setLocationData]
   )
   return (
-    <LocationContext.Provider value={{ location, locationName, locationRegion }}>
-      <Background location={location}>
-        <SafeAreaView style={styles.autocompleteContainer}>
-          {fontsLoaded && (
-            <>
-              <Pin width={20} height={20} fill="#fff" style={styles.pin} />
-              <Autocomplete
-                renderItem={() => null}
-                data={autocompleteData}
-                onChangeText={loadDataDebounced}
-                listContainerStyle={{ borderRadius: 10, overflow: 'hidden', maxHeight: '70%', backgroundColor: '#fff' }}
-                flatListProps={{
-                  keyboardShouldPersistTaps: 'always',
-                  keyExtractor: (_, idx) => String(idx),
-                  renderItem: renderListItem,
-                }}
-                key={placeholder.join(', ')}
-                style={styles.input}
-                placeholder={placeholder.join(', ')}
-                placeholderTextColor={'#fff'}
-                selectionColor="#fff"
-                containerStyle={styles.containerStyle}
-                inputContainerStyle={styles.inputContainer}
-              />
-            </>
-          )}
-        </SafeAreaView>
-        <View
-          style={{
-            paddingTop: 60 + Constants.statusBarHeight,
-            flex: 1,
-            backgroundColor: 'transparent',
-          }}
-        >
-          {fontsLoaded && <AppContainer />}
-        </View>
-      </Background>
-    </LocationContext.Provider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <LocationContext.Provider value={{ location, locationName, locationRegion }}>
+        <Background location={location}>
+          <SafeAreaView style={styles.autocompleteContainer}>
+            {fontsLoaded && (
+              <>
+                <Pin width={20} height={20} fill="#fff" style={styles.pin} />
+                <Autocomplete
+                  renderItem={() => null}
+                  data={autocompleteData}
+                  onChangeText={loadDataDebounced}
+                  listContainerStyle={{ borderRadius: 10, overflow: 'hidden', maxHeight: '70%', backgroundColor: '#fff' }}
+                  flatListProps={{
+                    keyboardShouldPersistTaps: 'always',
+                    keyExtractor: (_, idx) => String(idx),
+                    renderItem: renderListItem,
+                  }}
+                  key={placeholder.join(', ')}
+                  style={styles.input}
+                  placeholder={placeholder.join(', ')}
+                  placeholderTextColor={'#fff'}
+                  selectionColor="#fff"
+                  containerStyle={styles.containerStyle}
+                  inputContainerStyle={styles.inputContainer}
+                />
+              </>
+            )}
+          </SafeAreaView>
+          <View
+            style={{
+              paddingTop: 60 + Constants.statusBarHeight,
+              flex: 1,
+              backgroundColor: 'transparent',
+            }}
+          >
+            {fontsLoaded && <AppContainer />}
+          </View>
+        </Background>
+      </LocationContext.Provider>
+    </GestureHandlerRootView>
   )
 }
 

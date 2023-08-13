@@ -16,7 +16,7 @@ import ThunderStorm from '../icons/ThunderStorm'
 import Hail from '../icons/Hail'
 import { Dimensions, StyleProp, StyleSheetProperties, ViewStyle } from 'react-native'
 import _ from 'lodash'
-import SnowStorm from "../icons/SnowStorm"
+import SnowStorm from '../icons/SnowStorm'
 
 // mapping https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/
 const clear = ['Clear']

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Time } from '../services'
 import { PhenomenonIcon } from './PhenomenonIcon'
@@ -7,13 +7,11 @@ import * as Location from 'expo-location'
 import { RaindropOutline } from '../icons/RaindropOutline'
 import { Raindrop } from '../icons/Raindrop'
 import ArrowUp from '../icons/ArrowUp'
-import Background from './Background'
-import Constants from 'expo-constants'
 
-export function ForecastListItem({ time, location }: { latestUpdate: Date; time: Time; location: Location.LocationObject }) {
+export const ForecastListItem = memo(ForecastListItemInternal)
+export function ForecastListItemInternal({ time, location }: { time: Time; location: Location.LocationObject }) {
   const date = new Date(time['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`)
   const raindropHeight = 20
-
   return (
     <View style={styles.item}>
       <View style={styles.itemContainer}>
@@ -149,10 +147,7 @@ export function ForecastListItem({ time, location }: { latestUpdate: Date; time:
                 longitude={location.coords.longitude}
                 width={30}
                 height={30}
-                style={{
-                  width: 30,
-                  height: 30,
-                }}
+                style={styles.icon}
                 date={date}
                 phenomenon={time.phenomen['@attributes'].en}
               />
@@ -214,5 +209,9 @@ const styles = StyleSheet.create({
   },
   precipitation: {
     fontSize: 8,
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 })

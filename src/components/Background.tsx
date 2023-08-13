@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { LinearGradient as ExpoLinearGradient, LinearGradient } from 'expo-linear-gradient'
-import { Dimensions, StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { Dimensions, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { getTimes } from 'suncalc'
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AppState, AppStateStatus, Dimensions, RefreshControl, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { AppState, AppStateStatus, Dimensions, RefreshControl as RNRefreshControl, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { getObservations, Observations, Station } from '../services'
 import { closestStationWithObservationField, getDistance } from '../utils/distance'
 import { ErrorMessage } from '../components/ErrorMessage'
@@ -15,8 +15,9 @@ import PrecipitationRadar from '../components/PrecipitationRadar'
 import { Alert } from '../components/Alert'
 import { useSnapshot } from 'valtio'
 import { store } from '../store/store'
-import { ScrollView } from 'react-native-gesture-handler'
+import { createNativeWrapper, ScrollView } from 'react-native-gesture-handler'
 
+const RefreshControl = createNativeWrapper(RNRefreshControl)
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
   const [observations, setObservations] = useState<Observations>(undefined)

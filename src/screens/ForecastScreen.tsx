@@ -78,22 +78,18 @@ export default function ForecastScreen() {
   const graphWidth = width * 4.5
 
   return (
-    <ScrollView
-      style={styles.scrollContainer}
-      keyboardShouldPersistTaps="always"
-      nestedScrollEnabled={true}
-      refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={() => {
-            setLatestUpdate(new Date())
-          }}
-        />
-      }
-    >
+    <View style={styles.scrollContainer}>
       <View style={styles.container}>
         <View style={styles.forecastHourlyListWrapper}>
-          <ForecastHourlyList graphWidth={graphWidth} graphRef={graphRef} detailedForecast={detailedForecast} latestUpdate={latestUpdate} location={location} />
+          <ForecastHourlyList
+            graphWidth={graphWidth}
+            graphRef={graphRef}
+            detailedForecast={detailedForecast}
+            latestUpdate={latestUpdate}
+            location={location}
+            isRefreshing={isRefreshing}
+            setLatestUpdate={setLatestUpdate}
+          />
         </View>
 
         <ForecastGraph
@@ -108,7 +104,7 @@ export default function ForecastScreen() {
           }}
         />
       </View>
-    </ScrollView>
+    </View>
   )
 }
 const styles = StyleSheet.create({

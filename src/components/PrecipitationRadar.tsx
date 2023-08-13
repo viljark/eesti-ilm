@@ -62,7 +62,7 @@ const cityNames = [
 ]
 
 export default function PrecipitationRadar({ latestUpdate, stations }: { latestUpdate: Date; stations: Station[] }): JSX.Element {
-  const sliderSteps = 30
+  const sliderSteps = 24
   const originalSteps = 36
   const futureMinutes = 60
   const [startDate, setStartDate] = useState(roundDownTo10Minutes(addMinutes(new Date(), futureMinutes)) - 5 * 60 * 1000 * originalSteps)
@@ -337,7 +337,7 @@ const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
                 style={{
                   color: 'white',
                   fontFamily: 'Inter_300Light',
-                  fontSize: 6.5,
+                  fontSize: 8,
                 }}
               >
                 {Math.round(+station.airtemperature)}°
