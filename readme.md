@@ -1,5 +1,6 @@
-An Expo/React Native app for Estonian weather
+![sm4wUfrarSok_1024_500](https://github.com/viljark/eesti-ilm/assets/1067120/d45ad3d6-2980-4086-b657-c554bb8350da)
 
+An Expo/React Native app for Estonian weather
 Available from Google Play Store
 
 <a href="https://play.google.com/store/apps/details?id=ee.viljark.eestiilm" title="Get it on Google Play">
