@@ -59,6 +59,7 @@ export function CurrentWeather({
   const [showOtherMeta, setShowOtherMeta] = useState<boolean>(false)
   const [sunTimes, setSunTimes] = useState<GetTimesResult>(null)
 
+  const isDay = sunTimes ? new Date().getTime() < sunTimes.sunset.getTime() && new Date().getTime() > sunTimes.sunrise.getTime() : true
   const metaIconProps = {
     width: 25,
     height: 25,
@@ -81,24 +82,29 @@ export function CurrentWeather({
       <View style={styles.top}>
         <View style={styles.topMainContentWrap}>
           <View style={styles.temperatureWrap}>
-            <Text allowFontScaling={false} style={styles.temperature}>
-              {formatToSingleDigit(closestStation?.airtemperature)}
-            </Text>
-            <Text allowFontScaling={false} style={styles.degree}>
-              °
-            </Text>
+            <View style={styles.temperatureMain}>
+              <Text allowFontScaling={false} style={styles.temperature}>
+                {formatToSingleDigit(closestStation?.airtemperature)}
+              </Text>
+              <Text allowFontScaling={false} style={styles.degree}>
+                °
+              </Text>
+            </View>
             <Text style={styles.realFeel}>Tajutav {realFeel || '-'}°</Text>
           </View>
           <View style={styles.phenomenonWrap}>
-            <PhenomenonIcon
-              style={{ opacity: 1 }}
-              width={110}
-              height={110}
-              phenomenon={phenomenon}
-              latitude={location?.coords.latitude}
-              longitude={location?.coords.longitude}
-              date={observationsReceivedAt ? new Date(observationsReceivedAt) : new Date()}
-            />
+            <View style={{ width: 110, height: 110 }}>
+              <PhenomenonIcon
+                style={styles.phenomenonIcon}
+                width={160}
+                height={160}
+                phenomenon={phenomenon}
+                latitude={location?.coords.latitude}
+                longitude={location?.coords.longitude}
+                isDay={isDay}
+                animated={true}
+              />
+            </View>
 
             <Text style={styles.phenomenon}>{getPhenomenonText(phenomenon) || '-'}</Text>
           </View>
@@ -261,9 +267,13 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     width: '50%',
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  temperatureMain: {
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    flexWrap: 'wrap',
   },
   temperature: {
     color: '#fff',
@@ -294,13 +304,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_200ExtraLight',
     marginTop: 4,
     color: '#fff',
-    fontSize: 14,
-    flex: 1,
-    flexBasis: '100%',
     textAlign: 'center',
+    fontSize: 14,
+    paddingVertical: 1,
     ...commonStyles.textShadow,
   },
-
+  phenomenonIcon: { opacity: 1, position: 'absolute', left: -12, top: -10 },
   bottom: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flex: 1,
@@ -310,10 +319,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_200ExtraLight',
     marginTop: 0,
     color: '#fff',
-    fontSize: 14,
-    flex: 1,
-    flexBasis: '100%',
     textAlign: 'center',
+    fontSize: 14,
+    paddingVertical: 2,
+
     ...commonStyles.textShadow,
   },
   row: {
@@ -324,7 +333,6 @@ const styles = StyleSheet.create({
     borderColor: borderColor,
   },
   rowForecast: {
-    height: 80,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

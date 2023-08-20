@@ -39,15 +39,19 @@ export function Forecast(props: { latestUpdate: Date }) {
         forecast.forecasts.forecast.map((f) => (
           <View key={f.$.date} style={styles.forecast}>
             <Text style={styles.smallText}>{getDayName(f.$.date)}</Text>
+
             <PhenomenonIcon
               phenomenon={f[activeForecast].phenomenon}
               isDay={activeForecast === 'day'}
-              width={30}
-              height={30}
+              width={50}
+              height={50}
               style={{
-                marginTop: 0,
-                marginBottom: 0,
+                marginTop: -3,
+                marginBottom: -3,
+                borderRadius: 100,
+                overflow: 'hidden',
               }}
+              animated={true}
             />
             <Text style={styles.smallText}>
               {f[activeForecast].tempmin} - {f[activeForecast].tempmax}°
@@ -62,7 +66,7 @@ export function Forecast(props: { latestUpdate: Date }) {
 const styles = StyleSheet.create({
   container: {
     width: width - 20,
-    height: 60,
+    height: 80,
     left: 0,
     display: 'flex',
     alignSelf: 'stretch',

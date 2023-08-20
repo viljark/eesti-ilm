@@ -12,3 +12,4 @@ web-report/
 .idea/**/*
 .env
 google-services.json
+/android/

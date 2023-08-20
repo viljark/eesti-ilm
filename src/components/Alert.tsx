@@ -1,12 +1,16 @@
 import { getWarningForLocation, Warning } from '../services'
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import * as Location from 'expo-location'
 import Background from './Background'
 import Constants from 'expo-constants'
 import { blockBackground, commonStyles } from '../utils/styles'
 import * as WebBrowser from 'expo-web-browser'
 import { LocationContext } from '../../LocationContext'
+import LottieView from 'lottie-react-native'
+import thunderStormLottie from '@bybas/weather-icons/production/fill/lottie/thunderstorms-extreme-rain.json'
+import windAlertLottie from '@bybas/weather-icons/production/fill/lottie/wind-alert.json'
+import useAsyncStorage from '../utils/useAsyncStorage'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
@@ -18,16 +22,22 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
       locationName: string
       locationRegion: string
     }>(LocationContext)
-  const [warning, setWarning] = useState<Warning>(null)
+  const [warning, setWarning] = useAsyncStorage<Warning>('warning', null)
   async function fetchWarnings() {
     const warning = await getWarningForLocation(locationRegion)
     console.log('warning', warning)
-    setWarning(warning)
+    setWarning(warning || null)
   }
 
   useEffect(() => {
     fetchWarnings()
   }, [locationRegion, latestUpdate])
+
+  const alertIcon = useMemo(() => {
+    if (!warning) return
+    if (warning.content_est.includes('äike')) return thunderStormLottie
+    if (warning.content_est.includes('tuul')) return windAlertLottie
+  }, [warning])
 
   return (
     <>
@@ -68,35 +78,42 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
             </Background>
           </View>
           {/* <ScrollView scrollEnabled showsVerticalScrollIndicator style={{ maxHeight: 190, overflow: 'scroll' }}> */}
-          <View style={{ display: 'flex', flexDirection: 'column', padding: 10, backgroundColor: blockBackground, flexShrink: 0 }}>
-            <Text
-              style={{
-                fontSize: 13,
-                color: '#fff',
-                fontFamily: 'Inter_700Bold',
-              }}
-            >
+          <View style={{ flexDirection: 'row', backgroundColor: blockBackground, alignItems: 'center' }}>
+            <View style={{ display: 'flex', flexDirection: 'column', padding: 10, flexShrink: 0 }}>
               <Text
                 style={{
-                  color: 'red',
-                  fontSize: 15,
+                  fontSize: 13,
+                  color: '#fff',
                   fontFamily: 'Inter_700Bold',
                 }}
               >
-                ⚠{' '}
+                <Text
+                  style={{
+                    color: 'red',
+                    fontSize: 15,
+                    fontFamily: 'Inter_700Bold',
+                  }}
+                >
+                  ⚠{' '}
+                </Text>
+                Hoiatus
               </Text>
-              Hoiatus
-            </Text>
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: 12,
-                paddingLeft: 18,
-                fontFamily: 'Inter_200ExtraLight',
-              }}
-            >
-              {warning.content_est}
-            </Text>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 12,
+                  paddingLeft: 18,
+                  fontFamily: 'Inter_200ExtraLight',
+                }}
+              >
+                {warning.content_est}
+              </Text>
+            </View>
+            {alertIcon && (
+              <View style={{ marginLeft: 'auto', paddingHorizontal: 10 }}>
+                <LottieView autoPlay style={{ width: 50, height: 50 }} source={alertIcon} hardwareAccelerationAndroid={true} />
+              </View>
+            )}
           </View>
         </TouchableOpacity>
       )}

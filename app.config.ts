@@ -1,8 +1,5 @@
 import { ConfigContext, ExpoConfig } from '@expo/config'
 
-// In SDK 46 and lower, use the following import instead:
-// import { ExpoConfig } from '@expo/config-types';
-
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Eesti ilm',
@@ -49,7 +46,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   description:
     'An Expo/React Native app for Estonian weather Created using www.ilmateenistus.ee API details: https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/ Icons made by Freepik from www.flaticon.com is licensed by CC 3.0 BY',
   githubUrl: 'https://github.com/viljark/eesti-ilm',
-  plugins: ['sentry-expo'],
   hooks: {
     postPublish: [
       {
@@ -70,4 +66,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   runtimeVersion: {
     policy: 'sdkVersion',
   },
+  plugins: [
+    'sentry-expo',
+    [
+      'expo-build-properties',
+      {
+        android: {
+          extraMavenRepos: ['../../node_modules/@notifee/react-native/android/libs'],
+        },
+      },
+    ],
+    '@react-native-firebase/app',
+    '@react-native-firebase/crashlytics',
+    '@react-native-firebase/perf',
+    // @ts-ignore
+    './plugins/withNotificationIcons.js',
+  ],
 })

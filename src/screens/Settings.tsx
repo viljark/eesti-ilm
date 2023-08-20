@@ -5,11 +5,13 @@ import * as Application from 'expo-application'
 import { getFirestore } from '../utils/firebase'
 import useAsyncStorage from '../utils/useAsyncStorage'
 import { useBetween } from 'use-between'
+import analytics from '@react-native-firebase/analytics'
 
 const useSettings = () => {
   const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap')
   const [showThunder, setShowThunder] = useAsyncStorage<boolean>('showThunder', false)
   const [showTemperature, setShowTemperature] = useAsyncStorage<boolean>('showTemperature', true)
+  const [showPhenomenon, setShowPhenomenon] = useAsyncStorage<boolean>('showTemperature', true)
 
   return {
     isDarkMap,
@@ -18,6 +20,8 @@ const useSettings = () => {
     setShowThunder,
     showTemperature,
     setShowTemperature,
+    showPhenomenon,
+    setShowPhenomenon,
   }
 }
 
@@ -49,6 +53,8 @@ export default function SettingsScreen() {
   async function toggleIsWarningNotificationEnabled(value: boolean) {
     setIsWarningNotificationEnabled(value)
     ToastAndroid.show(value ? 'Teavitused sees' : 'Teavitused väljas', ToastAndroid.SHORT)
+
+    analytics().logEvent('settings_notifications', { value })
     await getFirestore().collection('users').doc(Application.androidId).set({ isWarningNotificationEnabled: value }, { merge: true })
   }
 
@@ -80,6 +86,7 @@ export default function SettingsScreen() {
         <TouchableNativeFeedback
           style={styles.item}
           onPress={() => {
+            analytics().logEvent('settings_dark_map', { value: !isDarkMap })
             setIsDarkMap(!isDarkMap)
           }}
         >
@@ -89,6 +96,7 @@ export default function SettingsScreen() {
             thumbColor={isDarkMap ? '#f4f3f4' : '#f4f3f4'}
             ios_backgroundColor="#3e3e3e"
             onValueChange={() => {
+              analytics().logEvent('settings_dark_map', { value: !isDarkMap })
               setIsDarkMap(!isDarkMap)
             }}
             value={isDarkMap}
@@ -100,6 +108,7 @@ export default function SettingsScreen() {
         <TouchableNativeFeedback
           style={styles.item}
           onPress={() => {
+            analytics().logEvent('settings_mailto')
             Linking.openURL('mailto:viljark+ilm@gmail.com')
           }}
         >
@@ -118,6 +127,7 @@ export default function SettingsScreen() {
           <TouchableNativeFeedback
             style={styles.itemButton}
             onPress={async () => {
+              analytics().logEvent('settings_feedback')
               await Linking.openURL('https://play.google.com/store/apps/details?id=ee.viljark.eestiilm&showAllReviews=true')
             }}
           >
@@ -128,6 +138,7 @@ export default function SettingsScreen() {
           <TouchableNativeFeedback
             style={styles.itemButton}
             onPress={async () => {
+              analytics().logEvent('settings_apps')
               await Linking.openURL('https://play.google.com/store/apps/developer?id=Viljar+K%C3%A4rgenberg')
             }}
           >

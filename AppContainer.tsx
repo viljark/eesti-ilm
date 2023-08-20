@@ -8,6 +8,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createStackNavigator } from '@react-navigation/stack'
 import { store } from './src/store/store'
 import { useSnapshot } from 'valtio'
+import analytics from '@react-native-firebase/analytics'
 
 const height = Dimensions.get('window').height //full height
 const width = Dimensions.get('window').width //full width
@@ -79,7 +80,7 @@ export default function App() {
           // @ts-ignore
           const currentRoute = navigationRef?.current?.getCurrentRoute()
           if (currentRoute?.name) {
-            // Analytics.logEvent('screen_view', { name: currentRoute?.name })
+            analytics().logScreenView({ screen_name: currentRoute?.name })
           }
         }
       }}

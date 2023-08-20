@@ -23,6 +23,9 @@ import { addMinutes } from 'date-fns'
 import { Station } from '../services'
 import TemperatureIcon from './TemperatureIcon'
 import ThunderIcon from './ThunderIcon'
+import analytics from '@react-native-firebase/analytics'
+import LottieView from 'lottie-react-native'
+import { PhenomenonIcon } from './PhenomenonIcon'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -70,7 +73,7 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
 
   const { location } = useContext(LocationContext)
   const [sliderIndex, setSliderIndex] = useState(sliderSteps - futureMinutes / 5)
-  const { isDarkMap, showThunder, showTemperature, setShowThunder, setShowTemperature } = useSharedSettings()
+  const { isDarkMap, showThunder, showTemperature, showPhenomenon, setShowPhenomenon, setShowThunder, setShowTemperature } = useSharedSettings()
   const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
 
   const { isSwipeEnabled } = useSnapshot(store)
@@ -244,9 +247,25 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
                 </View>
               </Marker>
             )}
+            {showPhenomenon && <PhenomenonMarkers cities={stations} />}
             {showTemperature && <CityMarkers cities={cities} />}
           </MapView>
         )}
+        <TouchableOpacity
+          style={{
+            ...styles.zoomButton,
+            right: 10,
+            bottom: 210,
+          }}
+          onPress={() => {
+            setShowPhenomenon(!showPhenomenon)
+            ToastAndroid.show('Nähtuste kaardikiht ' + (showThunder ? 'väljas' : 'sees'), ToastAndroid.SHORT)
+
+            analytics().logEvent('radar_thunder', { value: !showThunder })
+          }}
+        >
+          <ThunderIcon fill={`'rgba(255, 255, 255, ${showPhenomenon ? '0.8' : '0.2'})`} width={24} height={24} />
+        </TouchableOpacity>
         <TouchableOpacity
           style={{
             ...styles.zoomButton,
@@ -256,6 +275,8 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
           onPress={() => {
             setShowThunder(!showThunder)
             ToastAndroid.show('Välgulöökide kaardikiht ' + (showThunder ? 'väljas' : 'sees'), ToastAndroid.SHORT)
+
+            analytics().logEvent('radar_thunder', { value: !showThunder })
           }}
         >
           <ThunderIcon fill={`'rgba(255, 255, 255, ${showThunder ? '0.8' : '0.2'})`} width={24} height={24} />
@@ -268,6 +289,8 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
           }}
           onPress={() => {
             setShowTemperature(!showTemperature)
+
+            analytics().logEvent('radar_temperature', { value: !showTemperature })
             ToastAndroid.show('Temperatuuride kaardikiht ' + (showTemperature ? 'väljas' : 'sees'), ToastAndroid.SHORT)
           }}
         >
@@ -280,6 +303,7 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
             ...styles.zoomButton,
           }}
           onPress={() => {
+            analytics().logEvent('radar_zoom')
             ref.current.animateToRegion({
               latitude: 58.6488358,
               longitude: 25.2302703,
@@ -342,6 +366,31 @@ const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
               >
                 {Math.round(+station.airtemperature)}°
               </Text>
+            </View>
+          </Marker>
+        ))}
+    </>
+  )
+})
+
+const PhenomenonMarkers = React.memo(({ cities }: { cities: Station[] }) => {
+  return (
+    <>
+      {cities
+        .filter((c) => !!c.phenomenon)
+        .map((station) => (
+          <Marker
+            key={station.name}
+            tappable={false}
+            coordinate={{
+              latitude: Number(station.latitude),
+              longitude: Number(station.longitude),
+            }}
+            zIndex={1}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={{}}>
+              <PhenomenonIcon phenomenon={station.phenomenon} animated={true} width={25} height={25} />
             </View>
           </Marker>
         ))}

@@ -16,6 +16,8 @@ import { Alert } from '../components/Alert'
 import { useSnapshot } from 'valtio'
 import { store } from '../store/store'
 import { createNativeWrapper, ScrollView } from 'react-native-gesture-handler'
+import analytics from '@react-native-firebase/analytics'
+import { registerNotificationChannel, showCurrentWeatherNotification } from '../utils/currentWeatherNotification'
 
 const RefreshControl = createNativeWrapper(RNRefreshControl)
 export default function Main(props) {
@@ -75,7 +77,7 @@ export default function Main(props) {
 
   useEffect(() => {
     try {
-      // Analytics.logEvent('screen_view', { name: 'Main' })
+      analytics().logScreenView({ screen_name: 'Main' })
     } catch (e) {
       console.warn('analytics error', e)
     }
@@ -103,6 +105,8 @@ export default function Main(props) {
 
     setIsRefreshing(false)
     setAllObservations(response.observations)
+    await registerNotificationChannel()
+    showCurrentWeatherNotification(response.observations)
   }
 
   const getWaterTempStation = () => closestStationWithObservationField(observations?.station, 'watertemperature')

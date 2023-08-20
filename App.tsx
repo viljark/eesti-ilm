@@ -19,6 +19,7 @@ import useAsyncStorage from './src/utils/useAsyncStorage'
 import Autocomplete from 'react-native-autocomplete-input'
 import { LocationAccuracy } from 'expo-location/src/Location.types'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { registerBackgroundFetchAsync } from './src/utils/currentWeatherNotification'
 // axios.interceptors.request.use((request) => {
 //   console.log('Starting Request', JSON.stringify(request.url, null, 2))
 //   return request
@@ -30,7 +31,7 @@ Sentry.init({
   enableInExpoDevelopment: true,
   debug: false, // Sentry will try to print out useful debugging information if something goes wrong with sending an event. Set this to `false` in production.
 })
-
+registerBackgroundFetchAsync()
 export default function App() {
   const [locationData, setLocationData] = useState<{
     location: Location.LocationObject
@@ -93,7 +94,7 @@ export default function App() {
     } else {
       status = 'location-services-disabled'
     }
-
+    console.log('status', status)
     if (status !== 'granted') {
       if (!storedLocationObject?.location) {
         const defaultLocationData = {
@@ -116,7 +117,7 @@ export default function App() {
         storeLocationData(defaultLocationData)
       }
     } else {
-      let location = await Location.getCurrentPositionAsync({ timeInterval: 5 * 1000 * 60, accuracy: LocationAccuracy.Lowest })
+      let location = await Location.getCurrentPositionAsync({ timeInterval: 5 * 1000 * 60, accuracy: LocationAccuracy.Low })
       location.coords = {
         longitude: Number(location.coords.longitude.toFixed(2)),
         latitude: Number(location.coords.latitude.toFixed(2)),

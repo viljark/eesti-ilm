@@ -1,6 +1,6 @@
 import { Time } from '../services'
 import React, { useState } from 'react'
-import { AreaChart, BarChart } from 'react-native-svg-charts'
+import { AreaChart, BarChart, LineChart, Grid } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
 import { Dimensions, Text, View, ViewStyle, Animated } from 'react-native'
 import { PhenomenonIcon } from './PhenomenonIcon'
@@ -12,6 +12,9 @@ import Background from './Background'
 import Constants from 'expo-constants'
 import { commonStyles } from '../utils/styles'
 import { HorizontalScrollView } from './HorizontalScrollView'
+import { ScrollView } from 'react-native-gesture-handler'
+import { Raindrop } from '../icons/Raindrop'
+import { RaindropOutline } from '../icons/RaindropOutline'
 
 interface ForecastGraphProps {
   detailedForecast: Time[]
@@ -24,7 +27,7 @@ interface ForecastGraphProps {
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
-
+const mmWithBreak = '\nmm'
 export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp, location, style }: ForecastGraphProps) {
   const [iconLocation, setIconLocation] = useState<
     Array<{
@@ -54,7 +57,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   const pan = graphRef.current
 
   const xMin = -graphWidth + (width - 20)
-
+  const raindropHeight = 20
   return (
     <>
       {detailedForecast && pan && (
@@ -104,7 +107,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
           >
             <>
               <AreaChart
-                style={{ height: '100%', width: graphWidth, paddingBottom: 0 }}
+                style={{ height: 120, width: graphWidth, paddingBottom: 0, top: 70 }}
                 data={detailedForecast.map((f) => Number(f.temperature['@attributes'].value))}
                 contentInset={{ top: 30, bottom: 5 }}
                 curve={shape.curveNatural}
@@ -137,11 +140,51 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       style={{
                         marginLeft: -2,
                         position: 'absolute',
-                        bottom: 30,
+                        top: 35,
                       }}
                       date={new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`)}
                       phenomenon={detailedForecast[i].phenomen['@attributes'].en}
                     />
+                  )}
+                  {detailedForecast[i] && Number(detailedForecast[i].precipitation['@attributes'].value) !== 0 && (
+                    <>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          bottom: 18,
+                          height: raindropHeight,
+                          width: raindropHeight,
+                        }}
+                      >
+                        <View
+                          style={{
+                            position: 'relative',
+                            height: Math.min(raindropHeight, (Number(detailedForecast[i].precipitation['@attributes'].value) / 3) * raindropHeight),
+                            overflow: 'hidden',
+                            top: raindropHeight - Math.min(raindropHeight, (Number(detailedForecast[i].precipitation['@attributes'].value) / 3) * raindropHeight),
+                          }}
+                        >
+                          <Raindrop width={raindropHeight} height={raindropHeight} style={{ position: 'absolute', bottom: 0 }} />
+                        </View>
+                        <RaindropOutline width={raindropHeight} height={raindropHeight} style={{ position: 'absolute' }} />
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 7,
+                          fontFamily: 'Inter_200Light',
+                          color: '#fff',
+                          bottom: 8,
+                          lineHeight: 12,
+                          position: 'absolute',
+                          marginLeft: 4,
+                          textAlign: 'center',
+                          ...commonStyles.textShadow,
+                        }}
+                      >
+                        {detailedForecast[i].precipitation['@attributes'].value}
+                        {mmWithBreak}
+                      </Text>
+                    </>
                   )}
                   {detailedForecast[i] &&
                     !!detailedForecast[i]['@attributes'].from &&
@@ -151,12 +194,13 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                           key={i + 100}
                           style={{
                             position: 'absolute',
-                            top: 0,
+                            bottom: 0,
                             height: 20,
+                            left: 10,
                             color: 'rgba(255, 255, 255, 0.8)',
                             marginLeft: -2,
                             fontSize: 12,
-                            fontFamily: 'Inter_200ExtraLight',
+                            fontFamily: 'Inter_200Light',
                             ...commonStyles.textShadow,
                           }}
                         >
@@ -166,9 +210,9 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                           style={{
                             position: 'absolute',
                             bottom: 0,
-                            width: 0.5,
-                            height: '90%',
-                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            width: 2,
+                            height: '100%',
+                            backgroundColor: 'rgba(255, 255, 255, 0.3)',
                           }}
                         />
                       </>
@@ -178,11 +222,11 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       key={i + 100}
                       style={{
                         position: 'absolute',
-                        bottom: 5,
+                        top: 5,
                         width: 35,
                         color: '#fff',
-                        fontSize: 10,
-                        fontFamily: 'Inter_200ExtraLight',
+                        fontSize: 12,
+                        fontFamily: 'Inter_200Light',
                         ...commonStyles.textShadow,
                       }}
                     >
@@ -192,23 +236,23 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                   )}
                 </View>
               ))}
-              <BarChart
-                style={{
-                  height: 100,
-                  width: graphWidth,
-                  zIndex: 1,
-                  position: 'absolute',
-                  left: 0,
-                  bottom: 20,
-                }}
-                data={detailedForecast.map((f) => Number(f.precipitation['@attributes'].value))}
-                contentInset={{ top: 5 }}
-                yMax={7.6} // heavy rain
-                yMin={0}
-                svg={{ fill: '#204bff' }}
-              >
-                <PrecipitationDecorator />
-              </BarChart>
+              {/*<BarChart*/}
+              {/*  style={{*/}
+              {/*    height: 100,*/}
+              {/*    width: graphWidth,*/}
+              {/*    zIndex: 1,*/}
+              {/*    position: 'absolute',*/}
+              {/*    left: 0,*/}
+              {/*    bottom: 20,*/}
+              {/*  }}*/}
+              {/*  data={detailedForecast.map((f) => Number(f.precipitation['@attributes'].value))}*/}
+              {/*  contentInset={{ top: 5 }}*/}
+              {/*  yMax={7.6} // heavy rain*/}
+              {/*  yMin={0}*/}
+              {/*  svg={{ fill: '#204bff' }}*/}
+              {/*>*/}
+              {/*  <PrecipitationDecorator />*/}
+              {/*</BarChart>*/}
 
               {iconLocation.map(
                 (icon, i) =>
@@ -219,7 +263,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       key={i}
                       style={{
                         position: 'absolute',
-                        top: icon.locationY - 25,
+                        top: icon.locationY + 45,
                         left: icon.locationX,
                         display: 'flex',
                         flexDirection: 'row',
@@ -228,11 +272,11 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       <Text
                         style={{
                           color: '#fff',
-                          fontSize: 14,
+                          fontSize: 12,
                           textShadowColor: 'rgba(0, 0, 0, 0.3)',
                           textShadowOffset: { width: 0, height: 1 },
                           textShadowRadius: 5,
-                          fontFamily: 'Inter_200ExtraLight',
+                          fontFamily: 'Inter_200Light',
                         }}
                       >
                         {Number(detailedForecast[i].temperature['@attributes'].value).toFixed(0)}
@@ -278,9 +322,9 @@ const Gradient = (props?: any) => (
   <Defs key={props.index}>
     <LinearGradient id={'gradient'} x1={'0%'} y1={'0%'} x2={'0%'} y2={'100%'}>
       <Stop offset={'100%'} stopColor={'#325571'} stopOpacity={0} />
-      <Stop offset={'50%'} stopColor={'#12d8fa'} stopOpacity={0.3} />
-      <Stop offset={'0%'} stopColor={'#12d8fa'} stopOpacity={0.7} />
+      <Stop offset={'50%'} stopColor={'rgb(0,0,0)'} stopOpacity={0.2} />
+      <Stop offset={'0%'} stopColor={'rgb(0,0,0)'} stopOpacity={0.3} />
     </LinearGradient>
   </Defs>
 )
-const Line = (props?: any) => <Path key={'line'} d={props.line} stroke={'#000000'} strokeOpacity={1} fill={'none'} />
+const Line = (props?: any) => <Path key={'line'} d={props.line} stroke={'#00b0ff'} strokeWidth={5} strokeOpacity={1} fill={'none'} />
