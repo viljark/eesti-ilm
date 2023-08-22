@@ -10,7 +10,7 @@ import { closestStationWithObservationField, getDistance } from './distance'
 import { getObservations, Observations, Station } from '../services'
 import { retrieveStoredLocation } from './locationAsyncStorage'
 import { getPhenomenonText } from './phenomenonUtil'
-
+import Feels from 'feels'
 // @ts-ignore
 import overcastLottie from '@bybas/weather-icons/production/fill/png/256/overcast.png'
 // @ts-ignore
@@ -156,17 +156,39 @@ export async function showCurrentWeatherNotification(allObservations?: Observati
 
   let closestPhenomenon: Station = closestStationWithObservationField(stationsWithDistance, 'phenomenon')
   let closestTemperature: Station = closestStationWithObservationField(stationsWithDistance, 'airtemperature')
+  let closestHumidity: Station = closestStationWithObservationField(stationsWithDistance, 'relativehumidity')
+  let closestWindSpeed: Station = closestStationWithObservationField(stationsWithDistance, 'windspeed')
+  let closestUvIndex: Station = closestStationWithObservationField(stationsWithDistance, 'uvindex')
+  let closestPrecipitations: Station = closestStationWithObservationField(stationsWithDistance, 'precipitations')
 
+  const config = {
+    temp: Number(closestTemperature.airtemperature),
+    humidity: Number(closestHumidity.relativehumidity),
+    speed: Number(closestWindSpeed.windspeed),
+  }
+  const realFeel = Math.round(new Feels(config).like())
+
+  const optionMap = {
+    temperature: '🌡️' + Math.round(+closestTemperature.airtemperature) + '°',
+    realFeel: '🌡️' + String(realFeel) + '°',
+    windSpeed: '💨 ' + Math.round(+closestWindSpeed.windspeed) + ' m/s',
+    humidity: '🌁 ' + closestHumidity.relativehumidity + '%',
+    uvIndex: '☀️ ' + closestUvIndex?.uvindex ? Math.round(+closestUvIndex.uvindex) : '-',
+    precipitations: '🌧️ ' + closestPrecipitations.precipitations + ' mm',
+  }
+
+  const body = [optionMap.temperature, optionMap.windSpeed, optionMap.precipitations, optionMap.uvIndex]
   await showPushNotification({
     title: getPhenomenonText(closestPhenomenon.phenomenon),
-    body: storedLocationObject.locationName,
+    body: body.join(' | '),
     color: undefined,
     temperature: String(Math.round(+closestTemperature.airtemperature)),
     phenomenon: closestPhenomenon.phenomenon,
+    location: storedLocationObject.locationName,
   })
 }
 
-async function showPushNotification({ title, body, color, temperature, phenomenon }) {
+async function showPushNotification({ title, body, color, temperature, phenomenon, location }) {
   let id = (await AsyncStorage.getItem('notificationId')) || null
   if (!id) {
     id = uniqueId('notification')
@@ -177,6 +199,7 @@ async function showPushNotification({ title, body, color, temperature, phenomeno
     id,
     title: title,
     body,
+    subtitle: location,
     android: {
       largeIcon,
       smallIcon: 'ic_stat_' + temperature.replace('-', '_'),
