@@ -37,7 +37,7 @@ export default function ForecastScreen() {
   async function getForecast(coordinates) {
     setIsRefreshing(true)
     const response = await getDetailedForecast(coordinates)
-    setDetailedForecast(response.forecast.tabular.time)
+    setDetailedForecast([...response.forecast.tabular.time])
     setIsRefreshing(false)
   }
 
@@ -74,7 +74,7 @@ export default function ForecastScreen() {
 
   const minTemp = detailedForecast && _.min(detailedForecast.map((f) => Number(f.temperature['@attributes'].value)))
 
-  const graphRef = React.useRef(new Animated.ValueXY({ x: 0, y: 0 }))
+  const graphRef = React.useRef(null)
   const graphWidth = width * 5.5
 
   return (

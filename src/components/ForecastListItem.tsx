@@ -150,6 +150,7 @@ export function ForecastListItemInternal({ time, location }: { time: Time; locat
                 style={styles.icon}
                 date={date}
                 phenomenon={time.phenomen['@attributes'].en}
+                theme="meteocon"
               />
             )}
           </View>

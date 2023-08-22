@@ -18,7 +18,7 @@ import { RaindropOutline } from '../icons/RaindropOutline'
 
 interface ForecastGraphProps {
   detailedForecast: Time[]
-  graphRef: React.MutableRefObject<Animated.ValueXY>
+  graphRef: React.MutableRefObject<null>
   graphWidth: number
   minTemp
   location: LocationObject
@@ -54,13 +54,10 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
     return decorators
   }
 
-  const pan = graphRef.current
-
-  const xMin = -graphWidth + (width - 20)
   const raindropHeight = 20
   return (
     <>
-      {detailedForecast && pan && (
+      {detailedForecast && (
         <View
           style={{
             marginTop: 10,
@@ -93,10 +90,9 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
             </Background>
           </View>
 
-          <HorizontalScrollView
-            pan={pan}
-            xMax={0}
-            xMin={xMin}
+          <ScrollView
+            ref={graphRef}
+            horizontal={true}
             style={[
               {
                 backgroundColor: '#rgba(0,0,0,0.5)',
@@ -109,7 +105,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
               <AreaChart
                 style={{ height: 120, width: graphWidth, paddingBottom: 0, top: 70 }}
                 data={detailedForecast.map((f) => Number(f.temperature['@attributes'].value))}
-                contentInset={{ top: 30, bottom: 5 }}
+                contentInset={{ top: 30, bottom: 5, left: 20, right: 20 }}
                 curve={shape.curveNatural}
                 svg={{ fill: 'url(#gradient)' }}
                 start={minTemp - 0.5}
@@ -138,12 +134,13 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       width={30}
                       height={30}
                       style={{
-                        marginLeft: -2,
+                        marginLeft: -14,
                         position: 'absolute',
                         top: 35,
                       }}
                       date={new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`)}
                       phenomenon={detailedForecast[i].phenomen['@attributes'].en}
+                      theme="meteocon"
                     />
                   )}
                   {detailedForecast[i] && Number(detailedForecast[i].precipitation['@attributes'].value) !== 0 && (
@@ -152,6 +149,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                         style={{
                           position: 'absolute',
                           bottom: 18,
+                          left: -8,
                           height: raindropHeight,
                           width: raindropHeight,
                         }}
@@ -176,7 +174,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                           bottom: 8,
                           lineHeight: 12,
                           position: 'absolute',
-                          marginLeft: 4,
+                          marginLeft: -4,
                           textAlign: 'center',
                           ...commonStyles.textShadow,
                         }}
@@ -223,6 +221,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       style={{
                         position: 'absolute',
                         top: 5,
+                        left: -14,
                         width: 35,
                         color: '#fff',
                         fontSize: 12,
@@ -230,29 +229,14 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                         ...commonStyles.textShadow,
                       }}
                     >
-                      {new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`).getHours()}
+                      {new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`).getHours() > 9
+                        ? new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`).getHours()
+                        : '0' + new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`).getHours()}
                       :00
                     </Text>
                   )}
                 </View>
               ))}
-              {/*<BarChart*/}
-              {/*  style={{*/}
-              {/*    height: 100,*/}
-              {/*    width: graphWidth,*/}
-              {/*    zIndex: 1,*/}
-              {/*    position: 'absolute',*/}
-              {/*    left: 0,*/}
-              {/*    bottom: 20,*/}
-              {/*  }}*/}
-              {/*  data={detailedForecast.map((f) => Number(f.precipitation['@attributes'].value))}*/}
-              {/*  contentInset={{ top: 5 }}*/}
-              {/*  yMax={7.6} // heavy rain*/}
-              {/*  yMin={0}*/}
-              {/*  svg={{ fill: '#204bff' }}*/}
-              {/*>*/}
-              {/*  <PrecipitationDecorator />*/}
-              {/*</BarChart>*/}
 
               {iconLocation.map(
                 (icon, i) =>
@@ -264,7 +248,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       style={{
                         position: 'absolute',
                         top: icon.locationY + 45,
-                        left: icon.locationX,
+                        left: icon.locationX + -6,
                         display: 'flex',
                         flexDirection: 'row',
                       }}
@@ -297,7 +281,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                   )
               )}
             </>
-          </HorizontalScrollView>
+          </ScrollView>
         </View>
       )}
     </>
@@ -327,4 +311,4 @@ const Gradient = (props?: any) => (
     </LinearGradient>
   </Defs>
 )
-const Line = (props?: any) => <Path key={'line'} d={props.line} stroke={'#00b0ff'} strokeWidth={5} strokeOpacity={1} fill={'none'} />
+const Line = (props?: any) => <Path key={'line'} d={props.line} stroke={'#00b0ff'} strokeWidth={3} strokeOpacity={1} strokeLinecap={'round'} fill={'none'} />

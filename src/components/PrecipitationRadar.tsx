@@ -387,10 +387,10 @@ const PhenomenonMarkers = React.memo(({ cities }: { cities: Station[] }) => {
               longitude: Number(station.longitude),
             }}
             zIndex={1}
-            anchor={{ x: 0.5, y: 0.5 }}
+            anchor={{ x: 0.5, y: 0.3 }}
           >
             <View style={{}}>
-              <PhenomenonIcon phenomenon={station.phenomenon} animated={true} width={25} height={25} />
+              <PhenomenonIcon phenomenon={station.phenomenon} width={15} height={15} theme={'meteocon'} />
             </View>
           </Marker>
         ))}

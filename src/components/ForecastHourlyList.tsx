@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Time } from '../services'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Dimensions, RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native'
@@ -8,6 +8,7 @@ import { LocationObject } from 'expo-location'
 import Constants from 'expo-constants'
 import Background from './Background'
 import { blockBackground, commonStyles } from '../utils/styles'
+import _ from 'lodash'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
@@ -52,6 +53,16 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
     return result
   }, [detailedForecast])
 
+  const scrollHandler = useCallback(
+    (e) => {
+      if (e.nativeEvent?.contentSize) {
+      }
+    },
+    [graphRef, graphWidth]
+  )
+
+  const handleScroll = useMemo(() => _.throttle(scrollHandler, 16, { leading: true }), [scrollHandler])
+
   return (
     <View style={styles.container}>
       <View style={styles.gradientWrapper}>
@@ -83,8 +94,11 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
         onScroll={(e) => {
           const scrollAmount = (graphWidth / e.nativeEvent.contentSize.height) * e.nativeEvent.contentOffset.y
           if (graphRef.current !== null) {
-            graphRef.current.x.setOffset(0)
-            graphRef.current.x.setValue(-scrollAmount)
+            graphRef.current.scrollTo({
+              y: 0,
+              x: scrollAmount,
+              animated: false,
+            })
           }
         }}
         style={styles.scrollView}
