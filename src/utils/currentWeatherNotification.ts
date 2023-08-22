@@ -173,7 +173,7 @@ export async function showCurrentWeatherNotification(allObservations?: Observati
     realFeel: '🌡️' + String(realFeel) + '°',
     windSpeed: '💨 ' + Math.round(+closestWindSpeed.windspeed) + ' m/s',
     humidity: '🌁 ' + closestHumidity.relativehumidity + '%',
-    uvIndex: '☀️ ' + closestUvIndex?.uvindex ? Math.round(+closestUvIndex.uvindex) : '-',
+    uvIndex: '☀️ ' + (closestUvIndex?.uvindex ? Math.round(+closestUvIndex.uvindex) : '-'),
     precipitations: '🌧️ ' + closestPrecipitations.precipitations + ' mm',
   }
 
@@ -212,14 +212,14 @@ async function showPushNotification({ title, body, color, temperature, phenomeno
       pressAction: {
         id: 'default',
       },
-      // actions: [
-      //   {
-      //     title: 'Uuenda andmeid',
-      //     pressAction: {
-      //       id: 'update',
-      //     },
-      //   },
-      // ],
+      actions: [
+        {
+          title: 'Uuenda andmeid',
+          pressAction: {
+            id: 'update',
+          },
+        },
+      ],
     },
   })
 }
