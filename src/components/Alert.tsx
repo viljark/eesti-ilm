@@ -79,7 +79,7 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
           </View>
           {/* <ScrollView scrollEnabled showsVerticalScrollIndicator style={{ maxHeight: 190, overflow: 'scroll' }}> */}
           <View style={{ flexDirection: 'row', backgroundColor: blockBackground, alignItems: 'center' }}>
-            <View style={{ display: 'flex', flexDirection: 'column', padding: 10, flexShrink: 0 }}>
+            <View style={{ display: 'flex', flexDirection: 'column', padding: 10, paddingRight: 0, flexShrink: 1 }}>
               <Text
                 style={{
                   fontSize: 13,
@@ -111,7 +111,7 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
             </View>
             {alertIcon && (
               <View style={{ marginLeft: 'auto', paddingHorizontal: 10 }}>
-                <LottieView autoPlay style={{ width: 50, height: 50 }} source={alertIcon} hardwareAccelerationAndroid={true} />
+                <LottieView autoPlay style={{ width: 50, height: 50, marginLeft: -10, paddingLeft: 10 }} source={alertIcon} />
               </View>
             )}
           </View>
