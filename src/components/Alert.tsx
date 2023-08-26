@@ -1,5 +1,5 @@
 import { getWarningForLocation, Warning } from '../services'
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import * as Location from 'expo-location'
 import Background from './Background'
@@ -10,7 +10,10 @@ import { LocationContext } from '../../LocationContext'
 import LottieView from 'lottie-react-native'
 import thunderStormLottie from '@bybas/weather-icons/production/fill/lottie/thunderstorms-extreme-rain.json'
 import windAlertLottie from '@bybas/weather-icons/production/fill/lottie/wind-alert.json'
+import fogLottie from '@bybas/weather-icons/production/fill/lottie/fog.json'
 import useAsyncStorage from '../utils/useAsyncStorage'
+import { useAssets } from 'expo-asset'
+import codeRed from '@bybas/weather-icons/production/fill/png/64/code-red.png'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
@@ -25,9 +28,10 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
   const [warning, setWarning] = useAsyncStorage<Warning>('warning', null)
   async function fetchWarnings() {
     const warning = await getWarningForLocation(locationRegion)
-    console.log('warning', warning)
     setWarning(warning || null)
   }
+
+  const [assets] = useAssets([codeRed])
 
   useEffect(() => {
     fetchWarnings()
@@ -37,11 +41,12 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
     if (!warning) return
     if (warning.content_est.includes('äike')) return thunderStormLottie
     if (warning.content_est.includes('tuul')) return windAlertLottie
+    if (warning.content_est.includes('udu')) return fogLottie
   }, [warning])
 
   return (
     <>
-      {warning && (
+      {warning && assets?.[0] && (
         <TouchableOpacity
           style={{
             display: 'flex',
@@ -80,24 +85,25 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
           {/* <ScrollView scrollEnabled showsVerticalScrollIndicator style={{ maxHeight: 190, overflow: 'scroll' }}> */}
           <View style={{ flexDirection: 'row', backgroundColor: blockBackground, alignItems: 'center' }}>
             <View style={{ display: 'flex', flexDirection: 'column', padding: 10, paddingRight: 0, flexShrink: 1 }}>
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: '#fff',
-                  fontFamily: 'Inter_700Bold',
-                }}
-              >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image style={{ width: 32, height: 32, margin: -7, marginLeft: -10, marginRight: -4 }} source={{ uri: assets[0].localUri }} />
                 <Text
                   style={{
-                    color: 'red',
-                    fontSize: 15,
+                    fontSize: 13,
+                    color: '#fff',
                     fontFamily: 'Inter_700Bold',
                   }}
                 >
-                  ⚠{' '}
+                  <Text
+                    style={{
+                      color: 'red',
+                      fontSize: 15,
+                      fontFamily: 'Inter_700Bold',
+                    }}
+                  ></Text>
+                  Hoiatus
                 </Text>
-                Hoiatus
-              </Text>
+              </View>
               <Text
                 style={{
                   color: '#fff',

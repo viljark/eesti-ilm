@@ -5,7 +5,7 @@ import * as Location from 'expo-location'
 import { AppState, AppStateStatus, Keyboard, SafeAreaView, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { LocationContext } from './LocationContext'
 import Background from './src/components/Background'
-import { useFonts, Inter_700Bold, Inter_300Light, Inter_200ExtraLight } from '@expo-google-fonts/inter'
+import { useFonts, Inter_700Bold, Inter_300Light, Inter_200ExtraLight, Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter'
 import _ from 'lodash'
 
 import { getLocationByName } from './src/services'
@@ -54,6 +54,9 @@ export default function App() {
   }, [])
   let [fontsLoaded] = useFonts({
     Inter_300Light,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
     Inter_200ExtraLight,
     Inter_700Bold,
   })
@@ -117,7 +120,7 @@ export default function App() {
         storeLocationData(defaultLocationData)
       }
     } else {
-      let location = await Location.getCurrentPositionAsync({ timeInterval: 5 * 1000 * 60, accuracy: LocationAccuracy.Low })
+      let location = await Location.getCurrentPositionAsync({ timeInterval: 5 * 1000 * 60, accuracy: LocationAccuracy.High })
       location.coords = {
         longitude: Number(location.coords.longitude.toFixed(2)),
         latitude: Number(location.coords.latitude.toFixed(2)),

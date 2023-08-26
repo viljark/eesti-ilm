@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo, useMemo } from 'react'
+import React, { FunctionComponent, memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { getPosition, getTimes } from 'suncalc'
 import ClearDay from '../icons/ClearDay'
 import ClearNight from '../icons/ClearNight'
@@ -86,6 +86,8 @@ import strongShowerDayMeteocon from '@bybas/weather-icons/production/fill/png/25
 // @ts-ignore
 import strongShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-night-rain.png'
 import { useAssets } from 'expo-asset'
+import { useIsFocused } from '@react-navigation/native'
+import { useAppState } from '../utils/useAppState'
 
 // mapping https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/
 const clear = ['Clear']
@@ -142,6 +144,7 @@ const height = Dimensions.get('window').height - 121 //full height
 
 const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
   const size = Math.max(100, Math.min(height * 0.3, 140))
+
   const iconProps = {
     width: props.width || size,
     height: props.height || size,
@@ -218,8 +221,8 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
 
   const w = props.width || size
   const h = props.height || size
-  const wOffset = w / 2
-  const hOffset = h / 2
+  const wOffset = w / 3.4
+  const hOffset = h / 3.4
   if (props.theme === 'meteocon') {
     if (!assets?.[0]?.localUri) {
       return null
@@ -232,8 +235,8 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
           height={h + hOffset}
           style={{
             position: 'absolute',
-            left: -wOffset / 2,
-            top: -hOffset / 2,
+            left: -wOffset / 1.7,
+            top: -hOffset,
           }}
         />
       </View>
@@ -271,5 +274,26 @@ PhenomenonIcon_.defaultProps = {
 
 const LottieIcon = memo(LottieIcon_)
 function LottieIcon_({ style, path }: { path: any; style: StyleProp<ViewStyle> }) {
-  return <LottieView autoPlay style={style} source={path} />
+  const ref = useRef<LottieView>(null)
+  const isScreenFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isScreenFocused) {
+      ref.current?.play()
+    } else {
+      ref.current?.pause()
+    }
+  }, [ref.current, isScreenFocused])
+
+  const play = useCallback(() => {
+    ref.current?.play()
+  }, [ref.current])
+
+  const pause = useCallback(() => {
+    ref.current?.pause()
+  }, [ref.current])
+
+  useAppState(play, pause)
+
+  return <LottieView ref={ref} autoPlay={false} style={style} source={path} />
 }

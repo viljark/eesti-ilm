@@ -43,15 +43,13 @@ export function Forecast(props: { latestUpdate: Date }) {
             <PhenomenonIcon
               phenomenon={f[activeForecast].phenomenon}
               isDay={activeForecast === 'day'}
-              width={50}
-              height={50}
+              width={40}
+              height={40}
               style={{
-                marginTop: -3,
-                marginBottom: -3,
-                borderRadius: 100,
-                overflow: 'hidden',
+                marginTop: 5,
               }}
-              animated={true}
+              animated={false}
+              theme="meteocon"
             />
             <Text style={styles.smallText}>
               {f[activeForecast].tempmin} - {f[activeForecast].tempmax}°

@@ -17,15 +17,16 @@ import add from 'date-fns/add'
 import differenceInMinutes from 'date-fns/differenceInMinutes'
 import { store } from '../store/store'
 import { useSnapshot } from 'valtio'
-import ZoomOutIcon from './ZoomOutIcon'
-import ZoomInIcon from './ZoomInIcon'
+import ZoomOutIcon from '../icons/ZoomOutIcon'
+import ZoomInIcon from '../icons/ZoomInIcon'
 import { addMinutes } from 'date-fns'
 import { Station } from '../services'
-import TemperatureIcon from './TemperatureIcon'
-import ThunderIcon from './ThunderIcon'
+import TemperatureIcon from '../icons/TemperatureIcon'
+import ThunderIcon from '../icons/ThunderIcon'
 import analytics from '@react-native-firebase/analytics'
 import LottieView from 'lottie-react-native'
 import { PhenomenonIcon } from './PhenomenonIcon'
+import PhenomenonLayerIcon from '../icons/PhenomenonLayerIcon'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -264,7 +265,7 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
             analytics().logEvent('radar_thunder', { value: !showThunder })
           }}
         >
-          <ThunderIcon fill={`'rgba(255, 255, 255, ${showPhenomenon ? '0.8' : '0.2'})`} width={24} height={24} />
+          <PhenomenonLayerIcon fill={`'rgba(255, 255, 255, ${showPhenomenon ? '0.8' : '0.2'})`} width={24} height={24} />
         </TouchableOpacity>
         <TouchableOpacity
           style={{
@@ -294,7 +295,7 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
             ToastAndroid.show('Temperatuuride kaardikiht ' + (showTemperature ? 'väljas' : 'sees'), ToastAndroid.SHORT)
           }}
         >
-          <TemperatureIcon fill={`'rgba(255, 255, 255, ${showTemperature ? '0.8' : '0.2'})`} width={24} height={24} />
+          <TemperatureIcon fill={`'rgba(255, 255, 255, ${showTemperature ? '0.8' : '0.2'})`} width={18} height={18} />
         </TouchableOpacity>
         <TouchableOpacity
           style={{
@@ -390,7 +391,7 @@ const PhenomenonMarkers = React.memo(({ cities }: { cities: Station[] }) => {
             anchor={{ x: 0.5, y: 0.3 }}
           >
             <View style={{}}>
-              <PhenomenonIcon phenomenon={station.phenomenon} width={15} height={15} theme={'meteocon'} />
+              <PhenomenonIcon phenomenon={station.phenomenon} width={25} height={25} theme={'meteocon'} />
             </View>
           </Marker>
         ))}
@@ -465,6 +466,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 6,
+    width: 40,
+    height: 40,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
 })

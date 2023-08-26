@@ -103,6 +103,7 @@ export function CurrentWeather({
                 longitude={location?.coords.longitude}
                 isDay={isDay}
                 animated={true}
+                theme="meteocon"
               />
             </View>
 

@@ -1,8 +1,8 @@
 import { Time } from '../services'
-import React, { useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { AreaChart, BarChart, LineChart, Grid } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
-import { Dimensions, Text, View, ViewStyle, Animated } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import { PhenomenonIcon } from './PhenomenonIcon'
 import { getDayName } from '../utils/formatters'
 import { LocationObject } from 'expo-location'
@@ -11,10 +11,12 @@ import _ from 'lodash'
 import Background from './Background'
 import Constants from 'expo-constants'
 import { commonStyles } from '../utils/styles'
-import { HorizontalScrollView } from './HorizontalScrollView'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Raindrop } from '../icons/Raindrop'
 import { RaindropOutline } from '../icons/RaindropOutline'
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
+
+const dayLeftOffset = 8
 
 interface ForecastGraphProps {
   detailedForecast: Time[]
@@ -28,6 +30,7 @@ interface ForecastGraphProps {
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
 const mmWithBreak = '\nmm'
+
 export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp, location, style }: ForecastGraphProps) {
   const [iconLocation, setIconLocation] = useState<
     Array<{
@@ -36,7 +39,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
       locationY: number
     }>
   >([])
-
+  const dayRef = useRef<ScrollView>(null)
   const Decorator = (props?: any) => {
     const decoratorLocations = []
     const decorators = props.data.map((value, index) => {
@@ -55,6 +58,96 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }
 
   const raindropHeight = 20
+
+  const dayLocation =
+    iconLocation &&
+    detailedForecast &&
+    iconLocation
+      .map((l, i) => {
+        if (new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`).getHours() === 0) {
+          return {
+            name: getDayName(detailedForecast[i]['@attributes'].from),
+            x: l.locationX,
+          }
+        }
+        return null
+      })
+      .filter(Boolean)
+
+  const scrollPos = useSharedValue(0)
+
+  const staticDay1AnimatedStyle = useAnimatedStyle(() => {
+    if (!dayLocation?.length) {
+      return {}
+    }
+    return {
+      display: scrollPos.value >= dayLocation[0].x - dayLeftOffset ? 'none' : 'flex',
+      transform: [{ translateX: scrollPos.value > dayLocation[0].x - 100 ? -(scrollPos.value - dayLocation[0].x + 100) : 0 }],
+    }
+  }, [scrollPos, dayLocation])
+
+  const staticDay2AnimatedStyle = useAnimatedStyle(() => {
+    if (!dayLocation?.length) {
+      return {}
+    }
+    return {
+      display: scrollPos.value < dayLocation[0].x - dayLeftOffset || scrollPos.value >= dayLocation[1].x - dayLeftOffset ? 'none' : 'flex',
+      transform: [{ translateX: scrollPos.value > dayLocation[1].x - 100 ? -(scrollPos.value - dayLocation[1].x + 100) : 0 }],
+    }
+  }, [scrollPos, dayLocation])
+
+  const staticDay3AnimatedStyle = useAnimatedStyle(() => {
+    if (!dayLocation?.length) {
+      return {}
+    }
+    return {
+      display: scrollPos.value < dayLocation[1].x - dayLeftOffset || scrollPos.value >= dayLocation[2].x - dayLeftOffset ? 'none' : 'flex',
+
+      transform: [{ translateX: scrollPos.value > dayLocation[2].x - 100 ? -(scrollPos.value - dayLocation[2].x + 100) : 0 }],
+    }
+  }, [scrollPos, dayLocation])
+
+  const staticDay4AnimatedStyle = useAnimatedStyle(() => {
+    if (!dayLocation?.length) {
+      return {}
+    }
+    return {
+      display: scrollPos.value < dayLocation[2].x - dayLeftOffset || scrollPos.value >= dayLocation[3]?.x - dayLeftOffset ? 'none' : 'flex',
+      transform: [{ translateX: scrollPos.value > dayLocation[3]?.x - 100 ? -(scrollPos.value - dayLocation[3]?.x + 100) : 0 }],
+    }
+  }, [scrollPos, dayLocation])
+
+  const scrollingDay2AnimatedStyle = useAnimatedStyle(() => {
+    if (!dayLocation?.length) {
+      return {}
+    }
+    return {
+      display: scrollPos.value > dayLocation[0].x - dayLeftOffset ? 'none' : 'flex',
+    }
+  }, [scrollPos, dayLocation])
+  const scrollingDay3AnimatedStyle = useAnimatedStyle(() => {
+    if (!dayLocation?.length) {
+      return {}
+    }
+    return {
+      display: scrollPos.value > dayLocation[1].x - dayLeftOffset ? 'none' : 'flex',
+    }
+  }, [scrollPos, dayLocation])
+
+  const scrollingDay4AnimatedStyle = useAnimatedStyle(() => {
+    if (!dayLocation?.length) {
+      return {}
+    }
+    return {
+      display: scrollPos.value > dayLocation[2].x - dayLeftOffset ? 'none' : 'flex',
+    }
+  }, [scrollPos, dayLocation])
+
+  const scrollingDaysAnimatedStyles = useMemo(
+    () => [scrollingDay2AnimatedStyle, scrollingDay3AnimatedStyle, scrollingDay4AnimatedStyle],
+    [scrollingDay2AnimatedStyle, scrollingDay3AnimatedStyle, scrollingDay4AnimatedStyle]
+  )
+
   return (
     <>
       {detailedForecast && (
@@ -70,6 +163,14 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
             ...commonStyles.blockShadow,
           }}
         >
+          {dayLocation?.length > 0 && (
+            <View style={{ position: 'absolute', top: 4, height: 20, zIndex: 1 }}>
+              <Animated.Text style={[staticDay1AnimatedStyle, styles.dayName]}>täna</Animated.Text>
+              <Animated.Text style={[staticDay2AnimatedStyle, styles.dayName]}>{dayLocation[0]?.name}</Animated.Text>
+              <Animated.Text style={[staticDay3AnimatedStyle, styles.dayName]}>{dayLocation[1]?.name}</Animated.Text>
+              <Animated.Text style={[staticDay4AnimatedStyle, styles.dayName]}>{dayLocation[2]?.name}</Animated.Text>
+            </View>
+          )}
           <View
             style={{
               position: 'absolute',
@@ -91,6 +192,18 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
           </View>
 
           <ScrollView
+            persistentScrollbar={true}
+            onScroll={(e) => {
+              dayRef.current?.scrollTo({
+                x: e.nativeEvent.contentOffset.x,
+                y: e.nativeEvent.contentOffset.y,
+                animated: false,
+              })
+              scrollPos.value = e.nativeEvent.contentOffset.x
+            }}
+            contentContainerStyle={{
+              paddingTop: 25,
+            }}
             ref={graphRef}
             horizontal={true}
             style={[
@@ -103,7 +216,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
           >
             <>
               <AreaChart
-                style={{ height: 120, width: graphWidth, paddingBottom: 0, top: 70 }}
+                style={{ height: 110, width: graphWidth, paddingBottom: 0, top: 60 }}
                 data={detailedForecast.map((f) => Number(f.temperature['@attributes'].value))}
                 contentInset={{ top: 30, bottom: 5, left: 20, right: 20 }}
                 curve={shape.curveNatural}
@@ -115,6 +228,36 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                 <Gradient />
                 <Line />
               </AreaChart>
+              {dayLocation?.map((dl, i) => (
+                <>
+                  <Animated.Text
+                    key={i + 100}
+                    style={[
+                      scrollingDaysAnimatedStyles[i],
+                      {
+                        ...styles.dayName,
+                        position: 'absolute',
+                        left: dl.x,
+                        top: 4,
+                        marginLeft: 7,
+                        flexGrow: 0,
+                      },
+                    ]}
+                  >
+                    {dl.name}
+                  </Animated.Text>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: dl.x,
+                      width: 2,
+                      height: '100%',
+                      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                    }}
+                  />
+                </>
+              ))}
               {iconLocation.map((icon, i) => (
                 <View
                   key={i + 200}
@@ -123,18 +266,24 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                     left: icon.locationX,
                     bottom: 0,
                     display: 'flex',
-                    height: '100%',
+                    top: 25,
+                    borderRightWidth: i % 2 !== 0 ? 0 : 0.5,
+
+                    width: iconLocation[1].locationX - iconLocation[0].locationX,
+                    // backgroundColor: i % 2 !== 0 || i % 3 !== 0 ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    borderTopWidth: 0.5,
+                    borderColor: 'rgba(255,255,255,0.1)',
                   }}
                 >
                   {detailedForecast[i] && !!detailedForecast[i].phenomen['@attributes'].en && i % 2 === 0 && (
                     <PhenomenonIcon
                       latitude={location.coords.latitude}
                       longitude={location.coords.longitude}
-                      key={i}
-                      width={30}
-                      height={30}
+                      key={i + detailedForecast[i].phenomen['@attributes'].en}
+                      width={40}
+                      height={40}
                       style={{
-                        marginLeft: -14,
+                        marginLeft: -19,
                         position: 'absolute',
                         top: 35,
                       }}
@@ -149,7 +298,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                         style={{
                           position: 'absolute',
                           bottom: 18,
-                          left: -8,
+                          left: -10,
                           height: raindropHeight,
                           width: raindropHeight,
                         }}
@@ -167,6 +316,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                         <RaindropOutline width={raindropHeight} height={raindropHeight} style={{ position: 'absolute' }} />
                       </View>
                       <Text
+                        allowFontScaling={false}
                         style={{
                           fontSize: 7,
                           fontFamily: 'Inter_200Light',
@@ -174,7 +324,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                           bottom: 8,
                           lineHeight: 12,
                           position: 'absolute',
-                          marginLeft: -4,
+                          marginLeft: -6,
                           textAlign: 'center',
                           ...commonStyles.textShadow,
                         }}
@@ -184,37 +334,6 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       </Text>
                     </>
                   )}
-                  {detailedForecast[i] &&
-                    !!detailedForecast[i]['@attributes'].from &&
-                    new Date(detailedForecast[i]['@attributes'].from + `+0${(new Date().getTimezoneOffset() / 60) * -1}:00`).getHours() === 0 && (
-                      <>
-                        <Text
-                          key={i + 100}
-                          style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            height: 20,
-                            left: 10,
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            marginLeft: -2,
-                            fontSize: 12,
-                            fontFamily: 'Inter_200Light',
-                            ...commonStyles.textShadow,
-                          }}
-                        >
-                          {getDayName(detailedForecast[i]['@attributes'].from)}
-                        </Text>
-                        <View
-                          style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            width: 2,
-                            height: '100%',
-                            backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                          }}
-                        />
-                      </>
-                    )}
                   {detailedForecast[i] && !!detailedForecast[i]['@attributes'].from && i % 2 === 0 && (
                     <Text
                       key={i + 100}
@@ -247,7 +366,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       key={i}
                       style={{
                         position: 'absolute',
-                        top: icon.locationY + 45,
+                        top: icon.locationY + 65,
                         left: icon.locationX + -6,
                         display: 'flex',
                         flexDirection: 'row',
@@ -287,6 +406,20 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  dayName: {
+    color: '#000',
+    marginLeft: 15,
+    fontSize: 11,
+    fontFamily: 'Inter_500Medium',
+    paddingHorizontal: 8,
+    paddingBottom: 1,
+    borderRadius: 10,
+    backgroundColor: 'rgb(255,255,255)',
+    borderColor: 'rgba(255,255,255,0.5)',
+  },
+})
 
 const PrecipitationDecorator = (props?: any) => {
   const decorators = props.data.map((value, index) => {

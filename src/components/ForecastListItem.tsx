@@ -145,8 +145,8 @@ export function ForecastListItemInternal({ time, location }: { time: Time; locat
               <PhenomenonIcon
                 latitude={location.coords.latitude}
                 longitude={location.coords.longitude}
-                width={30}
-                height={30}
+                width={40}
+                height={40}
                 style={styles.icon}
                 date={date}
                 phenomenon={time.phenomen['@attributes'].en}
