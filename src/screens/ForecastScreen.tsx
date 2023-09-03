@@ -10,6 +10,7 @@ import { ForecastGraph } from '../components/ForecastGraph'
 import { ForecastHourlyList } from '../components/ForecastHourlyList'
 import useAsyncStorage from '../utils/useAsyncStorage'
 import Constants from 'expo-constants'
+import { useAnimatedRef } from 'react-native-reanimated'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50 + 72) //full height
@@ -24,7 +25,7 @@ export default function ForecastScreen() {
     }>(LocationContext)
   const [latestUpdate, setLatestUpdate] = useState<Date>(new Date())
   const [isRefreshing, setIsRefreshing] = useState<boolean>(true)
-  const [detailedForecast, setDetailedForecast] = useState<Time[]>() //useAsyncStorage<Time[]>('detailedForecast')
+  const [detailedForecast, setDetailedForecast] = useAsyncStorage<Time[]>('detailedForecast')
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
 
   async function getInitialData(query) {
@@ -74,7 +75,7 @@ export default function ForecastScreen() {
 
   const minTemp = detailedForecast && _.min(detailedForecast.map((f) => Number(f.temperature['@attributes'].value)))
 
-  const graphRef = React.useRef(null)
+  const graphRef = useAnimatedRef()
   const graphWidth = width * 5.5
 
   return (

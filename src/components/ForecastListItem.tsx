@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     // borderRadius: 15,
     borderBottomWidth: 0.5,
-    borderColor: 'rgba(0,0,0, .6)',
+    borderColor: 'rgba(0,0,0, .5)',
     marginTop: 0,
     height: 48,
     position: 'relative',

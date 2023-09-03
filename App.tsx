@@ -120,7 +120,7 @@ export default function App() {
         storeLocationData(defaultLocationData)
       }
     } else {
-      let location = await Location.getCurrentPositionAsync({ timeInterval: 5 * 1000 * 60, accuracy: LocationAccuracy.High })
+      let location = await Location.getCurrentPositionAsync({ accuracy: LocationAccuracy.Balanced })
       location.coords = {
         longitude: Number(location.coords.longitude.toFixed(2)),
         latitude: Number(location.coords.latitude.toFixed(2)),

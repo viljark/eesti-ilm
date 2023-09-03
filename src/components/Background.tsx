@@ -51,11 +51,15 @@ const Background = (props: { children: React.ReactNode; location: Location.Locat
   }, [props.location])
 
   return gradient ? (
-    <LinearGradient style={[styles.container, props.style]} colors={gradient.color} start={[0.5, 0]} locations={gradient.location}>
-      {props.children}
-      <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'} />
-    </LinearGradient>
-  ) : null
+    <View style={[styles.container, props.style, { backgroundColor: '#000' }]}>
+      <LinearGradient style={[styles.container]} colors={gradient.color} start={[0.5, 0]} locations={gradient.location}>
+        {props.children}
+        <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'} />
+      </LinearGradient>
+    </View>
+  ) : (
+    <View style={[styles.container, props.style, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
+  )
 }
 
 export default Background
@@ -63,7 +67,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 0,
     flex: 1,
-    backgroundColor: '#fff',
   },
 })
 

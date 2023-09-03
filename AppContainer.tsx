@@ -5,10 +5,11 @@ import { Dimensions } from 'react-native'
 import Settings from './src/screens/Settings'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { createStackNavigator } from '@react-navigation/stack'
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack'
 import { store } from './src/store/store'
 import { useSnapshot } from 'valtio'
 import analytics from '@react-native-firebase/analytics'
+import { DayForecastScreen } from './src/screens/DayForecastScreen'
 
 const height = Dimensions.get('window').height //full height
 const width = Dimensions.get('window').width //full width
@@ -87,6 +88,7 @@ export default function App() {
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="MainScreens" component={MainScreens} />
+        <Stack.Screen name="DayForecastScreen" component={DayForecastScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

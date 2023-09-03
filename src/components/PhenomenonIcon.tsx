@@ -14,7 +14,8 @@ import Fog from '../icons/Fog'
 import Thunder from '../icons/Thunder'
 import ThunderStorm from '../icons/ThunderStorm'
 import Hail from '../icons/Hail'
-import { Dimensions, StyleProp, ViewStyle, Image, View } from 'react-native'
+import { Dimensions, StyleProp, ViewStyle, View } from 'react-native'
+import { Image } from 'expo-image'
 import _ from 'lodash'
 import SnowStorm from '../icons/SnowStorm'
 import LottieView from 'lottie-react-native'
@@ -88,6 +89,7 @@ import strongShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/
 import { useAssets } from 'expo-asset'
 import { useIsFocused } from '@react-navigation/native'
 import { useAppState } from '../utils/useAppState'
+import { useDynamicAssets } from '../utils/useDynamicAsset'
 
 // mapping https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/
 const clear = ['Clear']
@@ -138,6 +140,7 @@ interface PhenomenonIconProps {
   isDay?: boolean
   animated?: boolean
   theme?: 'meteocon' | 'default'
+  onLoad?: () => void
 }
 
 const height = Dimensions.get('window').height - 121 //full height
@@ -213,32 +216,31 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
     if (thunderStorm.includes(props.phenomenon)) return thunderStormMeteocon
     if (hail.includes(props.phenomenon)) return hailMeteocon
   }, [isDay, props.phenomenon])
-
-  const [assets] = useAssets([meteoconIcon || clearDayMeteocon])
+  const [assets] = useDynamicAssets(meteoconIcon || clearDayMeteocon)
   if (props.animated) {
     return <LottieIcon style={lottieStyle} path={lottiePath} />
   }
-
   const w = props.width || size
   const h = props.height || size
   const wOffset = w / 3.4
   const hOffset = h / 3.4
   if (props.theme === 'meteocon') {
-    if (!assets?.[0]?.localUri) {
-      return null
-    }
     return (
       <View style={[props.style, { width: w, height: h }]}>
-        <Image
-          source={{ uri: assets?.[0]?.localUri }}
-          width={w + wOffset}
-          height={h + hOffset}
-          style={{
-            position: 'absolute',
-            left: -wOffset / 1.7,
-            top: -hOffset,
-          }}
-        />
+        {!!assets?.[0]?.localUri && (
+          <Image
+            onLoad={props.onLoad}
+            key={meteoconIcon}
+            source={{ uri: assets?.[0]?.localUri }}
+            style={{
+              position: 'absolute',
+              left: -wOffset / 1.7,
+              top: -hOffset,
+              width: w + wOffset,
+              height: h + hOffset,
+            }}
+          />
+        )}
       </View>
     )
   }
@@ -266,7 +268,7 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
   )
 }
 
-export const PhenomenonIcon = memo(PhenomenonIcon_)
+export const PhenomenonIcon = PhenomenonIcon_
 
 PhenomenonIcon_.defaultProps = {
   date: new Date(),

@@ -2,7 +2,7 @@ import { Time } from '../services'
 import React, { useMemo, useRef, useState } from 'react'
 import { AreaChart, BarChart, LineChart, Grid } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
-import { Dimensions, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, PanResponder, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import { PhenomenonIcon } from './PhenomenonIcon'
 import { getDayName } from '../utils/formatters'
 import { LocationObject } from 'expo-location'
@@ -14,24 +14,30 @@ import { commonStyles } from '../utils/styles'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Raindrop } from '../icons/Raindrop'
 import { RaindropOutline } from '../icons/RaindropOutline'
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
+import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView)
 const dayLeftOffset = 8
 
 interface ForecastGraphProps {
   detailedForecast: Time[]
-  graphRef: React.MutableRefObject<null>
+  graphRef: React.MutableRefObject<any>
   graphWidth: number
   minTemp
   location: LocationObject
   style?: ViewStyle
+  hourInterval?: 1 | 2
 }
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
 const mmWithBreak = '\nmm'
 
-export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp, location, style }: ForecastGraphProps) {
+export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp, location, style, hourInterval = 2 }: ForecastGraphProps) {
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true)
+  const [isLeft, setIsLeft] = useState(true)
+  const [isRight, setIsRight] = useState(false)
+
   const [iconLocation, setIconLocation] = useState<
     Array<{
       index: number
@@ -39,7 +45,6 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
       locationY: number
     }>
   >([])
-  const dayRef = useRef<ScrollView>(null)
   const Decorator = (props?: any) => {
     const decoratorLocations = []
     const decorators = props.data.map((value, index) => {
@@ -77,8 +82,8 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   const scrollPos = useSharedValue(0)
 
   const staticDay1AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length) {
-      return {}
+    if (!dayLocation?.length || dayLocation?.length < 2) {
+      return { display: 'none' }
     }
     return {
       display: scrollPos.value >= dayLocation[0].x - dayLeftOffset ? 'none' : 'flex',
@@ -87,8 +92,8 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }, [scrollPos, dayLocation])
 
   const staticDay2AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length) {
-      return {}
+    if (!dayLocation?.length || dayLocation?.length < 2) {
+      return { display: 'none' }
     }
     return {
       display: scrollPos.value < dayLocation[0].x - dayLeftOffset || scrollPos.value >= dayLocation[1].x - dayLeftOffset ? 'none' : 'flex',
@@ -97,8 +102,8 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }, [scrollPos, dayLocation])
 
   const staticDay3AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length) {
-      return {}
+    if (!dayLocation?.length || dayLocation?.length < 2) {
+      return { display: 'none' }
     }
     return {
       display: scrollPos.value < dayLocation[1].x - dayLeftOffset || scrollPos.value >= dayLocation[2].x - dayLeftOffset ? 'none' : 'flex',
@@ -108,8 +113,8 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }, [scrollPos, dayLocation])
 
   const staticDay4AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length) {
-      return {}
+    if (!dayLocation?.length || dayLocation?.length < 2) {
+      return { display: 'none' }
     }
     return {
       display: scrollPos.value < dayLocation[2].x - dayLeftOffset || scrollPos.value >= dayLocation[3]?.x - dayLeftOffset ? 'none' : 'flex',
@@ -118,16 +123,16 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }, [scrollPos, dayLocation])
 
   const scrollingDay2AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length) {
-      return {}
+    if (!dayLocation?.length || dayLocation?.length < 2) {
+      return { display: 'none' }
     }
     return {
       display: scrollPos.value > dayLocation[0].x - dayLeftOffset ? 'none' : 'flex',
     }
   }, [scrollPos, dayLocation])
   const scrollingDay3AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length) {
-      return {}
+    if (!dayLocation?.length || dayLocation?.length < 2) {
+      return { display: 'none' }
     }
     return {
       display: scrollPos.value > dayLocation[1].x - dayLeftOffset ? 'none' : 'flex',
@@ -135,8 +140,10 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }, [scrollPos, dayLocation])
 
   const scrollingDay4AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length) {
-      return {}
+    if (!dayLocation?.length || dayLocation?.length < 2) {
+      return {
+        display: 'none',
+      }
     }
     return {
       display: scrollPos.value > dayLocation[2].x - dayLeftOffset ? 'none' : 'flex',
@@ -147,6 +154,73 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
     () => [scrollingDay2AnimatedStyle, scrollingDay3AnimatedStyle, scrollingDay4AnimatedStyle],
     [scrollingDay2AnimatedStyle, scrollingDay3AnimatedStyle, scrollingDay4AnimatedStyle]
   )
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollPos.value = event.contentOffset.x
+    },
+  })
+
+  // const panResponder = PanResponder.create({
+  //   onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+  //     // Check if the ScrollView is scrolled to the end
+  //     const { pageX } = evt.nativeEvent
+  //     const isScrolledToEnd = scrollPos.value >= graphWidth - width - 20
+  //     const isScrolledToStart = scrollPos.value === 0
+  //     // Allow the pan responder to capture the event only if scrolled to the end
+  //     console.log(isScrolledToStart, isScrolledToEnd)
+  //     return isScrolledToEnd || isScrolledToStart
+  //   },
+  //   onPanResponderMove: (e, gestureState) => {
+  //     if (gestureState.dx > 0) {
+  //       console.log('right')
+  //
+  //       if (!isLeft) {
+  //         setIsScrollEnabled(true)
+  //       }
+  //     } else if (gestureState.dx < 0) {
+  //       console.log('left')
+  //       if (!isRight) {
+  //         setIsScrollEnabled(true)
+  //       }
+  //     }
+  //     // setIsScrollEnabled(false)
+  //   },
+  //   onStartShouldSetPanResponder: () => true,
+  //   onStartShouldSetPanResponderCapture: () => true,
+  //   onPanResponderRelease: (e) => {
+  //     console.log('end')
+  //   },
+  //   onPanResponderEnd: (e) => {
+  //     console.log('end2')
+  //   },
+  //   onPanResponderTerminate: (e) => {
+  //     console.log('terminate')
+  //
+  //     // setIsScrollEnabled(true)
+  //   },
+  //   onMoveShouldSetPanResponder: () => true,
+  // })
+
+  // const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //   scrollPos.value = e.nativeEvent.contentOffset.x
+  //   const contentOffsetX = Math.round(e.nativeEvent.contentOffset.x)
+  //   const contentSizeWidth = e.nativeEvent.contentSize.width
+  //   const layoutMeasurementWidth = e.nativeEvent.layoutMeasurement.width
+  //   // console.log('contentSizeWidth', contentOffsetX, contentSizeWidth - layoutMeasurementWidth)
+  //   if (contentOffsetX <= 0) {
+  //     setIsLeft(true)
+  //     setIsScrollEnabled(false)
+  //   } else {
+  //     setIsLeft(false)
+  //   }
+  //   if (contentOffsetX >= Math.round(contentSizeWidth - layoutMeasurementWidth)) {
+  //     setIsRight(true)
+  //     setIsScrollEnabled(false)
+  //   } else {
+  //     setIsRight(false)
+  //   }
+  // }
 
   return (
     <>
@@ -192,17 +266,20 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
           </View>
 
           <ScrollView
-            persistentScrollbar={true}
-            onScroll={(e) => {
-              dayRef.current?.scrollTo({
-                x: e.nativeEvent.contentOffset.x,
-                y: e.nativeEvent.contentOffset.y,
-                animated: false,
-              })
-              scrollPos.value = e.nativeEvent.contentOffset.x
-            }}
+            //{...panResponder.panHandlers}
+            scrollEnabled={isScrollEnabled}
+            // onTouchEnd={() => {
+            //   setIsScrollEnabled(true)
+            // }}
+            // onScrollEndDrag={handleScroll}
+            nestedScrollEnabled={true}
+            persistentScrollbar={false}
+            showsHorizontalScrollIndicator={false}
+            onScroll={(e) => (scrollPos.value = e.nativeEvent.contentOffset.x)}
+            // onScroll={handleScroll}
             contentContainerStyle={{
               paddingTop: 25,
+              marginTop: dayLocation?.length > 1 ? 0 : -26,
             }}
             ref={graphRef}
             horizontal={true}
@@ -215,6 +292,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
             ]}
           >
             <>
+              {/*@ts-ignore*/}
               <AreaChart
                 style={{ height: 110, width: graphWidth, paddingBottom: 0, top: 60 }}
                 data={detailedForecast.map((f) => Number(f.temperature['@attributes'].value))}
@@ -267,15 +345,15 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                     bottom: 0,
                     display: 'flex',
                     top: 25,
-                    borderRightWidth: i % 2 !== 0 ? 0 : 0.5,
+                    borderRightWidth: i % hourInterval !== 0 ? 0 : 0.5,
 
-                    width: iconLocation[1].locationX - iconLocation[0].locationX,
-                    // backgroundColor: i % 2 !== 0 || i % 3 !== 0 ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    width: (iconLocation[1]?.locationX || 50) - iconLocation[0].locationX,
+                    // backgroundColor: i % hourInterval !== 0 || i % 3 !== 0 ? 'rgba(255,255,255,0.1)' : 'transparent',
                     borderTopWidth: 0.5,
                     borderColor: 'rgba(255,255,255,0.1)',
                   }}
                 >
-                  {detailedForecast[i] && !!detailedForecast[i].phenomen['@attributes'].en && i % 2 === 0 && (
+                  {detailedForecast[i] && !!detailedForecast[i].phenomen['@attributes'].en && i % hourInterval === 0 && (
                     <PhenomenonIcon
                       latitude={location.coords.latitude}
                       longitude={location.coords.longitude}
@@ -334,8 +412,9 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       </Text>
                     </>
                   )}
-                  {detailedForecast[i] && !!detailedForecast[i]['@attributes'].from && i % 2 === 0 && (
+                  {detailedForecast[i] && !!detailedForecast[i]['@attributes'].from && i % hourInterval === 0 && (
                     <Text
+                      allowFontScaling={false}
                       key={i + 100}
                       style={{
                         position: 'absolute',
@@ -361,7 +440,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                 (icon, i) =>
                   detailedForecast[i] &&
                   !!detailedForecast[i].temperature['@attributes'].value &&
-                  i % 2 === 0 && (
+                  i % hourInterval === 0 && (
                     <View
                       key={i}
                       style={{

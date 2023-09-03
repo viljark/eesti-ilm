@@ -194,7 +194,7 @@ export default function Main(props) {
                 <Text></Text>
               </Background>
             </View>
-            <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademed hetkel" style={[{ borderColor: '#000', borderRightWidth: 0.5 }]} />
+            <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademete radar" style={[{ borderColor: '#000', borderRightWidth: 0.5 }]} />
           </View>
           {activeTab === 'live' ? <PrecipitationRadar stations={observations?.station || []} latestUpdate={latestUpdate} /> : null}
         </View>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   background: {
     position: 'absolute',
     left: 0,
-    top: -height + 160,
+    top: -height + 180,
     transform: [
       {
         rotate: `${180}deg`,

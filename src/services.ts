@@ -147,7 +147,7 @@ interface Forecasts {
   forecast: Forecast[]
 }
 
-interface Forecast {
+export interface Forecast {
   $: DateField
   night: Night
   day: Day

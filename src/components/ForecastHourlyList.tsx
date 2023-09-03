@@ -26,16 +26,6 @@ interface ForecastHourlyListProps {
 export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, latestUpdate, location, isRefreshing, setLatestUpdate }: ForecastHourlyListProps) {
   const [stickyIndexes, setStickyIndexes] = useState<number[]>([])
 
-  // useEffect(() => {
-  //   const indexes = []
-  //   detailedForecast?.forEach((time, index) => {
-  //     if (getUserLocalDate(time['@attributes'].from).getHours() === 0 || index === 0) {
-  //       indexes.push(index + indexes.length)
-  //     }
-  //   })
-  //   setStickyIndexes(indexes)
-  // }, [detailedForecast])
-
   const sections = useMemo(() => {
     const result: { title: string; data: Time[] }[] = []
     if (detailedForecast) {
@@ -53,16 +43,6 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
     return result
   }, [detailedForecast])
 
-  const scrollHandler = useCallback(
-    (e) => {
-      if (e.nativeEvent?.contentSize) {
-      }
-    },
-    [graphRef, graphWidth]
-  )
-
-  const handleScroll = useMemo(() => _.throttle(scrollHandler, 16, { leading: true }), [scrollHandler])
-
   return (
     <View style={styles.container}>
       <View style={styles.gradientWrapper}>
@@ -70,10 +50,8 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
           <Text></Text>
         </Background>
       </View>
-
       <SectionList
         stickySectionHeadersEnabled={true}
-        overScrollMode={'never'}
         initialNumToRender={12}
         sections={sections}
         keyExtractor={(item, index) => JSON.stringify(item)}

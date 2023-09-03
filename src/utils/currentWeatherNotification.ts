@@ -6,7 +6,7 @@ import * as Notifications from 'expo-notifications'
 import { AndroidNotificationVisibility } from 'expo-notifications'
 import { Alert } from 'react-native'
 import * as Linking from 'expo-linking'
-import { closestStationWithObservationField, getDistance } from './distance'
+import { closestObservationField, closestStationWithObservationField, getDistance } from './distance'
 import { getObservations, Observations, Station } from '../services'
 import { retrieveStoredLocation } from './locationAsyncStorage'
 import { getPhenomenonText } from './phenomenonUtil'
@@ -154,36 +154,40 @@ export async function showCurrentWeatherNotification(allObservations?: Observati
     }
   })
 
-  let closestPhenomenon: Station = closestStationWithObservationField(stationsWithDistance, 'phenomenon')
-  let closestTemperature: Station = closestStationWithObservationField(stationsWithDistance, 'airtemperature')
-  let closestHumidity: Station = closestStationWithObservationField(stationsWithDistance, 'relativehumidity')
-  let closestWindSpeed: Station = closestStationWithObservationField(stationsWithDistance, 'windspeed')
-  let closestUvIndex: Station = closestStationWithObservationField(stationsWithDistance, 'uvindex')
-  let closestPrecipitations: Station = closestStationWithObservationField(stationsWithDistance, 'precipitations')
+  let closestPhenomenon = closestObservationField(stationsWithDistance, 'phenomenon')
+  let closestTemperature = closestObservationField(stationsWithDistance, 'airtemperature')
+  let closestWaterTemperature = closestObservationField(stationsWithDistance, 'watertemperature')
+  let closestHumidity = closestObservationField(stationsWithDistance, 'relativehumidity')
+  let closestWindSpeed = closestObservationField(stationsWithDistance, 'windspeed')
+  let closestUvIndex = closestObservationField(stationsWithDistance, 'uvindex')
+  let closestPrecipitations = closestObservationField(stationsWithDistance, 'precipitations')
+  let airPressure = closestObservationField(stationsWithDistance, 'airpressure')
 
   const config = {
-    temp: Number(closestTemperature.airtemperature),
-    humidity: Number(closestHumidity.relativehumidity),
-    speed: Number(closestWindSpeed.windspeed),
+    temp: Number(closestTemperature),
+    humidity: Number(closestHumidity),
+    speed: Number(closestWindSpeed),
   }
-  const realFeel = Math.round(new Feels(config).like())
+  const realFeel = closestTemperature && closestHumidity && closestWindSpeed ? Math.round(new Feels(config).like()) : '-'
 
   const optionMap = {
-    temperature: '🌡️' + Math.round(+closestTemperature.airtemperature) + '°',
+    temperature: '🌡️' + Math.round(+closestTemperature) + '°',
+    waterTemperature: '🌊 ' + Math.round(+closestWaterTemperature) + '°',
     realFeel: '🌡️' + String(realFeel) + '°',
-    windSpeed: '💨 ' + Math.round(+closestWindSpeed.windspeed) + ' m/s',
-    humidity: '🌁 ' + closestHumidity.relativehumidity + '%',
-    uvIndex: '☀️ ' + (closestUvIndex?.uvindex ? Math.round(+closestUvIndex.uvindex) : '-'),
-    precipitations: '🌧️ ' + closestPrecipitations.precipitations + ' mm',
+    windSpeed: '💨 ' + Math.round(+closestWindSpeed) + ' m/s',
+    humidity: '🌁 ' + closestHumidity + '%',
+    precipitations: '🌧️ ' + closestPrecipitations + ' mm',
+    uvIndex: '☀️ ' + (closestUvIndex ? Math.round(+closestUvIndex) : '-'),
   }
 
-  const body = [optionMap.temperature, optionMap.windSpeed, optionMap.precipitations, optionMap.uvIndex]
+  const body = [optionMap.temperature, optionMap.windSpeed, optionMap.uvIndex, optionMap.waterTemperature, optionMap.precipitations]
+
   await showPushNotification({
-    title: getPhenomenonText(closestPhenomenon.phenomenon),
+    title: getPhenomenonText(closestPhenomenon),
     body: body.join(' | '),
     color: undefined,
-    temperature: String(Math.round(+closestTemperature.airtemperature)),
-    phenomenon: closestPhenomenon.phenomenon,
+    temperature: String(Math.round(+closestTemperature)),
+    phenomenon: closestPhenomenon,
     location: storedLocationObject.locationName,
   })
 }

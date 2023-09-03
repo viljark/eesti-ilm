@@ -1,5 +1,6 @@
 import { getWarningForLocation, Warning } from '../services'
-import { Dimensions, Text, TouchableOpacity, View, Image } from 'react-native'
+import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
+import { Image } from 'expo-image'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import * as Location from 'expo-location'
 import Background from './Background'
@@ -13,6 +14,7 @@ import windAlertLottie from '@bybas/weather-icons/production/fill/lottie/wind-al
 import fogLottie from '@bybas/weather-icons/production/fill/lottie/fog.json'
 import useAsyncStorage from '../utils/useAsyncStorage'
 import { useAssets } from 'expo-asset'
+// @ts-ignore
 import codeRed from '@bybas/weather-icons/production/fill/png/64/code-red.png'
 
 const width = Dimensions.get('window').width //full width

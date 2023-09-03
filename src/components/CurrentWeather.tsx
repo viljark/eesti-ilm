@@ -19,6 +19,7 @@ import Sunrise from '../icons/Sunrise'
 import Sunset from '../icons/Sunset'
 import { getTimes, GetTimesResult } from 'suncalc'
 import Barometer from '../icons/Barometer'
+import { useNavigation } from '@react-navigation/native'
 interface CurrentWeatherProps {
   closestStation: Station
   realFeel: number | null
@@ -55,7 +56,6 @@ export function CurrentWeather({
   airpressure,
 }: CurrentWeatherProps) {
   const { location, locationName } = useContext(LocationContext)
-
   const [showOtherMeta, setShowOtherMeta] = useState<boolean>(false)
   const [sunTimes, setSunTimes] = useState<GetTimesResult>(null)
 
@@ -224,7 +224,7 @@ function formatToSingleDigit(value: string) {
   return isNaN(Number(value)) ? '-' : Math.round(Number(value))
 }
 
-const borderColor = 'rgba(0, 0, 0, 1)'
+const borderColor = 'rgba(0, 0, 0, 0.5)'
 
 const styles = StyleSheet.create({
   box: {
@@ -233,7 +233,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 30,
-    height: 455,
     overflow: 'hidden',
     backgroundColor: '#5C8BC2',
     marginBottom: 20,
@@ -254,7 +253,7 @@ const styles = StyleSheet.create({
   background: {
     position: 'absolute',
     left: 0,
-    top: -height + 455,
+    top: -height + 535,
     transform: [
       {
         rotate: `${180}deg`,

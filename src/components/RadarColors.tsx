@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
+import { Image } from 'expo-image'
 import { useSharedSettings } from '../screens/Settings'
 
 interface Props {}
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     paddingRight: 4,
   },
   color: {
-    height: 13,
+    minHeight: 13,
     flexGrow: 1,
     flexShrink: 0,
     alignItems: 'center',

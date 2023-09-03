@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ForecastResponse, getForecast } from '../services'
 import { PhenomenonIcon } from './PhenomenonIcon'
 import { getDayName } from '../utils/formatters'
 import useAsyncStorage from '../utils/useAsyncStorage'
+import { useNavigation } from '@react-navigation/native'
 
 const width = Dimensions.get('window').width //full width
 
 export function Forecast(props: { latestUpdate: Date }) {
+  const nav = useNavigation<any>()
   const [forecast, setForecast] = useAsyncStorage<ForecastResponse>('forecast')
   const [forecastUpdated, setForecastUpdated] = useAsyncStorage<Date>('forecastUpdated', null)
   const [activeForecast, setActiveForecast] = useState<string>('day')
+
   useEffect(() => {
     if (!forecastUpdated || (forecastUpdated && new Date().getTime() - forecastUpdated.getTime() > 1000 * 60 * 30)) {
       loadForecast()
@@ -28,56 +31,79 @@ export function Forecast(props: { latestUpdate: Date }) {
   }
 
   return (
-    <TouchableOpacity
-      onPress={handleClick}
-      style={{
-        ...styles.container,
-        backgroundColor: activeForecast === 'day' ? 'transparent' : 'rgba(0,0,0,0.4)',
-      }}
-    >
-      {forecast &&
-        forecast.forecasts.forecast.map((f) => (
-          <View key={f.$.date} style={styles.forecast}>
-            <Text style={styles.smallText}>{getDayName(f.$.date)}</Text>
-
-            <PhenomenonIcon
-              phenomenon={f[activeForecast].phenomenon}
-              isDay={activeForecast === 'day'}
-              width={40}
-              height={40}
-              style={{
-                marginTop: 5,
+    <>
+      <View style={styles.row}>
+        {forecast &&
+          forecast.forecasts.forecast.map((f, i) => (
+            <TouchableOpacity
+              key={f.$.date}
+              style={styles.forecast}
+              onPress={() => {
+                nav.navigate('DayForecastScreen', {
+                  forecast: forecast.forecasts.forecast,
+                  index: i,
+                })
               }}
-              animated={false}
-              theme="meteocon"
-            />
-            <Text style={styles.smallText}>
-              {f[activeForecast].tempmin} - {f[activeForecast].tempmax}°
-            </Text>
-          </View>
-        ))}
+            >
+              <Text style={[styles.smallText, { fontSize: 11 }]}>{getDayName(f.$.date)}</Text>
+
+              <PhenomenonIcon
+                phenomenon={f['night'].phenomenon}
+                isDay={false}
+                width={40}
+                height={40}
+                style={{
+                  marginTop: 5,
+                }}
+                animated={false}
+                theme="meteocon"
+              />
+              <Text style={styles.smallText}>
+                {f['night'].tempmin} - {f['night'].tempmax}°
+              </Text>
+              <PhenomenonIcon
+                phenomenon={f['day'].phenomenon}
+                isDay={true}
+                width={40}
+                height={40}
+                style={{
+                  marginTop: 5,
+                }}
+                animated={false}
+                theme="meteocon"
+              />
+              <Text style={styles.smallText}>
+                {f['day'].tempmin} - {f['day'].tempmax}°
+              </Text>
+            </TouchableOpacity>
+          ))}
+      </View>
       {!forecast && <ActivityIndicator size="small" color="#fff" />}
-    </TouchableOpacity>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     width: width - 20,
-    height: 80,
     left: 0,
     display: 'flex',
     alignSelf: 'stretch',
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    flex: 1,
   },
   forecast: {
-    width: width / 4 - 10,
-    marginRight: 5,
-    marginLeft: 5,
     display: 'flex',
     alignItems: 'center',
+    borderRightWidth: 0.5,
+    borderColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+
+    paddingVertical: 10,
   },
   smallText: {
     fontFamily: 'Inter_200ExtraLight',
@@ -87,5 +113,6 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
+    marginTop: -5,
   },
 })

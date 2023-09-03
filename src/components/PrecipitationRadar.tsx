@@ -238,7 +238,7 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
               thunderTileUrlsReversed.map((url, i) => {
                 return url ? <WMSTile style={{ opacity: thunderTileUrlsReversed.length - 1 - i === sliderIndex - 1 ? 1 : 0, zIndex: 1 }} key={url} urlTemplate={url} /> : null
               })}
-            <WMSTile style={{ opacity: isDarkMap ? 0.6 : 0.4, zIndex: 2 }} urlTemplate={borders} />
+            <WMSTile style={{ opacity: isDarkMap ? 1 : 0.4, zIndex: 2 }} urlTemplate={borders} />
             {location && (
               <Marker tappable={false} coordinate={location.coords} zIndex={1} anchor={{ x: 0.5, y: 0.5 }}>
                 <View style={{ width: 3, height: 3 }}>
@@ -355,6 +355,7 @@ const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
             }}
             zIndex={1}
             anchor={{ x: 0.5, y: 0.5 }}
+            tracksViewChanges={false}
           >
             <View style={{ position: 'absolute', top: 0, paddingVertical: 0, paddingHorizontal: 2, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.6)' }}>
               <Text
@@ -375,6 +376,8 @@ const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
 })
 
 const PhenomenonMarkers = React.memo(({ cities }: { cities: Station[] }) => {
+  const [tracksViewChanges, setTracksViewChanges] = useState(true)
+
   return (
     <>
       {cities
@@ -389,10 +392,9 @@ const PhenomenonMarkers = React.memo(({ cities }: { cities: Station[] }) => {
             }}
             zIndex={1}
             anchor={{ x: 0.5, y: 0.3 }}
+            tracksViewChanges={tracksViewChanges}
           >
-            <View style={{}}>
-              <PhenomenonIcon phenomenon={station.phenomenon} width={25} height={25} theme={'meteocon'} />
-            </View>
+            <PhenomenonIcon onLoad={() => setTracksViewChanges(false)} phenomenon={station.phenomenon} width={25} height={25} theme={'meteocon'} />
           </Marker>
         ))}
     </>
