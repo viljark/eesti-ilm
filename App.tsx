@@ -19,7 +19,9 @@ import useAsyncStorage from './src/utils/useAsyncStorage'
 import Autocomplete from 'react-native-autocomplete-input'
 import { LocationAccuracy } from 'expo-location/src/Location.types'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { registerBackgroundFetchAsync } from './src/utils/currentWeatherNotification'
+import { registerBackgroundFetchAsync, showCurrentWeatherNotification, unregisterBackgroundFetchAsync } from './src/utils/currentWeatherNotification'
+import { useSharedSettings } from './src/screens/Settings'
+import notifee from '@notifee/react-native'
 // axios.interceptors.request.use((request) => {
 //   console.log('Starting Request', JSON.stringify(request.url, null, 2))
 //   return request
@@ -31,7 +33,7 @@ Sentry.init({
   enableInExpoDevelopment: true,
   debug: false, // Sentry will try to print out useful debugging information if something goes wrong with sending an event. Set this to `false` in production.
 })
-registerBackgroundFetchAsync()
+
 export default function App() {
   const [locationData, setLocationData] = useState<{
     location: Location.LocationObject
@@ -45,6 +47,7 @@ export default function App() {
   const [autocompleteData, setAutocompleteData] = useState([])
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
   const [isHighPerformance, setIsHighPerformance] = useAsyncStorage<boolean>('isHighPerformance', true)
+  const { showWeatherNotification } = useSharedSettings()
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', handleAppStateChange)
@@ -74,6 +77,18 @@ export default function App() {
     registerForPushNotificationsAsync()
     loadPermissionStatus()
   }, [])
+
+  useEffect(() => {
+    if (showWeatherNotification === null) {
+      return
+    }
+    if (showWeatherNotification) {
+      registerBackgroundFetchAsync()
+    } else {
+      unregisterBackgroundFetchAsync()
+      notifee.cancelDisplayedNotifications()
+    }
+  }, [showWeatherNotification])
 
   async function loadPermissionStatus() {
     const { status, canAskAgain } = await Location.getForegroundPermissionsAsync()

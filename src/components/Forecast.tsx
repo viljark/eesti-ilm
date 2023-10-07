@@ -45,8 +45,6 @@ export function Forecast(props: { latestUpdate: Date }) {
                 })
               }}
             >
-              <Text style={[styles.smallText, { fontSize: 11 }]}>{getDayName(f.$.date)}</Text>
-
               <PhenomenonIcon
                 phenomenon={f['night'].phenomenon}
                 isDay={false}
@@ -75,6 +73,7 @@ export function Forecast(props: { latestUpdate: Date }) {
               <Text style={styles.smallText}>
                 {f['day'].tempmin} - {f['day'].tempmax}°
               </Text>
+              <Text style={[styles.smallText, { fontSize: 11, marginTop: 5 }]}>{getDayName(f.$.date)}</Text>
             </TouchableOpacity>
           ))}
       </View>

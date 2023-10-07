@@ -69,7 +69,7 @@ export async function registerBackgroundFetchAsync() {
   })
 }
 
-async function unregisterBackgroundFetchAsync() {
+export async function unregisterBackgroundFetchAsync() {
   const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK)
   if (!isRegistered) {
     return

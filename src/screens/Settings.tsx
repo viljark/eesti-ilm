@@ -6,12 +6,14 @@ import { getFirestore } from '../utils/firebase'
 import useAsyncStorage from '../utils/useAsyncStorage'
 import { useBetween } from 'use-between'
 import analytics from '@react-native-firebase/analytics'
+import { showCurrentWeatherNotification } from '../utils/currentWeatherNotification'
 
 const useSettings = () => {
   const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap')
   const [showThunder, setShowThunder] = useAsyncStorage<boolean>('showThunder', false)
   const [showTemperature, setShowTemperature] = useAsyncStorage<boolean>('showTemperature', true)
   const [showPhenomenon, setShowPhenomenon] = useAsyncStorage<boolean>('showTemperature', true)
+  const [showWeatherNotification, setShowWeatherNotification] = useAsyncStorage<boolean>('showTemperature', true)
 
   return {
     isDarkMap,
@@ -22,6 +24,8 @@ const useSettings = () => {
     setShowTemperature,
     showPhenomenon,
     setShowPhenomenon,
+    showWeatherNotification,
+    setShowWeatherNotification,
   }
 }
 
@@ -29,7 +33,7 @@ export const useSharedSettings = () => useBetween(useSettings)
 export default function SettingsScreen() {
   const [isWarningNotificationEnabled, setIsWarningNotificationEnabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { isDarkMap, setIsDarkMap } = useSharedSettings()
+  const { isDarkMap, setIsDarkMap, showWeatherNotification, setShowWeatherNotification } = useSharedSettings()
   useEffect(() => {
     ;(async () => {
       try {
@@ -101,6 +105,35 @@ export default function SettingsScreen() {
             }}
             value={isDarkMap}
             style={{ marginLeft: 'auto' }}
+          />
+        </TouchableNativeFeedback>
+      </View>
+      <View style={styles.itemWrapper}>
+        <TouchableNativeFeedback
+          style={styles.item}
+          onPress={() => {
+            analytics().logEvent('settings_realtime_weather', { value: !showWeatherNotification })
+            setShowWeatherNotification(!showWeatherNotification)
+            if (!showWeatherNotification) {
+              showCurrentWeatherNotification()
+            }
+          }}
+        >
+          <Text style={styles.switchText}>Teavitus reaalaja ilmainfoga</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#50eb75' }}
+            thumbColor={isDarkMap ? '#f4f3f4' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() => {
+              analytics().logEvent('settings_realtime_weather', { value: !showWeatherNotification })
+              setShowWeatherNotification(!showWeatherNotification)
+              if (!showWeatherNotification) {
+                showCurrentWeatherNotification()
+              }
+            }}
+            value={showWeatherNotification}
+            style={{ marginLeft: 'auto' }}
+            pointerEvents="box-none"
           />
         </TouchableNativeFeedback>
       </View>

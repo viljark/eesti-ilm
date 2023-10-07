@@ -18,6 +18,7 @@ import { store } from '../store/store'
 import { createNativeWrapper, ScrollView } from 'react-native-gesture-handler'
 import analytics from '@react-native-firebase/analytics'
 import { registerNotificationChannel, showCurrentWeatherNotification } from '../utils/currentWeatherNotification'
+import { useSharedSettings } from './Settings'
 
 const RefreshControl = createNativeWrapper(RNRefreshControl)
 export default function Main(props) {
@@ -33,6 +34,7 @@ export default function Main(props) {
   const [realFeel, setRealFeel] = useState<number>(null)
   const { location, locationName } = useContext(LocationContext)
   const { isSwipeEnabled } = useSnapshot(store)
+  const { showWeatherNotification } = useSharedSettings()
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', handleAppStateChange)
@@ -106,7 +108,9 @@ export default function Main(props) {
     setIsRefreshing(false)
     setAllObservations(response.observations)
     await registerNotificationChannel()
-    showCurrentWeatherNotification(response.observations)
+    if (showWeatherNotification) {
+      showCurrentWeatherNotification(response.observations)
+    }
   }
 
   const getWaterTempStation = () => closestStationWithObservationField(observations?.station, 'watertemperature')

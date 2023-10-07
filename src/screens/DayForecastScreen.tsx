@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View, Text, Dimensions, useWindowDimensions, TouchableOpacity } from 'react-native'
 import PagerView from 'react-native-pager-view'
 import { useRoute } from '@react-navigation/native'
@@ -35,6 +35,25 @@ export const DayForecastScreen = () => {
     }>(LocationContext)
   const graphRef = useAnimatedRef()
 
+  const [visiblePages, setVisiblePages] = useState<number[]>([route.params.index])
+
+  useEffect(() => {
+    const order = []
+    const index = route.params.index
+    for (let i = index + 1; i < 4; i++) {
+      order.push(i)
+    }
+    for (let i = index - 1; i > -1; i--) {
+      order.push(i)
+    }
+
+    order.forEach((order, index) => {
+      setTimeout(() => {
+        setVisiblePages((pages) => [...pages, order])
+      }, (index + 1) * 250)
+    })
+  }, [])
+
   const getForecastForDay = useCallback(
     (day: any) => {
       return detailedForecast?.filter((f) => isSameDay(day, getUserLocalDate(f['@attributes'].from))) || []
@@ -54,9 +73,10 @@ export const DayForecastScreen = () => {
   const graphWidth = width * 3
   const graphSection = graphWidth / 24
 
+  const DOT_SIZE = 8
   const indicatorStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: (5 + 6) * scrollOffset.value }],
+      transform: [{ translateX: (DOT_SIZE + 2 * (DOT_SIZE - 2)) * scrollOffset.value }],
     }
   }, [scrollOffset])
 
@@ -73,20 +93,20 @@ export const DayForecastScreen = () => {
   return (
     <Background location={location}>
       <View style={{ flex: 1 }}>
-        <View style={{ width: '100%', height: 5, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', position: 'absolute', top: 15, zIndex: 2 }}>
+        <View style={{ width: '100%', height: DOT_SIZE, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', position: 'absolute', top: 15, zIndex: 2 }}>
           <View style={{ flexDirection: 'row' }}>
             <Animated.View
               style={[
                 indicatorStyle,
                 {
                   position: 'absolute',
-                  width: 5,
-                  height: 5,
+                  width: DOT_SIZE,
+                  height: DOT_SIZE,
                   backgroundColor: '#fff',
                   borderWidth: 0.5,
                   borderColor: '#fff',
-                  borderRadius: 10,
-                  marginHorizontal: 3,
+                  borderRadius: DOT_SIZE * 2,
+                  marginHorizontal: DOT_SIZE - 2,
                 },
               ]}
             />
@@ -94,12 +114,12 @@ export const DayForecastScreen = () => {
               <>
                 <View
                   style={{
-                    width: 5,
-                    height: 5,
+                    width: DOT_SIZE,
+                    height: DOT_SIZE,
                     borderWidth: 0.5,
                     borderColor: '#fff',
-                    borderRadius: 10,
-                    marginHorizontal: 3,
+                    borderRadius: DOT_SIZE * 2,
+                    marginHorizontal: DOT_SIZE - 2,
                   }}
                 />
               </>
@@ -107,77 +127,82 @@ export const DayForecastScreen = () => {
           </View>
         </View>
         <AnimatedPagerView style={styles.pagerView} initialPage={route.params.index} onPageScroll={pageScrollHandler}>
-          {forecasts.map((forecast, i) => (
-            <ScrollView key={i} contentContainerStyle={{ paddingTop: 15, paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
-              <Text allowFontScaling={false} style={styles.heading}>
-                {getDayName(forecast.$.date)}
-              </Text>
+          {forecasts.map((forecast, i) => {
+            if (!visiblePages.includes(i)) {
+              return <View />
+            }
+            return (
+              <ScrollView key={i} contentContainerStyle={{ paddingTop: 15, paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
+                <Text allowFontScaling={false} style={styles.heading}>
+                  {getDayName(forecast.$.date)}
+                </Text>
 
-              {forecastMapPerDay[forecast.$.date]?.length > 0 && (
-                <ForecastGraph
-                  detailedForecast={forecastMapPerDay[forecast.$.date]}
-                  graphRef={graphRef}
-                  graphWidth={Math.max(graphSection * forecastMapPerDay[forecast.$.date]?.length, width - 40)}
-                  minTemp={minTemp}
-                  location={location}
-                  hourInterval={1}
-                  style={{
-                    zIndex: 10,
-                    height: 175,
-                  }}
-                />
-              )}
-              <Text style={styles.heading2}>Öö</Text>
-              <View style={styles.view1}>
-                <View style={styles.gradientWrapper1}>
-                  <Background location={location}>
-                    <Text />
-                  </Background>
-                </View>
-                <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.7)' }}>
-                  <View>
-                    <View style={{ paddingVertical: 20, paddingLeft: 20, alignItems: 'center', flex: 0 }}>
-                      <PhenomenonIcon height={70} width={70} phenomenon={forecast['night'].phenomenon} theme="meteocon" isDay={false} />
-                      <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.temp}>{forecast['night'].tempmin} - </Text>
-                        <Text style={styles.temp}>{forecast['night'].tempmax}°</Text>
+                {forecastMapPerDay[forecast.$.date]?.length > 0 && (
+                  <ForecastGraph
+                    detailedForecast={forecastMapPerDay[forecast.$.date]}
+                    graphRef={graphRef}
+                    graphWidth={Math.max(graphSection * forecastMapPerDay[forecast.$.date]?.length, width - 40)}
+                    minTemp={minTemp}
+                    location={location}
+                    hourInterval={1}
+                    style={{
+                      zIndex: 10,
+                      height: 175,
+                    }}
+                  />
+                )}
+                <Text style={styles.heading2}>Öö</Text>
+                <View style={styles.view1}>
+                  <View style={styles.gradientWrapper1}>
+                    <Background location={location}>
+                      <Text />
+                    </Background>
+                  </View>
+                  <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.7)' }}>
+                    <View>
+                      <View style={{ paddingVertical: 20, paddingLeft: 20, alignItems: 'center', flex: 0 }}>
+                        <PhenomenonIcon height={70} width={70} phenomenon={forecast['night'].phenomenon} theme="meteocon" isDay={false} />
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={styles.temp}>{forecast['night'].tempmin} - </Text>
+                          <Text style={styles.temp}>{forecast['night'].tempmax}°</Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                  <View style={styles.view2}>
-                    <Text style={styles.text}>{forecast['night'].text}</Text>
-                  </View>
-                </View>
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
-                  {i === 0 && <ForecastMap forecast={forecast} stations={allObservations?.station || []} mode={'night'} />}
-                </View>
-              </View>
-              <Text style={styles.heading2}>Päev</Text>
-              <View style={styles.view1}>
-                <View style={[styles.gradientWrapper2, { height: 600 }]}>
-                  <Background location={location}>
-                    <Text />
-                  </Background>
-                </View>
-
-                <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.4)' }}>
-                  <View>
-                    <View style={{ paddingVertical: 20, paddingLeft: 20, alignItems: 'center', flex: 0 }}>
-                      <PhenomenonIcon height={70} width={70} phenomenon={forecast['day'].phenomenon} theme="meteocon" isDay={true} />
-                      <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.temp}>{forecast['day'].tempmin} - </Text>
-                        <Text style={styles.temp}>{forecast['day'].tempmax}°</Text>
-                      </View>
+                    <View style={styles.view2}>
+                      <Text style={styles.text}>{forecast['night'].text}</Text>
                     </View>
                   </View>
-                  <View style={styles.view2}>
-                    <Text style={styles.text}>{forecast['day'].text}</Text>
+                  <View style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
+                    {i === 0 && <ForecastMap forecast={forecast} stations={allObservations?.station || []} mode={'night'} />}
                   </View>
                 </View>
-                <View>{i === 0 && <ForecastMap forecast={forecast} stations={allObservations?.station || []} mode={'day'} />}</View>
-              </View>
-            </ScrollView>
-          ))}
+                <Text style={styles.heading2}>Päev</Text>
+                <View style={styles.view1}>
+                  <View style={[styles.gradientWrapper2, { height: 600 }]}>
+                    <Background location={location}>
+                      <Text />
+                    </Background>
+                  </View>
+
+                  <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.4)' }}>
+                    <View>
+                      <View style={{ paddingVertical: 20, paddingLeft: 20, alignItems: 'center', flex: 0 }}>
+                        <PhenomenonIcon height={70} width={70} phenomenon={forecast['day'].phenomenon} theme="meteocon" isDay={true} />
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={styles.temp}>{forecast['day'].tempmin} - </Text>
+                          <Text style={styles.temp}>{forecast['day'].tempmax}°</Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.view2}>
+                      <Text style={styles.text}>{forecast['day'].text}</Text>
+                    </View>
+                  </View>
+                  <View>{i === 0 && <ForecastMap forecast={forecast} stations={allObservations?.station || []} mode={'day'} />}</View>
+                </View>
+              </ScrollView>
+            )
+          })}
         </AnimatedPagerView>
       </View>
     </Background>
