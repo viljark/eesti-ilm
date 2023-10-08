@@ -12,8 +12,8 @@ const useSettings = () => {
   const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap')
   const [showThunder, setShowThunder] = useAsyncStorage<boolean>('showThunder', false)
   const [showTemperature, setShowTemperature] = useAsyncStorage<boolean>('showTemperature', true)
-  const [showPhenomenon, setShowPhenomenon] = useAsyncStorage<boolean>('showTemperature', true)
-  const [showWeatherNotification, setShowWeatherNotification] = useAsyncStorage<boolean>('showTemperature', true)
+  const [showPhenomenon, setShowPhenomenon] = useAsyncStorage<boolean>('showPhenomenon', true)
+  const [showWeatherNotification, setShowWeatherNotification] = useAsyncStorage<boolean>('showWeatherNotification', true)
 
   return {
     isDarkMap,

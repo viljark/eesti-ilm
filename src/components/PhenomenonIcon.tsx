@@ -297,5 +297,5 @@ function LottieIcon_({ style, path }: { path: any; style: StyleProp<ViewStyle> }
 
   useAppState(play, pause)
 
-  return <LottieView ref={ref} autoPlay={false} style={style} source={path} />
+  return <LottieView ref={ref} autoPlay={true} style={style} source={path} />
 }
