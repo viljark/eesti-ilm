@@ -147,7 +147,7 @@ const height = Dimensions.get('window').height - 121 //full height
 
 const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
   const size = Math.max(100, Math.min(height * 0.3, 140))
-
+  const date = props.date || new Date()
   const iconProps = {
     width: props.width || size,
     height: props.height || size,
@@ -158,8 +158,8 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
       marginBottom: 10,
     },
   }
-  const sunTimes = getTimes(props.date, props.latitude, props.longitude)
-  const isDay = _.isBoolean(props.isDay) ? props.isDay : props.date.getTime() < sunTimes.sunset.getTime() && props.date.getTime() > sunTimes.sunrise.getTime()
+  const sunTimes = getTimes(date, props.latitude, props.longitude)
+  const isDay = _.isBoolean(props.isDay) ? props.isDay : date.getTime() < sunTimes.sunset.getTime() && date.getTime() > sunTimes.sunrise.getTime()
   const lottieStyle = useMemo(
     () => [
       {
@@ -269,10 +269,6 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
 }
 
 export const PhenomenonIcon = PhenomenonIcon_
-
-PhenomenonIcon_.defaultProps = {
-  date: new Date(),
-}
 
 const LottieIcon = memo(LottieIcon_)
 function LottieIcon_({ style, path }: { path: any; style: StyleProp<ViewStyle> }) {

@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_300Light',
     color: '#ffffff',
     fontSize: 12,
-    lineHeight: 16,
+    lineHeight: 18,
   },
 })
 

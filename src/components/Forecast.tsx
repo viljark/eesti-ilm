@@ -5,6 +5,7 @@ import { PhenomenonIcon } from './PhenomenonIcon'
 import { getDayName } from '../utils/formatters'
 import useAsyncStorage from '../utils/useAsyncStorage'
 import { useNavigation } from '@react-navigation/native'
+import InfoIcon from '../icons/InfoIcon'
 
 const width = Dimensions.get('window').width //full width
 
@@ -45,6 +46,7 @@ export function Forecast(props: { latestUpdate: Date }) {
                 })
               }}
             >
+              <InfoIcon width={10} height={10} fill={'#fff'} style={styles.infoIcon} />
               <PhenomenonIcon
                 phenomenon={f['night'].phenomenon}
                 isDay={false}
@@ -113,5 +115,10 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
     marginTop: -5,
+  },
+  infoIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
   },
 })

@@ -260,9 +260,9 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
           }}
           onPress={() => {
             setShowPhenomenon(!showPhenomenon)
-            ToastAndroid.show('Nähtuste kaardikiht ' + (showThunder ? 'väljas' : 'sees'), ToastAndroid.SHORT)
+            ToastAndroid.show('Nähtuste kaardikiht ' + (showPhenomenon ? 'väljas' : 'sees'), ToastAndroid.SHORT)
 
-            analytics().logEvent('radar_thunder', { value: !showThunder })
+            analytics().logEvent('radar_precipitations', { value: !showThunder })
           }}
         >
           <PhenomenonLayerIcon fill={`'rgba(255, 255, 255, ${showPhenomenon ? '0.8' : '0.2'})`} width={24} height={24} />
