@@ -31,7 +31,7 @@ export default function ForecastMap({ stations, forecast, mode }: { stations: St
   const [deltaSum, setDeltaSum] = useState(7.1)
 
   // const { location } = useContext(LocationContext)
-  const { isDarkMap } = useSharedSettings()
+  const isDarkMap = mode === 'night'
   const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
 
   const { isSwipeEnabled } = useSnapshot(store)
