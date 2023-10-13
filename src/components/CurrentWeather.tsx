@@ -72,6 +72,8 @@ export function CurrentWeather({
     setSunTimes(sunTimes)
   }, [location, latestUpdate])
 
+  const dayAwareTextStyles = [{ color: isDay ? 'rgba(0, 0, 0, 0.5)' : '#fff' }, !isDay && commonStyles.textShadow]
+
   return (
     <View style={styles.box}>
       <View style={styles.background}>
@@ -90,7 +92,7 @@ export function CurrentWeather({
                 °
               </Text>
             </View>
-            <Text style={styles.realFeel}>Tajutav {realFeel || '-'}°</Text>
+            <Text style={[styles.realFeel, ...dayAwareTextStyles]}>Tajutav {realFeel || '-'}°</Text>
           </View>
           <View style={styles.phenomenonWrap}>
             <View style={{ width: 110, height: 110 }}>
@@ -107,7 +109,7 @@ export function CurrentWeather({
               />
             </View>
 
-            <Text style={styles.phenomenon}>{getPhenomenonText(phenomenon) || '-'}</Text>
+            <Text style={[styles.phenomenon, ...dayAwareTextStyles]}>{getPhenomenonText(phenomenon) || '-'}</Text>
           </View>
         </View>
       </View>
@@ -301,13 +303,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   phenomenon: {
-    fontFamily: 'Inter_200ExtraLight',
+    fontFamily: 'Inter_200Light',
     marginTop: 4,
     color: '#fff',
     textAlign: 'center',
     fontSize: 14,
     paddingVertical: 1,
-    ...commonStyles.textShadow,
   },
   phenomenonIcon: { opacity: 1, position: 'absolute', left: -12, top: -10 },
   bottom: {
@@ -316,14 +317,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   realFeel: {
-    fontFamily: 'Inter_200ExtraLight',
+    fontFamily: 'Inter_200Light',
     marginTop: 0,
     color: '#fff',
     textAlign: 'center',
     fontSize: 14,
     paddingVertical: 2,
-
-    ...commonStyles.textShadow,
   },
   row: {
     height: 50,
