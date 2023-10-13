@@ -6,7 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'eesti-ilm',
   privacy: 'public',
   platforms: ['android'],
-  version: '2.2.2',
+  version: '3.0.1',
   orientation: 'portrait',
   icon: './assets/icon-bg.png',
   splash: {
@@ -15,7 +15,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     backgroundColor: '#ffffff',
   },
   updates: {
-    fallbackToCacheTimeout: 0,
+    enabled: true,
+    checkAutomatically: 'ON_LOAD',
+    fallbackToCacheTimeout: 5 * 1000,
     url: 'https://u.expo.dev/ed6360c0-8c0c-11e9-9d21-bb29f9d51c79',
   },
   assetBundlePatterns: ['**/*'],
@@ -27,7 +29,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     playStoreUrl: 'https://play.google.com/store/apps/details?id=ee.viljark.eestiilm',
     googleServicesFile: './google-services.json',
     package: 'ee.viljark.eestiilm',
-    versionCode: 25,
+    versionCode: 31,
     adaptiveIcon: {
       backgroundImage: './assets/bg.png',
       foregroundImage: './assets/icon.png',
