@@ -23,7 +23,9 @@ export function Forecast(props: { latestUpdate: Date }) {
 
   async function loadForecast() {
     const response = await getForecast()
-    setForecast(response)
+    if (response.forecasts?.forecast.length > 0) {
+      setForecast(response)
+    }
     setForecastUpdated(new Date())
   }
 
@@ -35,6 +37,7 @@ export function Forecast(props: { latestUpdate: Date }) {
     <>
       <View style={styles.row}>
         {forecast &&
+          forecast.forecasts &&
           forecast.forecasts.forecast.map((f, i) => (
             <TouchableOpacity
               key={f.$.date}
