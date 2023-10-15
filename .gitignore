@@ -13,3 +13,4 @@ web-report/
 .env
 google-services.json
 /android/
+dist
