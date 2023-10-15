@@ -1,7 +1,7 @@
 import { getWarningForLocation, Warning } from '../services'
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Image } from 'expo-image'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { memo, useContext, useEffect, useMemo } from 'react'
 import * as Location from 'expo-location'
 import Background from './Background'
 import Constants from 'expo-constants'
@@ -16,6 +16,7 @@ import useAsyncStorage from '../utils/useAsyncStorage'
 import { useAssets } from 'expo-asset'
 // @ts-ignore
 import codeRed from '@bybas/weather-icons/production/fill/png/64/code-red.png'
+import { LottieIcon } from './PhenomenonIcon'
 
 const width = Dimensions.get('window').width //full width
 const height = Dimensions.get('window').height - (Constants.statusBarHeight + 50) //full height
@@ -119,7 +120,7 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
             </View>
             {alertIcon && (
               <View style={{ marginLeft: 'auto', paddingHorizontal: 10 }}>
-                <LottieView autoPlay style={{ width: 50, height: 50, marginLeft: -10, paddingLeft: 10 }} source={alertIcon} />
+                <LottieIcon path={alertIcon} style={styles.icon} />
               </View>
             )}
           </View>
@@ -128,3 +129,6 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
     </>
   )
 }
+const styles = StyleSheet.create({
+  icon: { width: 50, height: 50, marginLeft: -10, paddingLeft: 10 },
+})

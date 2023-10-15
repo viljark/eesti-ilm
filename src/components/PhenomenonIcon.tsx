@@ -270,7 +270,7 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
 
 export const PhenomenonIcon = PhenomenonIcon_
 
-const LottieIcon = memo(LottieIcon_)
+export const LottieIcon = memo(LottieIcon_)
 function LottieIcon_({ style, path }: { path: any; style: StyleProp<ViewStyle> }) {
   const ref = useRef<LottieView>(null)
   const isScreenFocused = useIsFocused()

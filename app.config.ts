@@ -6,7 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'eesti-ilm',
   privacy: 'public',
   platforms: ['android'],
-  version: '3.0.1',
+  version: '3.0.2',
   orientation: 'portrait',
   icon: './assets/icon-bg.png',
   splash: {
@@ -29,7 +29,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     playStoreUrl: 'https://play.google.com/store/apps/details?id=ee.viljark.eestiilm',
     googleServicesFile: './google-services.json',
     package: 'ee.viljark.eestiilm',
-    versionCode: 31,
+    versionCode: 32,
     adaptiveIcon: {
       backgroundImage: './assets/bg.png',
       foregroundImage: './assets/icon.png',
@@ -83,5 +83,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     '@react-native-firebase/perf',
     // @ts-ignore
     './plugins/withNotificationIcons.js',
+    './plugins/withUseLegacyPackaging.js',
   ],
 })
