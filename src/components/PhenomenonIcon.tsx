@@ -95,7 +95,6 @@ import { useDynamicAssets } from '../utils/useDynamicAsset'
 const clear = ['Clear']
 const fewClouds = ['Few clouds', 'Variable clouds', 'Cloudy with clear spells']
 const overcast = ['Overcast', 'Cloudy']
-
 const snow = ['Light snow shower', 'Moderate snow shower', 'Heavy snow shower', 'Light snowfall', 'Moderate snowfall', 'Heavy snowfall', 'Blowing snow', 'Drifting snow']
 const snowStorm = ['Snowstorm']
 const lightRain = ['Light rain']
@@ -118,8 +117,11 @@ export const phenomenonMapping = {
   snow,
   snowStorm,
   lightRain,
+  lightShower,
   moderateRain,
+  moderateShower,
   strongRain,
+  strongShower,
   sleet,
   glaze,
   fog,

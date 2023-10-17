@@ -12,37 +12,49 @@ import { retrieveStoredLocation } from './locationAsyncStorage'
 import { getPhenomenonText } from './phenomenonUtil'
 import Feels from 'feels'
 // @ts-ignore
-import overcastLottie from '@bybas/weather-icons/production/fill/png/256/overcast.png'
+import overcastMeteocon from '@bybas/weather-icons/production/fill/png/256/overcast.png'
 // @ts-ignore
-import hailLottie from '@bybas/weather-icons/production/fill/png/256/extreme-hail.png'
+import hailMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-hail.png'
 // @ts-ignore
-import clearDayLottie from '@bybas/weather-icons/production/fill/png/256/clear-day.png'
+import clearDayMeteocon from '@bybas/weather-icons/production/fill/png/256/clear-day.png'
 // @ts-ignore
-import clearNightLottie from '@bybas/weather-icons/production/fill/png/256/clear-night.png'
+import clearNightMeteocon from '@bybas/weather-icons/production/fill/png/256/clear-night.png'
 // @ts-ignore
-import fewCloudsDayLottie from '@bybas/weather-icons/production/fill/png/256/partly-cloudy-day.png'
+import fewCloudsDayMeteocon from '@bybas/weather-icons/production/fill/png/256/partly-cloudy-day.png'
 // @ts-ignore
-import fewCloudsNightLottie from '@bybas/weather-icons/production/fill/png/256/partly-cloudy-night.png'
+import fewCloudsNightMeteocon from '@bybas/weather-icons/production/fill/png/256/partly-cloudy-night.png'
 // @ts-ignore
-import lightRainLottie from '@bybas/weather-icons/production/fill/png/256/rain.png'
+import lightRainMeteocon from '@bybas/weather-icons/production/fill/png/256/rain.png'
 // @ts-ignore
-import moderateRainLottie from '@bybas/weather-icons/production/fill/png/256/overcast-rain.png'
+import moderateRainMeteocon from '@bybas/weather-icons/production/fill/png/256/overcast-rain.png'
 // @ts-ignore
-import strongRainLottie from '@bybas/weather-icons/production/fill/png/256/extreme-rain.png'
+import strongRainMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-rain.png'
 // @ts-ignore
-import snowLottie from '@bybas/weather-icons/production/fill/png/256/overcast-snow.png'
+import snowMeteocon from '@bybas/weather-icons/production/fill/png/256/overcast-snow.png'
 // @ts-ignore
-import snowstormLottie from '@bybas/weather-icons/production/fill/png/256/wind-snow.png'
+import snowstormMeteocon from '@bybas/weather-icons/production/fill/png/256/wind-snow.png'
 // @ts-ignore
-import sleetLottie from '@bybas/weather-icons/production/fill/png/256/sleet.png'
+import sleetMeteocon from '@bybas/weather-icons/production/fill/png/256/sleet.png'
 // @ts-ignore
-import glazeLottie from '@bybas/weather-icons/production/fill/png/256/snowflake.png'
+import glazeMeteocon from '@bybas/weather-icons/production/fill/png/256/snowflake.png'
 // @ts-ignore
-import fogLottie from '@bybas/weather-icons/production/fill/png/256/fog.png'
+import fogMeteocon from '@bybas/weather-icons/production/fill/png/256/fog.png'
 // @ts-ignore
-import thunderLottie from '@bybas/weather-icons/production/fill/png/256/thunderstorms-overcast-rain.png'
+import thunderMeteocon from '@bybas/weather-icons/production/fill/png/256/thunderstorms-overcast-rain.png'
 // @ts-ignore
-import thunderStormLottie from '@bybas/weather-icons/production/fill/png/256/thunderstorms-extreme-rain.png'
+import thunderStormMeteocon from '@bybas/weather-icons/production/fill/png/256/thunderstorms-extreme-rain.png'
+// @ts-ignore
+import lightShowerDayMeteocon from '@bybas/weather-icons/production/fill/png/256/partly-cloudy-day-rain.png'
+// @ts-ignore
+import lightShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/256/partly-cloudy-night-rain.png'
+// @ts-ignore
+import moderateShowerDayMeteocon from '@bybas/weather-icons/production/fill/png/256/overcast-day-rain.png'
+// @ts-ignore
+import moderateShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/256/overcast-night-rain.png'
+// @ts-ignore
+import strongShowerDayMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-day-rain.png'
+// @ts-ignore
+import strongShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-night-rain.png'
 
 import * as BackgroundFetch from 'expo-background-fetch'
 import * as TaskManager from 'expo-task-manager'
@@ -235,18 +247,21 @@ async function getIcon(phenomenon: string) {
 
   const isDay = sunTimes ? new Date().getTime() < sunTimes.sunset.getTime() && new Date().getTime() > sunTimes.sunrise.getTime() : true
 
-  if (phenomenonMapping.clear.includes(phenomenon)) return isDay ? clearDayLottie : clearNightLottie
-  if (phenomenonMapping.fewClouds.includes(phenomenon)) return isDay ? fewCloudsDayLottie : fewCloudsNightLottie
-  if (phenomenonMapping.overcast.includes(phenomenon)) return overcastLottie
-  if (phenomenonMapping.snow.includes(phenomenon)) return snowLottie
-  if (phenomenonMapping.snowStorm.includes(phenomenon)) return snowstormLottie
-  if (phenomenonMapping.lightRain.includes(phenomenon)) return lightRainLottie
-  if (phenomenonMapping.moderateRain.includes(phenomenon)) return moderateRainLottie
-  if (phenomenonMapping.strongRain.includes(phenomenon)) return strongRainLottie
-  if (phenomenonMapping.sleet.includes(phenomenon)) return sleetLottie
-  if (phenomenonMapping.glaze.includes(phenomenon)) return glazeLottie
-  if (phenomenonMapping.fog.includes(phenomenon)) return fogLottie
-  if (phenomenonMapping.thunder.includes(phenomenon)) return thunderLottie
-  if (phenomenonMapping.thunderStorm.includes(phenomenon)) return thunderStormLottie
-  if (phenomenonMapping.hail.includes(phenomenon)) return hailLottie
+  if (phenomenonMapping.clear.includes(phenomenon)) return isDay ? clearDayMeteocon : clearNightMeteocon
+  if (phenomenonMapping.fewClouds.includes(phenomenon)) return isDay ? fewCloudsDayMeteocon : fewCloudsNightMeteocon
+  if (phenomenonMapping.overcast.includes(phenomenon)) return overcastMeteocon
+  if (phenomenonMapping.snow.includes(phenomenon)) return snowMeteocon
+  if (phenomenonMapping.snowStorm.includes(phenomenon)) return snowstormMeteocon
+  if (phenomenonMapping.lightRain.includes(phenomenon)) return lightRainMeteocon
+  if (phenomenonMapping.moderateRain.includes(phenomenon)) return moderateRainMeteocon
+  if (phenomenonMapping.strongRain.includes(phenomenon)) return strongRainMeteocon
+  if (phenomenonMapping.lightShower.includes(phenomenon)) return isDay ? lightShowerDayMeteocon : lightShowerNightMeteocon
+  if (phenomenonMapping.moderateShower.includes(phenomenon)) return isDay ? moderateShowerDayMeteocon : moderateShowerNightMeteocon
+  if (phenomenonMapping.strongShower.includes(phenomenon)) return isDay ? strongShowerDayMeteocon : strongShowerNightMeteocon
+  if (phenomenonMapping.sleet.includes(phenomenon)) return sleetMeteocon
+  if (phenomenonMapping.glaze.includes(phenomenon)) return glazeMeteocon
+  if (phenomenonMapping.fog.includes(phenomenon)) return fogMeteocon
+  if (phenomenonMapping.thunder.includes(phenomenon)) return thunderMeteocon
+  if (phenomenonMapping.thunderStorm.includes(phenomenon)) return thunderStormMeteocon
+  if (phenomenonMapping.hail.includes(phenomenon)) return hailMeteocon
 }
