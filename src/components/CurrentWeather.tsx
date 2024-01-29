@@ -19,11 +19,11 @@ import Sunrise from '../icons/Sunrise'
 import Sunset from '../icons/Sunset'
 import { getTimes, GetTimesResult } from 'suncalc'
 import Barometer from '../icons/Barometer'
-import { useNavigation } from '@react-navigation/native'
 interface CurrentWeatherProps {
   closestStation: Station
   realFeel: number | null
   phenomenon: string
+  phenomenonText: string
   windSpeed: string
   windSpeedMax: string
   windDirection: number
@@ -43,6 +43,7 @@ export function CurrentWeather({
   closestStation,
   realFeel,
   phenomenon,
+  phenomenonText,
   windSpeed,
   windSpeedMax,
   windDirection,
@@ -109,7 +110,7 @@ export function CurrentWeather({
               />
             </View>
 
-            <Text style={[styles.phenomenon, ...dayAwareTextStyles]}>{getPhenomenonText(phenomenon) || '-'}</Text>
+            <Text style={[styles.phenomenon, ...dayAwareTextStyles]}>{phenomenonText || '-'}</Text>
           </View>
         </View>
       </View>

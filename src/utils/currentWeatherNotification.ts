@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { uniqueId, lowerCase } from 'lodash'
-import notifee, { AndroidStyle, EventType } from '@notifee/react-native'
+import { uniqueId, capitalize } from 'lodash'
+import notifee, { EventType } from '@notifee/react-native'
 import analytics from '@react-native-firebase/analytics'
 import * as Notifications from 'expo-notifications'
 import { AndroidNotificationVisibility } from 'expo-notifications'
 import { Alert } from 'react-native'
 import * as Linking from 'expo-linking'
-import { closestObservationField, closestStationWithObservationField, getDistance } from './distance'
-import { getObservations, Observations, Station } from '../services'
+import { closestHourlyStationWithObservationField, closestObservationField, closestStationWithObservationField, getDistance } from './distance'
+import { getHourlyObservations, getObservations, HourlyObservation, Observations, Station } from '../services'
 import { retrieveStoredLocation } from './locationAsyncStorage'
 import { getPhenomenonText } from './phenomenonUtil'
 import Feels from 'feels'
@@ -55,6 +55,8 @@ import moderateShowerNightMeteocon from '@bybas/weather-icons/production/fill/pn
 import strongShowerDayMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-day-rain.png'
 // @ts-ignore
 import strongShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-night-rain.png'
+// @ts-ignore
+import notAvailable from '@bybas/weather-icons/production/fill/png/256/not-available.png'
 
 import * as BackgroundFetch from 'expo-background-fetch'
 import * as TaskManager from 'expo-task-manager'
@@ -146,9 +148,12 @@ notifee.onBackgroundEvent(async (event) => {
   return Promise.resolve()
 })
 
-export async function showCurrentWeatherNotification(allObservations?: Observations) {
+export async function showCurrentWeatherNotification(allObservations?: Observations, hourlyObservations?: HourlyObservation[]) {
   if (!allObservations) {
     allObservations = (await getObservations()).observations
+  }
+  if (!hourlyObservations) {
+    hourlyObservations = await getHourlyObservations()
   }
   const storedLocationObject = await retrieveStoredLocation()
   const location = storedLocationObject?.location
@@ -165,8 +170,18 @@ export async function showCurrentWeatherNotification(allObservations?: Observati
       distance,
     }
   })
+  const hourlyStationsWithDistance = hourlyObservations?.map((s) => {
+    const stationLatLon = [Number(s.latitude), Number(s.longitude)]
+    const distance = getDistance([location.coords.latitude, location.coords.longitude], stationLatLon)
+    return {
+      ...s,
+      distance,
+    }
+  })
 
-  let closestPhenomenon = closestObservationField(stationsWithDistance, 'phenomenon')
+  let closestPhenomenonStation = closestHourlyStationWithObservationField(hourlyStationsWithDistance, 'pw15maEng')
+  const closestPhenomenon = capitalize(closestPhenomenonStation.pw15maEng)
+  const closestPhenomenonText = capitalize(closestPhenomenonStation.pw15maEst)
   let closestTemperature = closestObservationField(stationsWithDistance, 'airtemperature')
   let closestWaterTemperature = closestObservationField(stationsWithDistance, 'watertemperature')
   let closestHumidity = closestObservationField(stationsWithDistance, 'relativehumidity')
@@ -195,7 +210,7 @@ export async function showCurrentWeatherNotification(allObservations?: Observati
   const body = [optionMap.temperature, optionMap.windSpeed, optionMap.uvIndex, optionMap.waterTemperature, optionMap.precipitations]
 
   await showPushNotification({
-    title: getPhenomenonText(closestPhenomenon),
+    title: closestPhenomenonText,
     body: body.join(' | '),
     color: undefined,
     temperature: String(Math.round(+closestTemperature)),
@@ -264,4 +279,6 @@ async function getIcon(phenomenon: string) {
   if (phenomenonMapping.thunder.includes(phenomenon)) return thunderMeteocon
   if (phenomenonMapping.thunderStorm.includes(phenomenon)) return thunderStormMeteocon
   if (phenomenonMapping.hail.includes(phenomenon)) return hailMeteocon
+
+  return notAvailable
 }

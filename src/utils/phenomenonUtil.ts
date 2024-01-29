@@ -14,6 +14,7 @@ const phenomenonMap = {
   'Heavy shower': 'Tugev hoogvihm',
   'Light rain': 'Nõrk vihm',
   'Moderate rain': 'Mõõdukas vihm',
+  Rain: 'Vihm',
   'Heavy rain': 'Tugev vihm',
   Glaze: 'Jäide',
   'Light sleet': 'Nõrk lörtsisadu',

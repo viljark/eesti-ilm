@@ -1,3 +1,8 @@
 import { proxy, useSnapshot } from 'valtio'
+import { HourlyObservation } from '../services'
 
-export const store = proxy({ isSwipeEnabled: true })
+interface Store {
+  isSwipeEnabled: boolean
+  hourlyObservations: HourlyObservation[]
+}
+export const store = proxy<Store>({ isSwipeEnabled: true, hourlyObservations: [] })

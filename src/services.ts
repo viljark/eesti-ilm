@@ -1,6 +1,7 @@
 import axios from 'axios'
 import iconv from 'iconv-lite'
 import { Buffer } from 'buffer'
+
 const parseString = require('react-native-xml2js').parseString
 
 const RESPONSE_CHARSET = 'UTF-8'
@@ -13,6 +14,16 @@ export async function getObservations(): Promise<ObservationsResponse> {
   })
 
   return xmlResponseToJson(iconv.decode(new Buffer(response.data), RESPONSE_CHARSET))
+}
+
+export async function getHourlyObservations(): Promise<HourlyObservation[]> {
+  const response = await axios({
+    method: 'get',
+    url: 'https://ilmmicroservice.envir.ee/api/combinedWeatherData/mobileFrontPageWeatherToday?lang=est',
+    responseType: 'json',
+  })
+
+  return response.data?.entries?.entry || []
 }
 
 export async function getForecast(): Promise<ForecastResponse> {
@@ -290,4 +301,63 @@ export interface Warnings {
 
 export interface WarningsResponse {
   warnings: Warnings
+}
+
+export interface HourlyObservations {
+  entries: Entries
+}
+
+export interface Entries {
+  entry: HourlyObservation[]
+}
+
+export interface HourlyObservation {
+  uvindex: null | string
+  LaiusMinut: string
+  Time: Date
+  paring: string
+  wl1ha: null | string
+  /**
+   * phenomenon EE
+   */
+  pw15maEst: null | string
+  tuulekylm: null | string
+  rhins: null | string
+  /**
+   * phenomenon EN
+   */
+  pw15maEng: null | string
+  kuumaindeks: null | string
+  pw15maRus: null | string
+  tains_aeg: Date | null
+  Jaam: string
+  LaiusSekund: string
+  wl1ha_bk77: null | string
+  ws1hx: null | string
+  pr1hs: null | string
+  station_id: string
+  LaiusKraad: string
+  wd10ma: null | string
+  county_ehak: null | string
+  PikkusMinut: string
+  wt1ha: null | string
+  /**
+   * temperature
+   */
+  tains: null | string
+  ws10ma: null | string
+  ws10ma_aeg: Date | null
+  PikkusKraad: string
+  qffins: null | string
+  vis1ma: null | string
+  PikkusSekund: string
+  pr1hs_aeg: Date | null
+  latitude: number
+  longitude: number
+  sunrise_utc: Date
+  sunset_utc: Date
+  sunrise: Date
+  sunset: Date
+  feels_like: null | string
+  distance?: number
 }

@@ -1,23 +1,8 @@
 import React, { FunctionComponent, memo, useCallback, useEffect, useMemo, useRef } from 'react'
-import { getPosition, getTimes } from 'suncalc'
-import ClearDay from '../icons/ClearDay'
-import ClearNight from '../icons/ClearNight'
-import Overcast from '../icons/Overcast'
-import VariableCloudsDay from '../icons/VariableCloudsDay'
-import VariableCloudsNight from '../icons/VariableCloudsNight'
-import Snow from '../icons/Snow'
-import LightRain from '../icons/LightRain'
-import StrongRain from '../icons/StrongRain'
-import Sleet from '../icons/Sleet'
-import Glaze from '../icons/Glaze'
-import Fog from '../icons/Fog'
-import Thunder from '../icons/Thunder'
-import ThunderStorm from '../icons/ThunderStorm'
-import Hail from '../icons/Hail'
+import { getTimes } from 'suncalc'
 import { Dimensions, StyleProp, ViewStyle, View } from 'react-native'
 import { Image } from 'expo-image'
 import _ from 'lodash'
-import SnowStorm from '../icons/SnowStorm'
 import LottieView from 'lottie-react-native'
 import overcastLottie from '@bybas/weather-icons/production/fill/lottie/overcast.json'
 import hailLottie from '@bybas/weather-icons/production/fill/lottie/extreme-hail.json'
@@ -86,6 +71,9 @@ import moderateShowerNightMeteocon from '@bybas/weather-icons/production/fill/pn
 import strongShowerDayMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-day-rain.png'
 // @ts-ignore
 import strongShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/256/extreme-night-rain.png'
+// @ts-ignore
+import notAvailableMeteocon from '@bybas/weather-icons/production/fill/png/256/not-available.png'
+
 import { useAssets } from 'expo-asset'
 import { useIsFocused } from '@react-navigation/native'
 import { useAppState } from '../utils/useAppState'
@@ -99,7 +87,7 @@ const snow = ['Light snow shower', 'Moderate snow shower', 'Heavy snow shower', 
 const snowStorm = ['Snowstorm']
 const lightRain = ['Light rain']
 const lightShower = ['Light shower']
-const moderateRain = ['Moderate rain']
+const moderateRain = ['Moderate rain', 'Rain']
 const moderateShower = ['Moderate shower']
 const strongRain = ['Heavy rain']
 const strongShower = ['Heavy shower']
@@ -110,6 +98,68 @@ const thunder = ['Thunder']
 const thunderStorm = ['Thunderstorm']
 const hail = ['Hail']
 
+const mapping = {
+  clear: ['Clear', 'sunny', 'clear skies'],
+  fewClouds: ['Few clouds', 'Variable clouds', 'Cloudy with clear spells', 'partly cloudy'],
+  overcast: ['Overcast', 'Cloudy', 'cloudy'],
+  snow: [
+    'Light snow shower',
+    'Moderate snow shower',
+    'Heavy snow shower',
+    'Light snowfall',
+    'Moderate snowfall',
+    'Heavy snowfall',
+    'Blowing snow',
+    'Drifting snow',
+    'snow showers',
+    'moderate or heavy snow shower',
+    'moderate snow shower',
+    'heavy snow shower',
+    'light snow',
+  ],
+  snowStorm: ['Snowstorm', 'snowstorm'],
+  lightRain: ['Light rain', 'light rain shower', 'light rain shower with thunderstorm in past hour', 'light shower', 'drizzle and rain', 'light rain'],
+  moderateRain: ['Moderate rain', 'Rain', 'moderate rain shower', 'moderate shower', 'moderate rain'],
+  strongRain: ['Heavy rain', 'heavy rain shower', 'heavy shower', 'heavy rain'],
+  sleet: ['Light sleet', 'Moderate sleet', 'light rain with snow', 'rain and snow', 'light sleet', 'moderate sleet'],
+  glaze: ['Glaze', 'Risk of glaze', 'risk of glaze'],
+  fog: ['Mist', 'Fog', 'fog'],
+  thunder: ['Thunder', 'thunder'],
+  thunderStorm: ['Thunderstorm', 'thunderstorm'],
+  hail: ['Hail', 'hail'],
+  withoutPhenomena: ['without phenomena'],
+  diamondDust: ['diamond dust'],
+  funnelClouds: ['funnel clouds'],
+  raining: ['raining'],
+  precipitation: ['precipitation', 'nearby precipitation', 'distant precipitation', 'light or moderate precipitation'],
+  heavyPrecipitation: ['heavy precipitation'],
+  freezingDrizzle: ['freezing drizzle'],
+  freezingRain: ['freezing rain', 'freezing Rain'],
+  duststorm: ['duststorm'],
+  sandstorm: ['dust or sand storm within sight but not at station', 'dust or sand raised by wind'],
+  mist: ['mist'],
+  smoke: ['smoke'],
+  shallowFog: ['shallow fog'],
+  haze: ['haze'],
+  fogDepositingRime: ['fog depositing rime'],
+  lightning: ['lightning'],
+  thunderstorms: [
+    'thunderstorms',
+    'thunderstorm without precipitation',
+    'light thunderstorm with shower',
+    'light or moderate thunderstorm with hail',
+    'heavy thunderstorm with shower',
+    'heavy thunderstorm with hail',
+    'heavy thunderstorm with duststorm',
+  ],
+  snowdrift: ['snowdrift', 'drifting snow'],
+  icePellets: ['ice pellets', 'ice crystals'],
+  snowfall: ['light snowfall', 'moderate snowfall', 'heavy snowfall'],
+  snowGrains: ['snow grains'],
+  widespreadDust: ['widespread dust in suspension not raised by wind'],
+  wellDevelopedDust: ['well developed dust or sand whirls'],
+  squalls: ['squalls'],
+}
 export const phenomenonMapping = {
   clear,
   fewClouds,
@@ -128,6 +178,7 @@ export const phenomenonMapping = {
   thunder,
   thunderStorm,
   hail,
+  ...mapping,
 }
 
 interface PhenomenonIconProps {
@@ -141,7 +192,7 @@ interface PhenomenonIconProps {
   children?: React.ReactNode
   isDay?: boolean
   animated?: boolean
-  theme?: 'meteocon' | 'default'
+  theme: 'meteocon'
   onLoad?: () => void
 }
 
@@ -150,16 +201,6 @@ const height = Dimensions.get('window').height - 121 //full height
 const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: PhenomenonIconProps) => {
   const size = Math.max(100, Math.min(height * 0.3, 140))
   const date = props.date || new Date()
-  const iconProps = {
-    width: props.width || size,
-    height: props.height || size,
-    fill: '#fff',
-    style: props.style || {
-      opacity: 1,
-      marginTop: 10,
-      marginBottom: 10,
-    },
-  }
   const sunTimes = getTimes(date, props.latitude, props.longitude)
   const isDay = _.isBoolean(props.isDay) ? props.isDay : date.getTime() < sunTimes.sunset.getTime() && date.getTime() > sunTimes.sunrise.getTime()
   const lottieStyle = useMemo(
@@ -217,56 +258,36 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
     if (thunder.includes(props.phenomenon)) return thunderMeteocon
     if (thunderStorm.includes(props.phenomenon)) return thunderStormMeteocon
     if (hail.includes(props.phenomenon)) return hailMeteocon
+    return notAvailableMeteocon
   }, [isDay, props.phenomenon])
   const [assets] = useDynamicAssets(meteoconIcon || clearDayMeteocon)
+
   if (props.animated) {
     return <LottieIcon style={lottieStyle} path={lottiePath} />
   }
+
   const w = props.width || size
   const h = props.height || size
   const wOffset = w / 3.4
   const hOffset = h / 3.4
-  if (props.theme === 'meteocon') {
-    return (
-      <View style={[props.style, { width: w, height: h }]}>
-        {!!assets?.[0]?.localUri && (
-          <Image
-            onLoad={props.onLoad}
-            key={meteoconIcon}
-            source={{ uri: assets?.[0]?.localUri }}
-            style={{
-              position: 'absolute',
-              left: -wOffset / 1.7,
-              top: -hOffset,
-              width: w + wOffset,
-              height: h + hOffset,
-            }}
-          />
-        )}
-      </View>
-    )
-  }
 
   return (
-    <>
-      {clear.includes(props.phenomenon) && (isDay ? <ClearDay {...iconProps} /> : <ClearNight {...iconProps} />)}
-      {fewClouds.includes(props.phenomenon) && (isDay ? <VariableCloudsDay {...iconProps} /> : <VariableCloudsNight {...iconProps} />)}
-      {overcast.includes(props.phenomenon) && <Overcast {...iconProps} />}
-      {snow.includes(props.phenomenon) && <Snow {...iconProps} />}
-      {snowStorm.includes(props.phenomenon) && <SnowStorm {...iconProps} />}
-      {lightRain.includes(props.phenomenon) && <LightRain {...iconProps} />}
-      {moderateRain.includes(props.phenomenon) && <StrongRain {...iconProps} />}
-      {strongRain.includes(props.phenomenon) && <StrongRain {...iconProps} />}
-      {lightShower.includes(props.phenomenon) && <LightRain {...iconProps} />}
-      {moderateShower.includes(props.phenomenon) && <StrongRain {...iconProps} />}
-      {strongShower.includes(props.phenomenon) && <StrongRain {...iconProps} />}
-      {sleet.includes(props.phenomenon) && <Sleet {...iconProps} />}
-      {glaze.includes(props.phenomenon) && <Glaze {...iconProps} />}
-      {fog.includes(props.phenomenon) && <Fog {...iconProps} />}
-      {thunder.includes(props.phenomenon) && <Thunder {...iconProps} />}
-      {thunderStorm.includes(props.phenomenon) && <ThunderStorm {...iconProps} />}
-      {hail.includes(props.phenomenon) && <Hail {...iconProps} />}
-    </>
+    <View style={[props.style, { width: w, height: h }]}>
+      {!!assets?.[0]?.localUri && (
+        <Image
+          onLoad={props.onLoad}
+          key={meteoconIcon}
+          source={{ uri: assets?.[0]?.localUri }}
+          style={{
+            position: 'absolute',
+            left: -wOffset / 1.7,
+            top: -hOffset,
+            width: w + wOffset,
+            height: h + hOffset,
+          }}
+        />
+      )}
+    </View>
   )
 }
 

@@ -111,25 +111,24 @@ export const DayForecastScreen = () => {
               ]}
             />
             {forecasts.map((forecast, i) => (
-              <>
-                <View
-                  style={{
-                    width: DOT_SIZE,
-                    height: DOT_SIZE,
-                    borderWidth: 0.5,
-                    borderColor: '#fff',
-                    borderRadius: DOT_SIZE * 2,
-                    marginHorizontal: DOT_SIZE - 2,
-                  }}
-                />
-              </>
+              <View
+                key={forecast.$.date}
+                style={{
+                  width: DOT_SIZE,
+                  height: DOT_SIZE,
+                  borderWidth: 0.5,
+                  borderColor: '#fff',
+                  borderRadius: DOT_SIZE * 2,
+                  marginHorizontal: DOT_SIZE - 2,
+                }}
+              />
             ))}
           </View>
         </View>
         <AnimatedPagerView style={styles.pagerView} initialPage={route.params.index} onPageScroll={pageScrollHandler}>
           {forecasts.map((forecast, i) => {
             if (!visiblePages.includes(i)) {
-              return <View />
+              return <View key={i} />
             }
             return (
               <ScrollView key={i} contentContainerStyle={{ paddingTop: 15, paddingBottom: 20 }} showsVerticalScrollIndicator={false}>

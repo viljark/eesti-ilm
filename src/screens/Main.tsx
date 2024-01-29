@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppState, AppStateStatus, Dimensions, RefreshControl as RNRefreshControl, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import { getObservations, Observations, Station } from '../services'
-import { closestStationWithObservationField, getDistance } from '../utils/distance'
+import { getHourlyObservations, getObservations, HourlyObservation, Observations, Station } from '../services'
+import { closestHourlyStationWithObservationField, closestStationWithObservationField, getDistance } from '../utils/distance'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { CurrentWeather } from '../components/CurrentWeather'
 import { LocationContext } from '../../LocationContext'
@@ -19,11 +19,14 @@ import { createNativeWrapper, ScrollView } from 'react-native-gesture-handler'
 import analytics from '@react-native-firebase/analytics'
 import { registerNotificationChannel, showCurrentWeatherNotification } from '../utils/currentWeatherNotification'
 import { useSharedSettings } from './Settings'
+import { capitalize } from 'lodash'
 
 const RefreshControl = createNativeWrapper(RNRefreshControl)
 export default function Main(props) {
   const [allObservations, setAllObservations] = useAsyncStorage<Observations>('allObservations')
+  const [allHourlyObservations, setAllHourlyObservations] = useAsyncStorage<HourlyObservation[]>('hourlyObservations')
   const [observations, setObservations] = useState<Observations>(undefined)
+  const [hourlyObservations, setHourlyObservations] = useState<HourlyObservation[]>([])
   const [errorMessage, setErrormessage] = useState(null)
   const [activeTab, setActiveTab] = useState('live')
   const [closestStation, setClosestStation] = useState<Station>(undefined)
@@ -78,6 +81,20 @@ export default function Main(props) {
   }, [location, allObservations])
 
   useEffect(() => {
+    if (allHourlyObservations && location) {
+      const hourlyStationsWithDistance = allHourlyObservations?.map((s) => {
+        const stationLatLon = [Number(s.latitude), Number(s.longitude)]
+        const distance = getDistance([location.coords.latitude, location.coords.longitude], stationLatLon)
+        return {
+          ...s,
+          distance,
+        }
+      })
+      setHourlyObservations(hourlyStationsWithDistance)
+    }
+  }, [allHourlyObservations, location])
+
+  useEffect(() => {
     try {
       analytics().logScreenView({ screen_name: 'Main' })
     } catch (e) {
@@ -104,17 +121,22 @@ export default function Main(props) {
   async function fetchObservations() {
     setIsRefreshing(true)
     const response = await getObservations()
+    const hourlyObservations = await getHourlyObservations()
 
     setIsRefreshing(false)
     setAllObservations(response.observations)
+    setAllHourlyObservations(hourlyObservations)
     await registerNotificationChannel()
     if (showWeatherNotification) {
-      showCurrentWeatherNotification(response.observations)
+      showCurrentWeatherNotification(response.observations, hourlyObservations)
     }
   }
 
   const getWaterTempStation = () => closestStationWithObservationField(observations?.station, 'watertemperature')
-  const getPhenomenonStation = () => closestStationWithObservationField(observations?.station, 'phenomenon')
+
+  const phenomenonStation = closestHourlyStationWithObservationField(hourlyObservations, 'pw15maEng')
+  const phenomenon = capitalize(phenomenonStation.pw15maEng)
+  const phenomenonText = capitalize(phenomenonStation.pw15maEst)
   const getWindSpeedStation = () => closestStationWithObservationField(observations?.station, 'windspeed')
   const getWindSpeedMax = () => closestStationWithObservationField(observations?.station, 'windspeedmax')
   const getHumidity = () => closestStationWithObservationField(observations?.station, 'relativehumidity')
@@ -161,7 +183,8 @@ export default function Main(props) {
                 realFeel={realFeel}
                 latestUpdate={latestUpdate}
                 observationsReceivedAt={observationsReceivedAt}
-                phenomenon={getPhenomenonStation()?.phenomenon}
+                phenomenon={phenomenon}
+                phenomenonText={phenomenonText}
                 windSpeed={getWindSpeedStation()?.windspeed}
                 windSpeedMax={getWindSpeedMax()?.windspeedmax}
                 windDirection={Number(getWindSpeedStation()?.winddirection)}
@@ -200,7 +223,7 @@ export default function Main(props) {
             </View>
             <TabButton onPress={() => setActiveTab('live')} isActive={activeTab === 'live'} text="Sademete radar" style={[{ borderColor: '#000', borderRightWidth: 0.5 }]} />
           </View>
-          {activeTab === 'live' ? <PrecipitationRadar stations={observations?.station || []} latestUpdate={latestUpdate} /> : null}
+          {activeTab === 'live' ? <PrecipitationRadar hourlyObservations={hourlyObservations} stations={observations?.station || []} latestUpdate={latestUpdate} /> : null}
         </View>
       </ScrollView>
     </View>

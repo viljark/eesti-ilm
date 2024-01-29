@@ -20,13 +20,13 @@ import { useSnapshot } from 'valtio'
 import ZoomOutIcon from '../icons/ZoomOutIcon'
 import ZoomInIcon from '../icons/ZoomInIcon'
 import { addMinutes } from 'date-fns'
-import { Station } from '../services'
+import { HourlyObservation, Station } from '../services'
 import TemperatureIcon from '../icons/TemperatureIcon'
 import ThunderIcon from '../icons/ThunderIcon'
 import analytics from '@react-native-firebase/analytics'
-import LottieView from 'lottie-react-native'
 import { PhenomenonIcon } from './PhenomenonIcon'
 import PhenomenonLayerIcon from '../icons/PhenomenonLayerIcon'
+import { capitalize } from 'lodash'
 
 const roundDownTo = (roundTo) => (x) => Math.floor(x / roundTo) * roundTo
 const roundDownTo10Minutes = roundDownTo(1000 * 60 * 10)
@@ -34,7 +34,7 @@ const width = Dimensions.get('window').width - 20 //full width
 
 const cityNames = [
   'Tallinn-Harku',
-  // 'Tartu-Tõravere',
+  'Tartu-Tõravere',
   'Tartu-Kvissental',
   'Narva',
   'Pärnu',
@@ -51,7 +51,7 @@ const cityNames = [
   'Tapa',
   'Põlva',
   'Türi',
-  'Elva',
+  // 'Elva',
   'Rapla',
   'Saue',
   'Põltsamaa',
@@ -65,7 +65,15 @@ const cityNames = [
   'Heltermaa',
 ]
 
-export default function PrecipitationRadar({ latestUpdate, stations }: { latestUpdate: Date; stations: Station[] }): JSX.Element {
+export default function PrecipitationRadar({
+  latestUpdate,
+  stations,
+  hourlyObservations,
+}: {
+  latestUpdate: Date
+  stations: Station[]
+  hourlyObservations: HourlyObservation[]
+}): JSX.Element {
   const sliderSteps = 24
   const originalSteps = 36
   const futureMinutes = 60
@@ -157,8 +165,24 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
   const futureMinutesDiff = differenceInMinutes(new Date(sliderTimestamp), new Date())
 
   const cities = useMemo(() => {
-    return stations.filter((station) => cityNames.includes(station.name))
-  }, [stations])
+    return stations
+      .filter((station) => cityNames.includes(station.name))
+      .map((station) => {
+        let phenomenon = station.phenomenon
+        const hourlyStation = hourlyObservations.find((hourlyObservation) => {
+          return hourlyObservation.Jaam === station.name
+        })
+
+        if (hourlyStation?.pw15maEng && !station.phenomenon) {
+          phenomenon = capitalize(hourlyStation.pw15maEng)
+        }
+
+        return {
+          ...station,
+          phenomenon,
+        }
+      })
+  }, [stations, hourlyObservations])
 
   return (
     <View style={styles.container}>
@@ -248,7 +272,7 @@ export default function PrecipitationRadar({ latestUpdate, stations }: { latestU
                 </View>
               </Marker>
             )}
-            {showPhenomenon && <PhenomenonMarkers cities={stations} />}
+            {showPhenomenon && <PhenomenonMarkers cities={cities} />}
             {showTemperature && <CityMarkers cities={cities} />}
           </MapView>
         )}
