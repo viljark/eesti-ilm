@@ -118,7 +118,7 @@ const mapping = {
     'light snow',
   ],
   snowStorm: ['Snowstorm', 'snowstorm'],
-  lightRain: ['Light rain', 'light rain shower', 'light rain shower with thunderstorm in past hour', 'light shower', 'drizzle and rain', 'light rain'],
+  lightRain: ['Light rain', 'light rain shower', 'light rain shower with thunderstorm in past hour', 'light shower', 'drizzle', 'drizzle and rain', 'light rain'],
   moderateRain: [
     'Moderate rain',
     'Rain',
