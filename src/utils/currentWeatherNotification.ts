@@ -261,7 +261,6 @@ async function getIcon(phenomenon: string) {
   const sunTimes = location ? getTimes(new Date(), location.coords.latitude, location.coords.longitude) : null
 
   const isDay = sunTimes ? new Date().getTime() < sunTimes.sunset.getTime() && new Date().getTime() > sunTimes.sunrise.getTime() : true
-
   if (phenomenonMapping.clear.includes(phenomenon)) return isDay ? clearDayMeteocon : clearNightMeteocon
   if (phenomenonMapping.fewClouds.includes(phenomenon)) return isDay ? fewCloudsDayMeteocon : fewCloudsNightMeteocon
   if (phenomenonMapping.overcast.includes(phenomenon)) return overcastMeteocon

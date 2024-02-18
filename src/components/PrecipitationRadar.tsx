@@ -402,6 +402,13 @@ const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
 const PhenomenonMarkers = React.memo(({ cities }: { cities: Station[] }) => {
   const [tracksViewChanges, setTracksViewChanges] = useState(true)
 
+  useEffect(() => {
+    setTracksViewChanges(true)
+    setTimeout(() => {
+      setTracksViewChanges(false)
+    }, 500)
+  }, [cities])
+
   return (
     <>
       {cities
@@ -415,10 +422,23 @@ const PhenomenonMarkers = React.memo(({ cities }: { cities: Station[] }) => {
               longitude: Number(station.longitude),
             }}
             zIndex={1}
+            opacity={tracksViewChanges ? 0 : 1}
             anchor={{ x: 0.5, y: 0.3 }}
             tracksViewChanges={tracksViewChanges}
           >
-            <PhenomenonIcon onLoad={() => setTracksViewChanges(false)} phenomenon={station.phenomenon} width={25} height={25} theme={'meteocon'} />
+            <PhenomenonIcon
+              latitude={Number(station.latitude)}
+              longitude={Number(station.longitude)}
+              onLoad={() => {
+                setTimeout(() => {
+                  setTracksViewChanges(false)
+                }, 300)
+              }}
+              phenomenon={station.phenomenon}
+              width={25}
+              height={25}
+              theme={'meteocon'}
+            />
           </Marker>
         ))}
     </>

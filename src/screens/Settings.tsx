@@ -9,7 +9,7 @@ import analytics from '@react-native-firebase/analytics'
 import { showCurrentWeatherNotification } from '../utils/currentWeatherNotification'
 
 const useSettings = () => {
-  const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap')
+  const [isDarkMap, setIsDarkMap] = useAsyncStorage<boolean>('darkMap', false)
   const [showThunder, setShowThunder] = useAsyncStorage<boolean>('showThunder', false)
   const [showTemperature, setShowTemperature] = useAsyncStorage<boolean>('showTemperature', true)
   const [showPhenomenon, setShowPhenomenon] = useAsyncStorage<boolean>('showPhenomenon', true)

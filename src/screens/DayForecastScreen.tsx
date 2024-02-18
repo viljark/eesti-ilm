@@ -160,7 +160,7 @@ export const DayForecastScreen = () => {
                   <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.7)' }}>
                     <View>
                       <View style={{ paddingVertical: 20, paddingLeft: 20, alignItems: 'center', flex: 0 }}>
-                        <PhenomenonIcon height={70} width={70} phenomenon={forecast['night'].phenomenon} theme="meteocon" isDay={false} />
+                        <PhenomenonIcon animated height={90} width={90} phenomenon={forecast['night'].phenomenon} theme="meteocon" isDay={false} />
                         <View style={{ flexDirection: 'row' }}>
                           <Text style={styles.temp}>{forecast['night'].tempmin} - </Text>
                           <Text style={styles.temp}>{forecast['night'].tempmax}°</Text>
@@ -185,8 +185,8 @@ export const DayForecastScreen = () => {
 
                   <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.4)' }}>
                     <View>
-                      <View style={{ paddingVertical: 20, paddingLeft: 20, alignItems: 'center', flex: 0 }}>
-                        <PhenomenonIcon height={70} width={70} phenomenon={forecast['day'].phenomenon} theme="meteocon" isDay={true} />
+                      <View style={{ paddingVertical: 10, paddingLeft: 20, alignItems: 'center', flex: 0 }}>
+                        <PhenomenonIcon animated height={90} width={90} phenomenon={forecast['day'].phenomenon} theme="meteocon" isDay={true} />
                         <View style={{ flexDirection: 'row' }}>
                           <Text style={styles.temp}>{forecast['day'].tempmin} - </Text>
                           <Text style={styles.temp}>{forecast['day'].tempmax}°</Text>

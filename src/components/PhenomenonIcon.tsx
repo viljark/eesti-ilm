@@ -99,9 +99,9 @@ const thunderStorm = ['Thunderstorm']
 const hail = ['Hail']
 
 const mapping = {
-  clear: ['Clear', 'sunny', 'clear skies'],
-  fewClouds: ['Few clouds', 'Variable clouds', 'Cloudy with clear spells', 'partly cloudy'],
-  overcast: ['Overcast', 'Cloudy', 'cloudy'],
+  clear: ['Clear', 'Sunny', 'Clear skies'],
+  fewClouds: ['Few clouds', 'Variable clouds', 'Cloudy with clear spells', 'Partly cloudy'],
+  overcast: ['Overcast', 'Cloudy', 'Cloudy'],
   snow: [
     'Light snow shower',
     'Moderate snow shower',
@@ -111,59 +111,63 @@ const mapping = {
     'Heavy snowfall',
     'Blowing snow',
     'Drifting snow',
-    'snow showers',
-    'moderate or heavy snow shower',
-    'moderate snow shower',
-    'heavy snow shower',
-    'light snow',
+    'Snow showers',
+    'Moderate or heavy snow shower',
+    'Moderate snow shower',
+    'Heavy snow shower',
+    'Light snow',
+    'Moderate snow',
+    'Heavy snow',
+    'Snow',
   ],
-  snowStorm: ['Snowstorm', 'snowstorm'],
-  lightRain: ['Light rain', 'light rain shower', 'light rain shower with thunderstorm in past hour', 'light shower', 'drizzle', 'drizzle and rain', 'light rain'],
+  snowStorm: ['Snowstorm', 'Snowstorm'],
+  lightRain: ['Light rain', 'Light rain shower', 'Light rain shower with thunderstorm in past hour', 'Light shower', 'Drizzle', 'Drizzle and rain', 'Light rain'],
   moderateRain: [
     'Moderate rain',
     'Rain',
-    'moderate rain shower',
-    'moderate shower',
-    'moderate rain',
-    'precipitation',
-    'nearby precipitation',
-    'distant precipitation',
-    'light or moderate precipitation',
-    'raining',
+    'Moderate rain shower',
+    'Moderate shower',
+    'Moderate rain',
+    'Precipitation',
+    'Nearby precipitation',
+    'Distant precipitation',
+    'Light or moderate precipitation',
+    'Raining',
   ],
-  strongRain: ['Heavy rain', 'heavy rain shower', 'heavy shower', 'heavy rain', 'heavy precipitation'],
-  sleet: ['Light sleet', 'Moderate sleet', 'light rain with snow', 'rain and snow', 'light sleet', 'moderate sleet', 'freezing drizzle', 'freezing rain', 'freezing Rain'],
-  glaze: ['Glaze', 'Risk of glaze', 'risk of glaze'],
-  fog: ['Mist', 'Fog', 'fog', 'mist', 'shallow fog'],
-  thunder: ['Thunder', 'thunder'],
-  thunderStorm: ['Thunderstorm', 'thunderstorm'],
-  hail: ['Hail', 'hail'],
-  withoutPhenomena: ['without phenomena'],
-  diamondDust: ['diamond dust'],
-  funnelClouds: ['funnel clouds'],
-  duststorm: ['duststorm'],
-  sandstorm: ['dust or sand storm within sight but not at station', 'dust or sand raised by wind'],
-  smoke: ['smoke'],
-  haze: ['haze'],
-  fogDepositingRime: ['fog depositing rime'],
-  lightning: ['lightning'],
+  strongRain: ['Heavy rain', 'Heavy rain shower', 'Heavy shower', 'Heavy rain', 'Heavy precipitation'],
+  sleet: ['Light sleet', 'Moderate sleet', 'Light rain with snow', 'Rain and snow', 'Light sleet', 'Moderate sleet', 'Freezing drizzle', 'Freezing rain', 'Freezing Rain'],
+  glaze: ['Glaze', 'Risk of glaze', 'Risk of glaze'],
+  fog: ['Mist', 'Fog', 'Fog', 'Mist', 'Shallow fog'],
+  thunder: ['Thunder', 'Thunder'],
+  thunderStorm: ['Thunderstorm', 'Thunderstorm'],
+  hail: ['Hail'],
+  withoutPhenomena: ['Without phenomena'],
+  diamondDust: ['Diamond dust'],
+  funnelClouds: ['Funnel clouds'],
+  duststorm: ['Duststorm'],
+  sandstorm: ['Dust or sand storm within sight but not at station', 'Dust or sand raised by wind'],
+  smoke: ['Smoke'],
+  haze: ['Haze'],
+  fogDepositingRime: ['Fog depositing rime'],
+  lightning: ['Lightning'],
   thunderstorms: [
-    'thunderstorms',
-    'thunderstorm without precipitation',
-    'light thunderstorm with shower',
-    'light or moderate thunderstorm with hail',
-    'heavy thunderstorm with shower',
-    'heavy thunderstorm with hail',
-    'heavy thunderstorm with duststorm',
+    'Thunderstorms',
+    'Thunderstorm without precipitation',
+    'Light thunderstorm with shower',
+    'Light or moderate thunderstorm with hail',
+    'Heavy thunderstorm with shower',
+    'Heavy thunderstorm with hail',
+    'Heavy thunderstorm with duststorm',
   ],
-  snowdrift: ['snowdrift', 'drifting snow'],
-  icePellets: ['ice pellets', 'ice crystals'],
-  snowfall: ['light snowfall', 'moderate snowfall', 'heavy snowfall'],
-  snowGrains: ['snow grains'],
-  widespreadDust: ['widespread dust in suspension not raised by wind'],
-  wellDevelopedDust: ['well developed dust or sand whirls'],
-  squalls: ['squalls'],
+  snowdrift: ['Snowdrift', 'Drifting snow'],
+  icePellets: ['Ice pellets', 'Ice crystals'],
+  snowfall: ['Light snowfall', 'Moderate snowfall', 'Heavy snowfall'],
+  snowGrains: ['Snow grains'],
+  widespreadDust: ['Widespread dust in suspension not raised by wind'],
+  wellDevelopedDust: ['Well developed dust or sand whirls'],
+  squalls: ['Squalls'],
 }
+
 export const phenomenonMapping = {
   clear,
   fewClouds,
@@ -225,43 +229,43 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
   )
 
   const lottiePath = useMemo(() => {
-    if (clear.includes(props.phenomenon)) return isDay ? clearDayLottie : clearNightLottie
-    if (fewClouds.includes(props.phenomenon)) return isDay ? fewCloudsDayLottie : fewCloudsNightLottie
-    if (overcast.includes(props.phenomenon)) return overcastLottie
-    if (snow.includes(props.phenomenon)) return snowLottie
-    if (snowStorm.includes(props.phenomenon)) return snowstormLottie
-    if (lightRain.includes(props.phenomenon)) return lightRainLottie
-    if (moderateRain.includes(props.phenomenon)) return moderateRainLottie
-    if (strongRain.includes(props.phenomenon)) return strongRainLottie
-    if (lightShower.includes(props.phenomenon)) return isDay ? lightShowerDayLottie : lightShowerNightLottie
-    if (moderateShower.includes(props.phenomenon)) return isDay ? moderateShowerDayLottie : moderateShowerNightLottie
-    if (strongShower.includes(props.phenomenon)) return isDay ? strongShowerDayLottie : strongShowerNightLottie
-    if (sleet.includes(props.phenomenon)) return sleetLottie
-    if (glaze.includes(props.phenomenon)) return glazeLottie
-    if (fog.includes(props.phenomenon)) return fogLottie
-    if (thunder.includes(props.phenomenon)) return thunderLottie
-    if (thunderStorm.includes(props.phenomenon)) return thunderStormLottie
-    if (hail.includes(props.phenomenon)) return hailLottie
+    if (phenomenonMapping.clear.includes(props.phenomenon)) return isDay ? clearDayLottie : clearNightLottie
+    if (phenomenonMapping.fewClouds.includes(props.phenomenon)) return isDay ? fewCloudsDayLottie : fewCloudsNightLottie
+    if (phenomenonMapping.overcast.includes(props.phenomenon)) return overcastLottie
+    if (phenomenonMapping.snow.includes(props.phenomenon)) return snowLottie
+    if (phenomenonMapping.snowStorm.includes(props.phenomenon)) return snowstormLottie
+    if (phenomenonMapping.lightRain.includes(props.phenomenon)) return lightRainLottie
+    if (phenomenonMapping.moderateRain.includes(props.phenomenon)) return moderateRainLottie
+    if (phenomenonMapping.strongRain.includes(props.phenomenon)) return strongRainLottie
+    if (phenomenonMapping.lightShower.includes(props.phenomenon)) return isDay ? lightShowerDayLottie : lightShowerNightLottie
+    if (phenomenonMapping.moderateShower.includes(props.phenomenon)) return isDay ? moderateShowerDayLottie : moderateShowerNightLottie
+    if (phenomenonMapping.strongShower.includes(props.phenomenon)) return isDay ? strongShowerDayLottie : strongShowerNightLottie
+    if (phenomenonMapping.sleet.includes(props.phenomenon)) return sleetLottie
+    if (phenomenonMapping.glaze.includes(props.phenomenon)) return glazeLottie
+    if (phenomenonMapping.fog.includes(props.phenomenon)) return fogLottie
+    if (phenomenonMapping.thunder.includes(props.phenomenon)) return thunderLottie
+    if (phenomenonMapping.thunderStorm.includes(props.phenomenon)) return thunderStormLottie
+    if (phenomenonMapping.hail.includes(props.phenomenon)) return hailLottie
   }, [isDay, props.phenomenon])
 
   const meteoconIcon = useMemo(() => {
-    if (clear.includes(props.phenomenon)) return isDay ? clearDayMeteocon : clearNightMeteocon
-    if (fewClouds.includes(props.phenomenon)) return isDay ? fewCloudsDayMeteocon : fewCloudsNightMeteocon
-    if (overcast.includes(props.phenomenon)) return overcastMeteocon
-    if (snow.includes(props.phenomenon)) return snowMeteocon
-    if (snowStorm.includes(props.phenomenon)) return snowstormMeteocon
-    if (lightRain.includes(props.phenomenon)) return lightRainMeteocon
-    if (moderateRain.includes(props.phenomenon)) return moderateRainMeteocon
-    if (strongRain.includes(props.phenomenon)) return strongRainMeteocon
-    if (lightShower.includes(props.phenomenon)) return isDay ? lightShowerDayMeteocon : lightShowerNightMeteocon
-    if (moderateShower.includes(props.phenomenon)) return isDay ? moderateShowerDayMeteocon : moderateShowerNightMeteocon
-    if (strongShower.includes(props.phenomenon)) return isDay ? strongShowerDayMeteocon : strongShowerNightMeteocon
-    if (sleet.includes(props.phenomenon)) return sleetMeteocon
-    if (glaze.includes(props.phenomenon)) return glazeMeteocon
-    if (fog.includes(props.phenomenon)) return fogMeteocon
-    if (thunder.includes(props.phenomenon)) return thunderMeteocon
-    if (thunderStorm.includes(props.phenomenon)) return thunderStormMeteocon
-    if (hail.includes(props.phenomenon)) return hailMeteocon
+    if (phenomenonMapping.clear.includes(props.phenomenon)) return isDay ? clearDayMeteocon : clearNightMeteocon
+    if (phenomenonMapping.fewClouds.includes(props.phenomenon)) return isDay ? fewCloudsDayMeteocon : fewCloudsNightMeteocon
+    if (phenomenonMapping.overcast.includes(props.phenomenon)) return overcastMeteocon
+    if (phenomenonMapping.snow.includes(props.phenomenon)) return snowMeteocon
+    if (phenomenonMapping.snowStorm.includes(props.phenomenon)) return snowstormMeteocon
+    if (phenomenonMapping.lightRain.includes(props.phenomenon)) return lightRainMeteocon
+    if (phenomenonMapping.moderateRain.includes(props.phenomenon)) return moderateRainMeteocon
+    if (phenomenonMapping.strongRain.includes(props.phenomenon)) return strongRainMeteocon
+    if (phenomenonMapping.lightShower.includes(props.phenomenon)) return isDay ? lightShowerDayMeteocon : lightShowerNightMeteocon
+    if (phenomenonMapping.moderateShower.includes(props.phenomenon)) return isDay ? moderateShowerDayMeteocon : moderateShowerNightMeteocon
+    if (phenomenonMapping.strongShower.includes(props.phenomenon)) return isDay ? strongShowerDayMeteocon : strongShowerNightMeteocon
+    if (phenomenonMapping.sleet.includes(props.phenomenon)) return sleetMeteocon
+    if (phenomenonMapping.glaze.includes(props.phenomenon)) return glazeMeteocon
+    if (phenomenonMapping.fog.includes(props.phenomenon)) return fogMeteocon
+    if (phenomenonMapping.thunder.includes(props.phenomenon)) return thunderMeteocon
+    if (phenomenonMapping.thunderStorm.includes(props.phenomenon)) return thunderStormMeteocon
+    if (phenomenonMapping.hail.includes(props.phenomenon)) return hailMeteocon
     return notAvailableMeteocon
   }, [isDay, props.phenomenon])
   const [assets] = useDynamicAssets(meteoconIcon || clearDayMeteocon)
