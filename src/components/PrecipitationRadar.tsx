@@ -186,7 +186,7 @@ export default function PrecipitationRadar({
 
   return (
     <View style={styles.container}>
-      <Animated.View style={styles.mapContainer} entering={FadeIn.duration(500).delay(700)}>
+      <View style={styles.mapContainer}>
         <Text style={[styles.smallText, { color: isDarkMap ? '#ddd' : '#555' }]}>
           {getFormattedTime(sliderTimestamp)} {isFuture && futureMinutesDiff > 0 ? '+' + futureMinutesDiff + 'min' : ''}
         </Text>
@@ -357,7 +357,7 @@ export default function PrecipitationRadar({
             <ZoomInIcon strokeWidth={1} stroke="rgba(255, 255, 255, 0.8)" width={24} height={24} />
           </TouchableOpacity>
         )}
-      </Animated.View>
+      </View>
 
       <RadarColors />
     </View>

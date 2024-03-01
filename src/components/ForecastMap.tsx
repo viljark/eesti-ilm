@@ -62,7 +62,7 @@ export default function ForecastMap({ stations, forecast, mode }: { stations: St
 
   return (
     <View style={styles.container}>
-      <Animated.View style={styles.mapContainer} entering={FadeIn.duration(500).delay(700)}>
+      <View style={styles.mapContainer}>
         {isDarkMap === null ? null : (
           <MapView
             onRegionChange={(region) => {
@@ -94,7 +94,7 @@ export default function ForecastMap({ stations, forecast, mode }: { stations: St
             <CityMarkers cities={cities} />
           </MapView>
         )}
-      </Animated.View>
+      </View>
     </View>
   )
 }
