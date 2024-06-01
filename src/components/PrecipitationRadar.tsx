@@ -104,64 +104,81 @@ export default function PrecipitationRadar({
   }, [latestUpdate])
 
   useEffect(() => {
-    fetch('https://www.ilmateenistus.ee/ilm/ilmavaatlused/radar/#layers/precipitation')
+    fetch('https://www.ilmateenistus.ee/ilm/ilmavaatlused/radar/#layers/precipitation?t=' + latestUpdate)
       .then((r) => r.text())
       .then((r) => {
         const root = HTMLParser.parse(r)
         const slider = root.querySelector('#radar-slider')
         let start = slider.attributes['data-start']
         const startTimestamp = Number(start) * 1000
-        if (differenceInMinutes(new Date(), startTimestamp) < 15) {
-          start = start ? addMinutes(startTimestamp, futureMinutes) : roundDownTo10Minutes(addMinutes(new Date(), futureMinutes)) - 5 * 60 * 1000 * originalSteps
+        if (start) {
+          start = start ? addMinutes(startTimestamp, futureMinutes).getTime() : roundDownTo10Minutes(addMinutes(new Date(), futureMinutes)) - 5 * 60 * 1000 * originalSteps
           setStartDate(start)
         }
       })
   }, [latestUpdate, setStartDate, sliderSteps])
 
-  const getRadarUrl = useCallback(
-    (isoDate: string) => {
-      const isFuture = new Date(isoDate).getTime() > new Date().getTime()
-
-      if (isFuture) {
-        return `https://ilmgs.envir.ee/geoserver/ilm/wms?SERVICE=WMS&VERSION=1.1.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=ilm:nowcasting&TILED=true&exceptions=application/vnd.ogc.se_inimage&TIME=${isoDate}&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}&t=${latestUpdate.getTime()}`
-      }
-      return `https://ilmgs.envir.ee/geoserver/ilm/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=ilm:cmp_cap&TILED=true&exceptions=application/vnd.ogc.se_inimage&TIME=${isoDate}&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}&t=${latestUpdate.getTime()}`
-    },
-    [latestUpdate]
-  )
-  const getThunderUrl = useCallback(
-    (isoDate: string) => {
-      const endTime = format(new Date(isoDate).setSeconds(0), 'yyyy-MM-dd HH:mm:SS')
-      const startTime = format(add(new Date(isoDate).setSeconds(0), { minutes: -5, seconds: -1 }), 'yyyy-MM-dd HH:mm:ss')
-      const isFuture = new Date(isoDate).getTime() > new Date().getTime()
-      if (isFuture) {
-        return ''
-      }
-      return `https://www.ilmateenistus.ee/gsavalik/geoserver/keskkonnainfo/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=keskkonnainfo%3Apikne&STYLES=pikne_yld&CQL_FILTER=loomise_aeg%20between%20%27${startTime}%27%20and%20%27${endTime}%27&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}&t=${latestUpdate.getTime()}`
-    },
-    [latestUpdate]
-  )
-
   const timestamps = useMemo(() => {
     const dates = []
-    for (let i = 1; i <= sliderSteps; i++) {
+    for (let i = 0; i <= sliderSteps; i++) {
       const offset = originalSteps - sliderSteps
       dates.push(startDate + (i + offset) * 5 * 60 * 1000)
     }
     return dates
   }, [startDate, sliderSteps])
 
+  const currentTimestamp = timestamps[sliderSteps - futureMinutes / 5 - 1]
+
+  const getRadarUrl = useCallback(
+    (isoDate: string) => {
+      const isForecast = new Date(isoDate).getTime() > new Date(currentTimestamp).getTime()
+      if (isForecast) {
+        return `https://ilmgs.envir.ee/geoserver/ilm/wms?SERVICE=WMS&VERSION=1.1.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=ilm:nowcasting&TILED=true&exceptions=application/vnd.ogc.se_inimage&TIME=${isoDate}&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}&t=${latestUpdate.getTime()}`
+      }
+      return `https://ilmgs.envir.ee/geoserver/ilm/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=ilm:cmp_cap&TILED=true&exceptions=application/vnd.ogc.se_inimage&TIME=${isoDate}&SRS=EPSG%3A3857&BBOX={minX},{minY},{maxX},{maxY}&WIDTH={width}&HEIGHT={height}&t=${latestUpdate.getTime()}`
+    },
+    [latestUpdate, currentTimestamp]
+  )
+  const getThunderUrl = useCallback(
+    (isoDate: string) => {
+      const endTime = format(new Date(isoDate).getTime() + new Date(isoDate).getTimezoneOffset() * 60000, 'yyyy-MM-dd HH:mm:ss')
+      const startTime = format(add(new Date(isoDate).getTime() + new Date(isoDate).getTimezoneOffset() * 60000, { minutes: -5, seconds: -1 }), 'yyyy-MM-dd HH:mm:ss')
+      const isFuture = new Date(isoDate).getTime() > new Date().getTime()
+      if (isFuture) {
+        return ''
+      }
+      return `https://gslightning.envir.ee/geoserver/lightning/wms?
+SERVICE=WMS
+&VERSION=1.1.0
+&REQUEST=GetMap
+&FORMAT=image%2Fpng
+&TRANSPARENT=true
+&LAYERS=lightning%3Apikne
+&WIDTH={width}
+&HEIGHT={height}
+&STYLES=pikne_yld
+&CQL_FILTER=date_timestamp%20between%20%27${startTime}%27%20and%20%27${endTime}%27
+&SRS=EPSG%3A3857
+&BBOX={minX},{minY},{maxX},{maxY}
+&t=${latestUpdate.getTime()}`.replaceAll('\n', '')
+    },
+    [latestUpdate]
+  )
+
   const radarTileUrlsReversed = useMemo(() => {
     return timestamps.reverse().map((timestamp) => getRadarUrl(new Date(timestamp).toISOString()))
   }, [timestamps])
 
   const thunderTileUrlsReversed = useMemo(() => {
-    return timestamps.map((timestamp) => getThunderUrl(new Date(timestamp).toISOString()))
+    return timestamps.map((timestamp) => {
+      return getThunderUrl(new Date(timestamp).toISOString())
+    })
   }, [timestamps])
 
   const sliderColor = '#ddd'
   const sliderTimestamp = timestamps[radarTileUrlsReversed.length - sliderIndex]
   const isFuture = new Date(sliderTimestamp).getTime() > new Date().getTime()
+
   const futureMinutesDiff = differenceInMinutes(new Date(sliderTimestamp), new Date())
 
   const cities = useMemo(() => {
