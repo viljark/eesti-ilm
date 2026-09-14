@@ -8,11 +8,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   version: '3.0.7',
   orientation: 'portrait',
   icon: './assets/icon-bg.png',
-  splash: {
-    image: './assets/splash.png',
-    resizeMode: 'cover',
-    backgroundColor: '#ffffff',
-  },
   updates: {
     enabled: true,
     checkAutomatically: 'ON_LOAD',
@@ -48,7 +43,28 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     policy: 'appVersion',
   },
   plugins: [
-    '@sentry/react-native/expo',
+    [
+      '@sentry/react-native/expo',
+      {
+        url: 'https://sentry.io/',
+        organization: 'viljar-kargenberg',
+        project: 'eesti-ilm',
+      },
+    ],
+    'expo-asset',
+    'expo-background-task',
+    'expo-font',
+    'expo-image',
+    'expo-status-bar',
+    'expo-web-browser',
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/splash.png',
+        resizeMode: 'cover',
+        backgroundColor: '#ffffff',
+      },
+    ],
     [
       'expo-build-properties',
       {
