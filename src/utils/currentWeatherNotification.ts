@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { uniqueId, capitalize } from 'lodash'
-import notifee, { EventType } from '@notifee/react-native'
+import notifee, { EventType } from 'react-native-notify-kit'
 import analytics from '@react-native-firebase/analytics'
 import * as Notifications from 'expo-notifications'
 import { AndroidNotificationVisibility } from 'expo-notifications'

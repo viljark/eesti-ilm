@@ -1039,6 +1039,19 @@
     parse-png "^2.1.0"
     semver "^7.6.0"
 
+"@expo/image-utils@^0.8.14":
+  version "0.8.17"
+  resolved "https://registry.yarnpkg.com/@expo/image-utils/-/image-utils-0.8.17.tgz#2d5dbc5a9639044cf2ea5dc078c8ee007891d444"
+  integrity sha512-1eVrX6FFkPNl9DJNiw3Gjsf6PtG7HttbapEVvcROVrA9PCMikujOJWWHDYKGptmKoVIIVajFZE8UHGHUb3mPug==
+  dependencies:
+    "@expo/require-utils" "^55.0.8"
+    "@expo/spawn-async" "^1.7.2"
+    chalk "^4.0.0"
+    getenv "^2.0.0"
+    jimp-compact "0.16.1"
+    parse-png "^2.1.0"
+    semver "^7.6.0"
+
 "@expo/inline-modules@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@expo/inline-modules/-/inline-modules-0.1.7.tgz#43bc725ce4993496693040d30c36c38fe542cdd8"
@@ -1176,6 +1189,15 @@
     resolve-from "^5.0.0"
     semver "^7.6.0"
 
+"@expo/require-utils@^55.0.8":
+  version "55.0.8"
+  resolved "https://registry.yarnpkg.com/@expo/require-utils/-/require-utils-55.0.8.tgz#a0e799882de15e7b308e52f48c547d6a883d54a9"
+  integrity sha512-DDS5R67iz2SJwncbpcUMHtnsq31dSfllhaEncKxGlK0/ewgc2CaXUCkDA2AumfT7ubnSXiPkU9Gn8v2xCrvj+A==
+  dependencies:
+    "@babel/code-frame" "^7.20.0"
+    "@babel/core" "^7.25.2"
+    "@babel/plugin-transform-modules-commonjs" "^7.24.8"
+
 "@expo/require-utils@^57.0.5":
   version "57.0.5"
   resolved "https://registry.yarnpkg.com/@expo/require-utils/-/require-utils-57.0.5.tgz#bde8d170b0b53fa1cd77aa73a305e5a16f4229a3"
@@ -1202,7 +1224,7 @@
   resolved "https://registry.yarnpkg.com/@expo/sdk-runtime-versions/-/sdk-runtime-versions-1.0.0.tgz#d7ebd21b19f1c6b0395e50d78da4416941c57f7c"
   integrity sha512-Doz2bfiPndXYFPMRwPyGa1k5QaKDVpY806UJj570epIiMzWaYyCtobasyfC++qfIXVb5Ocy7r3tP9d62hAQ7IQ==
 
-"@expo/spawn-async@^1.8.0":
+"@expo/spawn-async@^1.7.2", "@expo/spawn-async@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@expo/spawn-async/-/spawn-async-1.8.0.tgz#915e2ab38554fca7d788e16032078554dee633cf"
   integrity sha512-eb9xxd/LbuEGSdua4NumCu/McVB9EM+F/JxB9pWgnERw4HQ9XyTNH1KapG6oqLWR8TuRK2LQfzJlmNi94CVobw==
@@ -2103,11 +2125,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@notifee/react-native@^7.8.0":
-  version "7.9.0"
-  resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-7.9.0.tgz#341bdb55345b2e02690f6161efb24d13291ad538"
-  integrity sha512-r4iFcAkvfFV/iNwGF50y9uAYS8x0x6+t9gmBsZczWxFHzBvg5nBjwFjshnuC24+oNnlNWIbB03heNmFjrFArJQ==
-
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -2580,6 +2597,11 @@
   version "0.8.12"
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.12.tgz#cf488a5435fa06c7374ad1449c69cea0f823624b"
   integrity sha512-9k/gHF6n/pAi/9tqr3m3aqkuiNosYTurLLUtc7xQ9sxB/wm7WPygCv8GYa6mS0fLJEHhqMC1ATYhz++U/lRHqg==
+
+"@xmldom/xmldom@^0.9.10":
+  version "0.9.12"
+  resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.9.12.tgz#1f84c07cb95ccf28202299f77b5fd7fc257151e8"
+  integrity sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==
 
 abort-controller@^3.0.0:
   version "3.0.0"
@@ -3505,15 +3527,6 @@ expo-background-task@~57.0.17:
   integrity sha512-Yc9gjYybjbO1+bEXbYm+b0LlY0ZtlrsveqoWFbiPBm1G2+f1l3RBJEADg65F3P4D9DeJ+E6TulF+ux2q31CoFQ==
   dependencies:
     expo-task-manager "~57.0.17"
-
-expo-build-properties@~57.0.17:
-  version "57.0.17"
-  resolved "https://registry.yarnpkg.com/expo-build-properties/-/expo-build-properties-57.0.17.tgz#8abbbc554a65696ddea6ba1f3bf9dd152d6e298c"
-  integrity sha512-+qA5we2h1Gpnd24RGCR1amfSx7Mtf8glZ0jA5bbe1Nfdw9NdAIl+HPUqU7xyOUDKD0JWsHh9ap6yJG/jTs0tvA==
-  dependencies:
-    "@expo/schema-utils" "^57.0.2"
-    resolve-from "^5.0.0"
-    semver "^7.6.0"
 
 expo-constants@~57.0.18:
   version "57.0.18"
@@ -5189,6 +5202,15 @@ plist@^3.0.5:
     base64-js "^1.5.1"
     xmlbuilder "^15.1.1"
 
+plist@^3.1.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/plist/-/plist-3.1.1.tgz#fa6099e1e3cf6ea180258ebe6378ea3878c2c841"
+  integrity sha512-ZIfcLJC+7E7FBFnDxm9MPmt7D+DidyQ26lewieO75AdhA2ayMtsJSES0iWzqJQbcVRSrTufQoy0DR94xHue0oA==
+  dependencies:
+    "@xmldom/xmldom" "^0.9.10"
+    base64-js "^1.5.1"
+    xmlbuilder "^15.1.1"
+
 pngjs@^3.3.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
@@ -5367,6 +5389,18 @@ react-native-maps@1.27.2:
   integrity sha512-VKr+xZ2RZGHHJlY6KhlafvGSmK0dq/tUu5uhfJ7K9rwN5pUdubdugzMKGDU/16lXmQSg7xbClKhRctj3Pm5F5g==
   dependencies:
     "@types/geojson" "^7946.0.13"
+
+react-native-notify-kit@^10.7.1:
+  version "10.7.1"
+  resolved "https://registry.yarnpkg.com/react-native-notify-kit/-/react-native-notify-kit-10.7.1.tgz#bd97b16d71f8aac3e7811a14df9eb865101ed9d9"
+  integrity sha512-bj00Un58FBwEOdxykfNurs0GAVM/7/dKcuViYJAx0XFuBBELXsV7HYAFFTppIIniGkV9+6jo8TsVJ0FNJ2ojNQ==
+  dependencies:
+    "@expo/image-utils" "^0.8.14"
+  optionalDependencies:
+    chalk "^4.1.0"
+    commander "^12.0.0"
+    plist "^3.1.0"
+    xcode "^3.0.1"
 
 react-native-pager-view@8.0.2:
   version "8.0.2"

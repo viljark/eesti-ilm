@@ -21,7 +21,7 @@ import { LocationAccuracy } from 'expo-location'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { registerBackgroundFetchAsync, showCurrentWeatherNotification, unregisterBackgroundFetchAsync } from './src/utils/currentWeatherNotification'
 import { useSharedSettings } from './src/screens/Settings'
-import notifee from '@notifee/react-native'
+import notifee from 'react-native-notify-kit'
 // axios.interceptors.request.use((request) => {
 //   console.log('Starting Request', JSON.stringify(request.url, null, 2))
 //   return request

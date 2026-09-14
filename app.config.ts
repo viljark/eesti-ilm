@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: 'Eesti ilm',
   slug: 'eesti-ilm',
   platforms: ['android'],
-  version: '3.0.7',
+  version: '3.0.8',
   orientation: 'portrait',
   icon: './assets/icon-bg.png',
   updates: {
@@ -18,7 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     playStoreUrl: 'https://play.google.com/store/apps/details?id=ee.viljark.eestiilm',
     googleServicesFile: './google-services.json',
     package: 'ee.viljark.eestiilm',
-    versionCode: 37,
+    versionCode: 38,
     adaptiveIcon: {
       backgroundImage: './assets/bg.png',
       foregroundImage: './assets/icon.png',
@@ -63,14 +63,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         image: './assets/splash.png',
         resizeMode: 'cover',
         backgroundColor: '#ffffff',
-      },
-    ],
-    [
-      'expo-build-properties',
-      {
-        android: {
-          extraMavenRepos: ['../../node_modules/@notifee/react-native/android/libs'],
-        },
       },
     ],
     '@react-native-firebase/app',
