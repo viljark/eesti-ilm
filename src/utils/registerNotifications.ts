@@ -1,4 +1,4 @@
-import Constants from 'expo-constants'
+import * as Device from 'expo-device'
 import * as Application from 'expo-application'
 import * as Notifications from 'expo-notifications'
 import { Platform } from 'react-native'
@@ -24,14 +24,14 @@ export const registerForPushNotificationsAsync = async () => {
       return
     }
     try {
-      const token = (await Notifications.getExpoPushTokenAsync()).data
+      const token = (await Notifications.getExpoPushTokenAsync({ projectId: 'ed6360c0-8c0c-11e9-9d21-bb29f9d51c79' })).data
       if (token) {
         const storedLocationObject = await retrieveStoredLocation()
         getFirestore()
           .collection('users')
-          .doc(Application.androidId)
+          .doc(Application.getAndroidId())
           .set(
-            { pushToken: token, id: Application.androidId, deviceName: Constants.deviceName, updatedAt: new Date(), locationRegion: storedLocationObject?.locationRegion || '' },
+            { pushToken: token, id: Application.getAndroidId(), deviceName: Device.deviceName, updatedAt: new Date(), locationRegion: storedLocationObject?.locationRegion || '' },
             { merge: true }
           )
         console.log('token', token)

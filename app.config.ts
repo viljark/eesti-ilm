@@ -4,7 +4,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Eesti ilm',
   slug: 'eesti-ilm',
-  privacy: 'public',
   platforms: ['android'],
   version: '3.0.7',
   orientation: 'portrait',
@@ -20,11 +19,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     fallbackToCacheTimeout: 5 * 1000,
     url: 'https://u.expo.dev/ed6360c0-8c0c-11e9-9d21-bb29f9d51c79',
   },
-  assetBundlePatterns: ['**/*'],
-  ios: {
-    supportsTablet: false,
-  },
-  jsEngine: 'hermes',
   android: {
     playStoreUrl: 'https://play.google.com/store/apps/details?id=ee.viljark.eestiilm',
     googleServicesFile: './google-services.json',
@@ -42,34 +36,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     },
   },
-  notification: {
-    icon: './assets/icon-notification.png',
-  },
   description:
     'An Expo/React Native app for Estonian weather Created using www.ilmateenistus.ee API details: https://www.ilmateenistus.ee/teenused/ilmainfo/eesti-vaatlusandmed-xml/ Icons made by Freepik from www.flaticon.com is licensed by CC 3.0 BY',
   githubUrl: 'https://github.com/viljark/eesti-ilm',
-  hooks: {
-    postPublish: [
-      {
-        file: 'sentry-expo/upload-sourcemaps',
-        config: {
-          organization: 'viljar-kargenberg',
-          project: 'eesti-ilm',
-          authToken: 'd420fd34a9a540a1ae67b8bb1e7f72982ba7af8c5d31447699b1aaaef09730eb',
-        },
-      },
-    ],
-  },
   extra: {
     eas: {
       projectId: 'ed6360c0-8c0c-11e9-9d21-bb29f9d51c79',
     },
   },
   runtimeVersion: {
-    policy: 'sdkVersion',
+    policy: 'appVersion',
   },
   plugins: [
-    'sentry-expo',
+    '@sentry/react-native/expo',
     [
       'expo-build-properties',
       {

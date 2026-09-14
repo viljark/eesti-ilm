@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { Dimensions, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import MapView, { MAP_TYPES, Marker, UrlTile, WMSTile } from 'react-native-maps'
 import { LocationContext } from '../../LocationContext'
-import * as FileSystem from 'expo-file-system'
+import * as FileSystem from 'expo-file-system/legacy'
 
 import Slider from '@react-native-community/slider'
 import { getFormattedTime } from '../utils/formatters'
@@ -73,7 +73,7 @@ export default function PrecipitationRadar({
   latestUpdate: Date
   stations: Station[]
   hourlyObservations: HourlyObservation[]
-}): JSX.Element {
+}): React.ReactNode {
   const sliderSteps = 24
   const originalSteps = 36
   const futureMinutes = 60
@@ -86,7 +86,7 @@ export default function PrecipitationRadar({
   const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
 
   const { isSwipeEnabled } = useSnapshot(store)
-  const ref = useRef<MapView>()
+  const ref = useRef<MapView>(null)
 
   const mapBoxDark = 'clf1lw9lt001k01pg6s20piqq'
   const mapBoxWhite = 'cldc4wv26000d01nmjyljtssb'

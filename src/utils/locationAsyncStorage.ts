@@ -7,7 +7,7 @@ import * as Application from 'expo-application'
 export async function storeLocationData(locationDataArgs: { location: Location.LocationObject; locationName: string; locationRegion: string }) {
   try {
     await AsyncStorage.setItem('location', JSON.stringify(locationDataArgs))
-    getFirestore().collection('users').doc(Application.androidId).set({ locationRegion: locationDataArgs.locationRegion, updatedAt: new Date() }, { merge: true })
+    getFirestore().collection('users').doc(Application.getAndroidId()).set({ locationRegion: locationDataArgs.locationRegion, updatedAt: new Date() }, { merge: true })
     // console.log('saved location', JSON.stringify(locationDataArgs))
   } catch (error) {
     // Error saving data

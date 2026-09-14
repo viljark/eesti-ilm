@@ -2,14 +2,14 @@ import 'react-native-gesture-handler'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import AppContainer from './AppContainer'
 import * as Location from 'expo-location'
-import { AppState, AppStateStatus, Keyboard, SafeAreaView, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { AppState, AppStateStatus, Keyboard, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { LocationContext } from './LocationContext'
 import Background from './src/components/Background'
 import { useFonts, Inter_700Bold, Inter_300Light, Inter_200ExtraLight, Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter'
 import _ from 'lodash'
 
 import { getLocationByName } from './src/services'
-import * as Sentry from 'sentry-expo'
+import * as Sentry from '@sentry/react-native'
 import Constants from 'expo-constants'
 import { retrieveStoredLocation, storeLocationData } from './src/utils/locationAsyncStorage'
 import { registerForPushNotificationsAsync } from './src/utils/registerNotifications'
@@ -17,7 +17,7 @@ import Pin from './src/icons/Pin'
 import { LogBox } from 'react-native'
 import useAsyncStorage from './src/utils/useAsyncStorage'
 import Autocomplete from 'react-native-autocomplete-input'
-import { LocationAccuracy } from 'expo-location/src/Location.types'
+import { LocationAccuracy } from 'expo-location'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { registerBackgroundFetchAsync, showCurrentWeatherNotification, unregisterBackgroundFetchAsync } from './src/utils/currentWeatherNotification'
 import { useSharedSettings } from './src/screens/Settings'
@@ -30,11 +30,10 @@ import notifee from '@notifee/react-native'
 LogBox.ignoreAllLogs()
 Sentry.init({
   dsn: 'https://af51d092fe394c5b832520eb8e494f93@o512763.ingest.sentry.io/5613608',
-  enableInExpoDevelopment: true,
-  debug: false, // Sentry will try to print out useful debugging information if something goes wrong with sending an event. Set this to `false` in production.
+  debug: false,
 })
 
-export default function App() {
+function App() {
   const [locationData, setLocationData] = useState<{
     location: Location.LocationObject
     locationName: string
@@ -227,12 +226,11 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <LocationContext.Provider value={{ location, locationName, locationRegion }}>
         <Background location={location}>
-          <SafeAreaView style={styles.autocompleteContainer}>
+          <View style={styles.autocompleteContainer}>
             {fontsLoaded && (
               <>
                 <Pin width={20} height={20} fill="#fff" style={styles.pin} />
                 <Autocomplete
-                  renderItem={() => null}
                   data={autocompleteData}
                   onChangeText={loadDataDebounced}
                   listContainerStyle={{ borderRadius: 10, overflow: 'hidden', maxHeight: '70%', backgroundColor: '#fff' }}
@@ -251,7 +249,7 @@ export default function App() {
                 />
               </>
             )}
-          </SafeAreaView>
+          </View>
           <View
             style={{
               paddingTop: 60 + Constants.statusBarHeight,
@@ -326,3 +324,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 })
+
+export default Sentry.wrap(App)

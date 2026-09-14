@@ -38,11 +38,11 @@ export default function SettingsScreen() {
     ;(async () => {
       try {
         setIsLoading(true)
-        const userSnapshot = await getFirestore().collection('users').doc(Application.androidId).get()
+        const userSnapshot = await getFirestore().collection('users').doc(Application.getAndroidId()).get()
         const user = userSnapshot.data()
 
         if (typeof user?.isWarningNotificationEnabled !== 'boolean') {
-          getFirestore().collection('users').doc(Application.androidId).set({ isWarningNotificationEnabled: true }, { merge: true })
+          getFirestore().collection('users').doc(Application.getAndroidId()).set({ isWarningNotificationEnabled: true }, { merge: true })
           setIsWarningNotificationEnabled(true)
         } else {
           setIsWarningNotificationEnabled(user?.isWarningNotificationEnabled || false)
@@ -59,7 +59,7 @@ export default function SettingsScreen() {
     ToastAndroid.show(value ? 'Teavitused sees' : 'Teavitused väljas', ToastAndroid.SHORT)
 
     analytics().logEvent('settings_notifications', { value })
-    await getFirestore().collection('users').doc(Application.androidId).set({ isWarningNotificationEnabled: value }, { merge: true })
+    await getFirestore().collection('users').doc(Application.getAndroidId()).set({ isWarningNotificationEnabled: value }, { merge: true })
   }
 
   return (

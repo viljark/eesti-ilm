@@ -71,7 +71,7 @@ function MainScreens() {
 }
 
 export default function App() {
-  const navigationRef = useRef()
+  const navigationRef = useRef(null)
   return (
     <NavigationContainer
       theme={MyTheme}

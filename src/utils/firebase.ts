@@ -1,4 +1,5 @@
-import firebase from 'firebase/compat'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -10,8 +11,11 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 }
+
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig)
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig)
+}
 
 const db = firebase.firestore()
 

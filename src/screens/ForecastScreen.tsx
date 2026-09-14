@@ -40,7 +40,7 @@ export default function ForecastScreen() {
     setIsRefreshing(false)
   }
 
-  const debounceGetData = useRef<Function>()
+  const debounceGetData = useRef<Function>(null)
 
   useEffect(() => {
     if (!coordinates) {

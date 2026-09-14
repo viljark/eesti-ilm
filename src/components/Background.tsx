@@ -52,7 +52,7 @@ const Background = (props: { children: React.ReactNode; location: Location.Locat
 
   return gradient ? (
     <View style={[styles.container, props.style, { backgroundColor: '#000' }]}>
-      <LinearGradient style={[styles.container]} colors={gradient.color} start={[0.5, 0]} locations={gradient.location}>
+      <LinearGradient style={[styles.container]} colors={gradient.color as [string, string, ...string[]]} start={[0.5, 0]} locations={gradient.location as [number, number, ...number[]]}>
         {props.children}
         <StatusBar style={gradientsNight.includes(gradient) ? 'light' : 'dark'} />
       </LinearGradient>

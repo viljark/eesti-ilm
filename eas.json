@@ -35,7 +35,7 @@
 	}
   },
   "cli": {
-    "version": ">= 0.47.0"
+    "version": ">= 16.0.0"
   },
   "submit": {
 	"production": {

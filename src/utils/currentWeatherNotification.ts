@@ -58,7 +58,7 @@ import strongShowerNightMeteocon from '@bybas/weather-icons/production/fill/png/
 // @ts-ignore
 import notAvailable from '@bybas/weather-icons/production/fill/png/256/not-available.png'
 
-import * as BackgroundFetch from 'expo-background-fetch'
+import * as BackgroundTask from 'expo-background-task'
 import * as TaskManager from 'expo-task-manager'
 import { useMemo } from 'react'
 import { phenomenonMapping } from '../components/PhenomenonIcon'
@@ -69,17 +69,14 @@ const BACKGROUND_FETCH_TASK = 'background-fetch'
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
   const now = Date.now()
 
-  console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`)
+  console.log(`Got background task call at date: ${new Date(now).toISOString()}`)
   await showCurrentWeatherNotification()
-  // Be sure to return the successful result type!
-  return BackgroundFetch.BackgroundFetchResult.NewData
+  return BackgroundTask.BackgroundTaskResult.Success
 })
 
 export async function registerBackgroundFetchAsync() {
-  return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+  return BackgroundTask.registerTaskAsync(BACKGROUND_FETCH_TASK, {
     minimumInterval: 60 * 15, // 15 minutes
-    stopOnTerminate: false, // android only,
-    startOnBoot: true, // android only
   })
 }
 
@@ -88,7 +85,7 @@ export async function unregisterBackgroundFetchAsync() {
   if (!isRegistered) {
     return
   }
-  return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK)
+  return BackgroundTask.unregisterTaskAsync(BACKGROUND_FETCH_TASK)
 }
 
 export async function registerNotificationChannel() {
@@ -127,7 +124,7 @@ export async function getNotificationPermission() {
 
   let token
   if (finalStatus === 'granted') {
-    token = (await Notifications.getExpoPushTokenAsync()).data
+    token = (await Notifications.getExpoPushTokenAsync({ projectId: 'ed6360c0-8c0c-11e9-9d21-bb29f9d51c79' })).data
   }
   return { status: finalStatus, token }
 }
