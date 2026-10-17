@@ -68,6 +68,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     '@react-native-firebase/app',
     '@react-native-firebase/crashlytics',
     '@react-native-firebase/perf',
+    [
+      'react-native-maps',
+      {
+        androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+      },
+    ],
     // @ts-ignore
     './plugins/withNotificationIcons.js',
     './plugins/withUseLegacyPackaging.js',
