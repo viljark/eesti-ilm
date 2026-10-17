@@ -3,7 +3,7 @@ import { useContext, useMemo, useRef, useState } from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import MapView, { MAP_TYPES, Marker, UrlTile, WMSTile } from 'react-native-maps'
 import { LocationContext } from '../../LocationContext'
-import * as FileSystem from 'expo-file-system/legacy'
+import { Paths } from 'expo-file-system'
 
 import Svg, { Circle } from 'react-native-svg'
 import { useSharedSettings } from '../screens/Settings'
@@ -32,7 +32,7 @@ export default function ForecastMap({ stations, forecast, mode }: { stations: St
 
   // const { location } = useContext(LocationContext)
   const isDarkMap = mode === 'night'
-  const tileCacheDir = FileSystem.cacheDirectory + `mapbox-${isDarkMap ? 'dark' : 'light'}/`
+  const tileCacheDir = Paths.join(Paths.cache, `mapbox-${isDarkMap ? 'dark' : 'light'}`)
 
   const { isSwipeEnabled } = useSnapshot(store)
   const ref = useRef<MapView>(null)
