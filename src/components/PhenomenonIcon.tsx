@@ -307,22 +307,25 @@ function LottieIcon_({ style, path }: { path: any; style: StyleProp<ViewStyle> }
   const isScreenFocused = useIsFocused()
 
   useEffect(() => {
+    if (!path) return
     if (isScreenFocused) {
       ref.current?.play()
     } else {
       ref.current?.pause()
     }
-  }, [ref.current, isScreenFocused])
+  }, [isScreenFocused, path])
 
   const play = useCallback(() => {
     ref.current?.play()
-  }, [ref.current])
+  }, [])
 
   const pause = useCallback(() => {
     ref.current?.pause()
-  }, [ref.current])
+  }, [])
 
   useAppState(play, pause)
+
+  if (!path) return null
 
   return <LottieView ref={ref} autoPlay={true} style={style} source={path} />
 }
