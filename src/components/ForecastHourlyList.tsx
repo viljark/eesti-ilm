@@ -82,7 +82,7 @@ export function ForecastHourlyList({ graphWidth, graphRef, detailedForecast, lat
         style={styles.scrollView}
       />
 
-      <ScrollView stickyHeaderIndices={stickyIndexes}>{detailedForecast && detailedForecast.map((time, index) => [,])}</ScrollView>
+      <ScrollView stickyHeaderIndices={stickyIndexes} />
     </View>
   )
 }

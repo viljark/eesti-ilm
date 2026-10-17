@@ -1,5 +1,5 @@
 import { Time } from '../services'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { AreaChart, BarChart, LineChart, Grid } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, PanResponder, StyleSheet, Text, View, ViewStyle } from 'react-native'
@@ -45,6 +45,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
       locationY: number
     }>
   >([])
+  const pendingDecoratorLocations = useRef<typeof iconLocation | null>(null)
   const Decorator = (props?: any) => {
     const decoratorLocations = []
     const decorators = props.data.map((value, index) => {
@@ -56,11 +57,18 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
       return null
     })
 
-    if (!_.isEqual(decoratorLocations, iconLocation)) {
-      setIconLocation(decoratorLocations)
-    }
+    // Collect during render, commit in an effect. Calling setIconLocation here
+    // updates ForecastGraph while Decorator is rendering, which React 19 rejects.
+    pendingDecoratorLocations.current = decoratorLocations
     return decorators
   }
+
+  useEffect(() => {
+    const next = pendingDecoratorLocations.current
+    if (next && !_.isEqual(next, iconLocation)) {
+      setIconLocation(next)
+    }
+  })
 
   const raindropHeight = 20
 

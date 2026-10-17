@@ -52,13 +52,14 @@ export default function ForecastMap({ stations, forecast, mode }: { stations: St
       .filter((station) => cityNames.find((name) => name.includes(station.name)))
       .map((station) => {
         const place = forecast[mode]?.place.find((place) => station.name.includes(place.name))
+        if (!place) return { ...station, phenomenon: undefined, airtemperature: undefined }
         return {
           ...station,
           phenomenon: place.phenomenon,
           airtemperature: `${place.tempmax || place.tempmin}`,
         }
       })
-  }, [stations])
+  }, [stations, forecast, mode])
 
   return (
     <View style={styles.container}>
@@ -100,6 +101,7 @@ export default function ForecastMap({ stations, forecast, mode }: { stations: St
 }
 
 const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
+  const [tracksViewChanges, setTracksViewChanges] = useState(true)
   return (
     <>
       {cities
@@ -114,11 +116,12 @@ const CityMarkers = React.memo(({ cities }: { cities: Station[] }) => {
             }}
             zIndex={1}
             anchor={{ x: 0.5, y: 0.9 }}
-            tracksViewChanges={false}
+            tracksViewChanges={tracksViewChanges}
           >
             <View style={{ position: 'absolute', top: 0, paddingVertical: 0, paddingHorizontal: 4, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.6)' }}>
               <Text
                 allowFontScaling={false}
+                onTextLayout={() => tracksViewChanges && setTracksViewChanges(false)}
                 style={{
                   color: 'white',
                   fontFamily: 'Inter_500Medium',

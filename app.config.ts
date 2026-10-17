@@ -63,6 +63,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         image: './assets/splash.png',
         resizeMode: 'cover',
         backgroundColor: '#ffffff',
+        // Android 12+ renders the splash as a centered (masked) icon, so the
+        // full-bleed cover image gets crushed into the icon slot. Give Android
+        // a square logo instead and keep the cover image for iOS.
+        android: {
+          image: './assets/icon.png',
+          imageWidth: 288,
+        },
       },
     ],
     '@react-native-firebase/app',
