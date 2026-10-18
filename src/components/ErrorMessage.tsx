@@ -15,7 +15,7 @@ export function ErrorMessage({ children }) {
           style={{
             fontSize: 13,
             color: '#fff',
-            fontFamily: 'Inter_700',
+            fontFamily: 'Inter_700Bold',
           }}
         >
           <Text

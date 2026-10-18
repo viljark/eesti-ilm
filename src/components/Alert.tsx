@@ -42,9 +42,10 @@ export function Alert({ latestUpdate }: { latestUpdate: Date }) {
 
   const alertIcon = useMemo(() => {
     if (!warning) return
-    if (warning.content_est.includes('äike')) return thunderStormLottie
-    if (warning.content_est.includes('tuul')) return windAlertLottie
-    if (warning.content_est.includes('udu')) return fogLottie
+    const content = warning.content_est ?? ''
+    if (content.includes('äike')) return thunderStormLottie
+    if (content.includes('tuul')) return windAlertLottie
+    if (content.includes('udu')) return fogLottie
   }, [warning])
 
   return (

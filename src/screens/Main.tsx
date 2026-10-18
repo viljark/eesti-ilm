@@ -120,15 +120,24 @@ export default function Main(props) {
 
   async function fetchObservations() {
     setIsRefreshing(true)
-    const response = await getObservations()
-    const hourlyObservations = await getHourlyObservations()
+    try {
+      const response = await getObservations()
+      const hourlyObservations = await getHourlyObservations()
 
-    setIsRefreshing(false)
-    setAllObservations(response.observations)
-    setAllHourlyObservations(hourlyObservations)
-    await registerNotificationChannel()
-    if (showWeatherNotification) {
-      showCurrentWeatherNotification(response.observations, hourlyObservations)
+      setAllObservations(response.observations)
+      setAllHourlyObservations(hourlyObservations)
+      setErrormessage(null)
+      await registerNotificationChannel()
+      if (showWeatherNotification) {
+        showCurrentWeatherNotification(response.observations, hourlyObservations)
+      }
+    } catch (e) {
+      // Without this the refresh flag stays true forever, leaving a permanent
+      // spinner and a pull-to-refresh that never completes.
+      console.warn('Observations fetch failed', e)
+      setErrormessage('Andmete laadimine ebaõnnestus, proovi hiljem uuesti')
+    } finally {
+      setIsRefreshing(false)
     }
   }
 

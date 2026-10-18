@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   phenomenon: {
-    fontFamily: 'Inter_200Light',
+    fontFamily: 'Inter_200ExtraLight',
     marginTop: 4,
     color: '#fff',
     textAlign: 'center',
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   realFeel: {
-    fontFamily: 'Inter_200Light',
+    fontFamily: 'Inter_200ExtraLight',
     marginTop: 0,
     color: '#fff',
     textAlign: 'center',

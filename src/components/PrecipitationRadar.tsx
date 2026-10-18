@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { Dimensions, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import MapView, { MAP_TYPES, Marker, UrlTile, WMSTile } from 'react-native-maps'
 import { LocationContext } from '../../LocationContext'
-import { Paths } from 'expo-file-system'
+import { tileCachePathFor } from '../utils/tileCache'
 
 import Slider from '@react-native-community/slider'
 import { getFormattedTime } from '../utils/formatters'
@@ -83,7 +83,7 @@ export default function PrecipitationRadar({
   const { location } = useContext(LocationContext)
   const [sliderIndex, setSliderIndex] = useState(sliderSteps - futureMinutes / 5)
   const { isDarkMap, showThunder, showTemperature, showPhenomenon, setShowPhenomenon, setShowThunder, setShowTemperature } = useSharedSettings()
-  const tileCacheDir = Paths.join(Paths.cache, `mapbox-${isDarkMap ? 'dark' : 'light'}`)
+  const tileCacheDir = tileCachePathFor(isDarkMap ? 'dark' : 'light')
 
   const { isSwipeEnabled } = useSnapshot(store)
   const ref = useRef<MapView>(null)
@@ -166,7 +166,7 @@ SERVICE=WMS
   )
 
   const radarTileUrlsReversed = useMemo(() => {
-    return timestamps.reverse().map((timestamp) => getRadarUrl(new Date(timestamp).toISOString()))
+    return [...timestamps].reverse().map((timestamp) => getRadarUrl(new Date(timestamp).toISOString()))
   }, [timestamps])
 
   const thunderTileUrlsReversed = useMemo(() => {

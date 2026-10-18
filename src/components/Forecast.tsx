@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { ForecastResponse, getForecast } from '../services'
+import { ForecastResponse, getForecast, normalizeForecastDays } from '../services'
 import { PhenomenonIcon } from './PhenomenonIcon'
 import { getDayName } from '../utils/formatters'
 import useAsyncStorage from '../utils/useAsyncStorage'
@@ -22,12 +22,21 @@ export function Forecast(props: { latestUpdate: Date }) {
   }, [props.latestUpdate, forecastUpdated])
 
   async function loadForecast() {
-    const response = await getForecast()
-    if (response.forecasts?.forecast.length > 0) {
-      setForecast(response)
+    try {
+      const response = await getForecast()
+      const days = normalizeForecastDays(response?.forecasts?.forecast)
+      if (days.length > 0) {
+        setForecast({ ...response, forecasts: { ...response.forecasts, forecast: days } })
+      }
+    } catch (e) {
+      console.warn('Forecast fetch failed', e)
     }
     setForecastUpdated(new Date())
   }
+
+  // Values cached by older builds may still hold the single-object shape, so
+  // normalize on read as well as on write.
+  const forecastDays = normalizeForecastDays(forecast?.forecasts?.forecast)
 
   const handleClick = () => {
     setActiveForecast(activeForecast === 'day' ? 'night' : 'day')
@@ -36,15 +45,13 @@ export function Forecast(props: { latestUpdate: Date }) {
   return (
     <>
       <View style={styles.row}>
-        {forecast &&
-          forecast.forecasts &&
-          forecast.forecasts.forecast.map((f, i) => (
+        {forecastDays.map((f, i) => (
             <TouchableOpacity
               key={f.$.date}
               style={styles.forecast}
               onPress={() => {
                 nav.navigate('DayForecastScreen', {
-                  forecast: forecast.forecasts.forecast,
+                  forecast: forecastDays,
                   index: i,
                 })
               }}

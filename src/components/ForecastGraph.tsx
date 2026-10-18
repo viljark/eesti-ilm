@@ -1,5 +1,5 @@
 import { Time } from '../services'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { AreaChart, BarChart, LineChart, Grid } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, PanResponder, StyleSheet, Text, View, ViewStyle } from 'react-native'
@@ -110,7 +110,8 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }, [scrollPos, dayLocation])
 
   const staticDay3AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length || dayLocation?.length < 2) {
+    // indexes dayLocation[1] and [2]
+    if (!dayLocation?.length || dayLocation?.length < 3) {
       return { display: 'none' }
     }
     return {
@@ -121,7 +122,8 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
   }, [scrollPos, dayLocation])
 
   const staticDay4AnimatedStyle = useAnimatedStyle(() => {
-    if (!dayLocation?.length || dayLocation?.length < 2) {
+    // indexes dayLocation[2] and [3]
+    if (!dayLocation?.length || dayLocation?.length < 4) {
       return { display: 'none' }
     }
     return {
@@ -315,9 +317,8 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                 <Line />
               </AreaChart>
               {dayLocation?.map((dl, i) => (
-                <>
+                <Fragment key={i + 100}>
                   <Animated.Text
-                    key={i + 100}
                     style={[
                       scrollingDaysAnimatedStyles[i],
                       {
@@ -342,7 +343,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                       backgroundColor: 'rgba(255, 255, 255, 0.3)',
                     }}
                   />
-                </>
+                </Fragment>
               ))}
               {iconLocation.map((icon, i) => (
                 <View
@@ -361,7 +362,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                     borderColor: 'rgba(255,255,255,0.1)',
                   }}
                 >
-                  {detailedForecast[i] && !!detailedForecast[i].phenomen['@attributes'].en && i % hourInterval === 0 && (
+                  {detailedForecast[i] && !!detailedForecast[i].phenomen?.['@attributes']?.en && i % hourInterval === 0 && location && (
                     <PhenomenonIcon
                       latitude={location.coords.latitude}
                       longitude={location.coords.longitude}
@@ -405,7 +406,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                         allowFontScaling={false}
                         style={{
                           fontSize: 7,
-                          fontFamily: 'Inter_200Light',
+                          fontFamily: 'Inter_200ExtraLight',
                           color: '#fff',
                           bottom: 8,
                           lineHeight: 12,
@@ -431,7 +432,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                         width: 35,
                         color: '#fff',
                         fontSize: 12,
-                        fontFamily: 'Inter_200Light',
+                        fontFamily: 'Inter_200ExtraLight',
                         ...commonStyles.textShadow,
                       }}
                     >
@@ -466,7 +467,7 @@ export function ForecastGraph({ detailedForecast, graphRef, graphWidth, minTemp,
                           textShadowColor: 'rgba(0, 0, 0, 0.3)',
                           textShadowOffset: { width: 0, height: 1 },
                           textShadowRadius: 5,
-                          fontFamily: 'Inter_200Light',
+                          fontFamily: 'Inter_200ExtraLight',
                         }}
                       >
                         {Number(detailedForecast[i].temperature['@attributes'].value).toFixed(0)}

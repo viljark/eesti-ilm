@@ -35,9 +35,14 @@ export default function ForecastScreen() {
 
   async function getForecast(coordinates) {
     setIsRefreshing(true)
-    const response = await getDetailedForecast(coordinates)
-    setDetailedForecast([...response.forecast.tabular.time])
-    setIsRefreshing(false)
+    try {
+      const response = await getDetailedForecast(coordinates)
+      setDetailedForecast([...(response?.forecast?.tabular?.time ?? [])])
+    } catch (e) {
+      console.warn('Detailed forecast fetch failed', e)
+    } finally {
+      setIsRefreshing(false)
+    }
   }
 
   const debounceGetData = useRef<Function>(null)

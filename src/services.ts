@@ -35,6 +35,17 @@ export async function getForecast(): Promise<ForecastResponse> {
   return xmlResponseToJson(iconv.decode(new Buffer(response.data), RESPONSE_CHARSET))
 }
 
+/**
+ * xml2js parses the forecast feed with `explicitArray: false`, so a feed that
+ * contains a single `<forecast>` element deserializes to an object rather than a
+ * one-element array, and every `.map`/`.length` on it breaks. Normalize to an
+ * array at the boundary.
+ */
+export function normalizeForecastDays(forecast: Forecast[] | Forecast | undefined): Forecast[] {
+  if (!forecast) return []
+  return Array.isArray(forecast) ? forecast : [forecast]
+}
+
 export async function getWarnings(): Promise<WarningsResponse> {
   let response
   try {
@@ -46,6 +57,11 @@ export async function getWarnings(): Promise<WarningsResponse> {
   } catch (e) {
     if (e.response) {
       response = e.response
+    } else {
+      // No HTTP response at all (offline, DNS failure, timeout). Callers already
+      // treat an empty list as "no warnings", so hand them that shape instead of
+      // dereferencing `response.data` on undefined below.
+      return { warnings: { warning: [] } }
     }
   }
 

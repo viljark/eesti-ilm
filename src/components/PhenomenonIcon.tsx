@@ -268,7 +268,14 @@ const PhenomenonIcon_: FunctionComponent<PhenomenonIconProps> = (props: Phenomen
     if (phenomenonMapping.hail.includes(props.phenomenon)) return hailMeteocon
     return notAvailableMeteocon
   }, [isDay, props.phenomenon])
-  const [assets] = useDynamicAssets(meteoconIcon || clearDayMeteocon)
+  const [assets, assetError] = useDynamicAssets(meteoconIcon || clearDayMeteocon)
+
+  // If the icon asset fails to load, no <Image> ever mounts and onLoad never
+  // fires. Callers use onLoad to clear react-native-maps' tracksViewChanges, and
+  // a marker stuck with it set is re-snapshotted forever, so settle either way.
+  useEffect(() => {
+    if (assetError) props.onLoad?.()
+  }, [assetError])
 
   if (props.animated) {
     return <LottieIcon style={lottieStyle} path={lottiePath} />
